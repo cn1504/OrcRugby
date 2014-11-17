@@ -1,1 +1,5 @@
 *.tlog
+*.sdf
+*.pdb
+*.log
+*.cfg
