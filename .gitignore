@@ -3,3 +3,5 @@
 *.pdb
 *.log
 *.cfg
+*.opensdf
+x64/Log.txt
