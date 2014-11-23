@@ -213,7 +213,7 @@ namespace Core
 			}
 			else
 			{
-				if (State != Item::State::InActive && State != Item::State::MouseDown)
+				if (State == Item::State::MouseOver || State == Item::State::MouseDown)
 				{
 					State = Item::State::InActive;
 				}
