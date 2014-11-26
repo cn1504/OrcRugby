@@ -139,6 +139,7 @@ namespace Core
 			mat.resize(ss);
 			file.read(&mat[0], ss);
 
+			mat = "Gold";
 			Meshes.push_back(std::pair<std::string, std::string>(mesh, mat));
 		}
 

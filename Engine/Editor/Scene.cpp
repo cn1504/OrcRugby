@@ -496,13 +496,16 @@ namespace Core
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(1));
 		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(3));
+		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(2));
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(0));
 
 
 		LightShader->MakeCurrent();
 		glUniform1i(LightShader->GetUL("DepthTexture"), 0);
 		glUniform1i(LightShader->GetUL("NormalTexture"), 1);
-		glUniform1i(LightShader->GetUL("HardnessTexture"), 2);
+		glUniform1i(LightShader->GetUL("BaseTexture"), 3);
+		glUniform1i(LightShader->GetUL("MSRTexture"), 2);
 		glUniform2f(LightShader->GetUL("PixelSize"), 1.0f / (float)(Settings::Window::Width), 1.0f / (float)(Settings::Window::Height));
 		glUniformMatrix4fv(LightShader->GetUL("ProjectionInverse"), 1, GL_FALSE, glm::value_ptr(PInverse));
 
@@ -511,7 +514,8 @@ namespace Core
 		LightWithShadowShader->MakeCurrent();
 		glUniform1i(LightWithShadowShader->GetUL("DepthTexture"), 0);
 		glUniform1i(LightWithShadowShader->GetUL("NormalTexture"), 1);
-		glUniform1i(LightWithShadowShader->GetUL("HardnessTexture"), 2);
+		glUniform1i(LightWithShadowShader->GetUL("BaseTexture"), 3);
+		glUniform1i(LightWithShadowShader->GetUL("MSRTexture"), 2);
 		glUniform2f(LightWithShadowShader->GetUL("PixelSize"), 1.0f / (float)(Settings::Window::Width), 1.0f / (float)(Settings::Window::Height));
 		glUniformMatrix4fv(LightWithShadowShader->GetUL("ProjectionInverse"), 1, GL_FALSE, glm::value_ptr(PInverse));
 		glUniformMatrix4fv(LightWithShadowShader->GetUL("ViewInverse"), 1, GL_FALSE, glm::value_ptr(VInverse));
@@ -530,9 +534,9 @@ namespace Core
 			{
 				LightWithShadowShader->MakeCurrent();
 				
-				glActiveTexture(GL_TEXTURE3);
+				glActiveTexture(GL_TEXTURE4);
 				glBindTexture(GL_TEXTURE_CUBE_MAP, r->GetShadowTexture());
-				glUniform1i(LightWithShadowShader->GetUL("ShadowTexture"), 3);
+				glUniform1i(LightWithShadowShader->GetUL("ShadowTexture"), 4);
 
 				glUniformMatrix4fv(LightWithShadowShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
 				glUniformMatrix4fv(LightWithShadowShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
@@ -620,11 +624,11 @@ namespace Core
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(0));
-		glUniform1i(BufferCombineShader->GetUL("DiffuseTexture"), 0);
+		glUniform1i(BufferCombineShader->GetUL("BaseTexture"), 0);
 
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(2));
-		glUniform1i(BufferCombineShader->GetUL("SpecularTexture"), 1);
+		glUniform1i(BufferCombineShader->GetUL("MSRTexture"), 1);
 
 		//glActiveTexture(GL_TEXTURE2);
 		//glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(3));
@@ -918,7 +922,7 @@ namespace Core
 		l->AddComponent(new LightSource(this, glm::vec3(256, 256, 256) / 256.0f, 7.0f, true));
 		l->AddComponent(new OrbitingPosition(e, glm::vec3(0.0f, 0.0f, 1.0f), 1.0f));
 		l->AddComponent(Assets::Meshes["Sphere"]);
-		l->AddComponent(Assets::Materials["Light"]);
+		l->AddComponent(Assets::Materials["Gold"]);
 		AddEntity(l);
 				
 
@@ -963,7 +967,7 @@ namespace Core
 		auto c = new Character(character, characterFile);
 		character->AddComponent(c);
 		character->Transform.Position = glm::vec3(0.0f, c->Height * 0.5f, 0.0f);
-		auto fb = new RigidBody(PhysicsWorld, Assets::Materials["Concrete"], new btCapsuleShape(0.25f, 1.3f), glm::vec3(0, -(c->Height * 0.5f), 0), 100.0f, RigidBody::Type::DYNAMIC);
+		auto fb = new RigidBody(PhysicsWorld, Assets::Materials["Gold"], new btCapsuleShape(0.25f, 1.3f), glm::vec3(0, -(c->Height * 0.5f), 0), 100.0f, RigidBody::Type::DYNAMIC);
 		character->AddComponent(fb);
 		character->Load();
 		

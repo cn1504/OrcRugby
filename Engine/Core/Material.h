@@ -23,9 +23,21 @@ namespace Core
 
 		void WriteShaderUniforms(Shader* shader);
 
-
+		
 		std::string Name;
 
+		glm::vec3 BaseColor;
+		float Metallic; 
+		float Specular;
+		float Roughness;
+		float Emissive;
+
+		bool IsTranslucent;
+		float Opacity;
+
+		float Density;
+
+		/*
 		glm::vec3 DiffuseColor;
 		float DiffuseIntensity;
 		glm::vec3 SpecularColor;
@@ -57,15 +69,14 @@ namespace Core
 		float EmanativeAlpha2;
 
 		float IndexOfRefraction;
-
-		float Density;
-
+		
 		float YoungsModulus;
 		float BulkModulus;
 		float ShearModulus;
 
 		float YieldStrength;
 		float UltimateStrength;
+		*/
 	};
 
 }

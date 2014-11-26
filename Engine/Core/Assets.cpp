@@ -13,7 +13,7 @@ namespace Core
 		
 		
 		void LoadStandardAssets()
-		{
+		{		
 			LoadMaterials();
 			CreateStandardTextures();
 			CreateStandardFonts();

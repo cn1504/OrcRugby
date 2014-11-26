@@ -900,7 +900,7 @@ namespace Core
 		character->AddComponent(c);
 		character->Transform.Position = position + glm::vec3(0.0f, c->Height * 0.5f, 0.0f);
 		character->Transform.Rotation = rotation;
-		auto fb = new RigidBody(PhysicsWorld, Assets::Materials["Concrete"], new btCapsuleShape(0.25f, 1.3f), glm::vec3(0, -(c->Height * 0.5f), 0), 100.0f, RigidBody::Type::DYNAMIC);
+		auto fb = new RigidBody(PhysicsWorld, Assets::Materials["Gold"], new btCapsuleShape(0.25f, 1.3f), glm::vec3(0, -(c->Height * 0.5f), 0), 100.0f, RigidBody::Type::DYNAMIC);
 		character->AddComponent(fb);
 		character->Load();
 

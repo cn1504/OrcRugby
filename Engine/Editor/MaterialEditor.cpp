@@ -251,6 +251,7 @@ namespace Core
 			float g2 = 203;
 			float g3 = 238;
 
+			/*
 			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Noise Algorithm:", 4, 3, Assets::Fonts["Consolas16"])));
 			auto na = new MaterialEditorNoiseAlgorithmBox(WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]));
 			AddItem(na);
@@ -272,129 +273,37 @@ namespace Core
 			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Material 2 Floor:", 4, 3, Assets::Fonts["Consolas16"])));
 			AddItem(new TextBoxFloatZeroToOne(&Material->Mat2Floor, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
 			y += 30.0f;
+			*/
+					
+			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Base Color (RGB):", 4, 3, Assets::Fonts["Consolas16"])));
+			AddItem(new TextBoxRGB(&Material->BaseColor.x, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
+			AddItem(new TextBoxRGB(&Material->BaseColor.y, WindowPtr, this, Alignment::TopLeft, glm::vec2(g2, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
+			AddItem(new TextBoxRGB(&Material->BaseColor.z, WindowPtr, this, Alignment::TopLeft, glm::vec2(g3, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
+			y += 30.0f;
+
+			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Metallic:", 4, 3, Assets::Fonts["Consolas16"])));
+			AddItem(new TextBoxFloatZeroToOne(&Material->Metallic, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
+			y += 20.0f;
+
+			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Specular:", 4, 3, Assets::Fonts["Consolas16"])));
+			AddItem(new TextBoxFloatZeroToOne(&Material->Specular, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
+			y += 20.0f;
+
+			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Roughness:", 4, 3, Assets::Fonts["Consolas16"])));
+			AddItem(new TextBoxFloatZeroToOne(&Material->Roughness, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
+			y += 30.0f;
 
 			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Is Translucent:", 4, 3, Assets::Fonts["Consolas16"])));
 			AddItem(new CheckBox(&Material->IsTranslucent, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(17.0f, 17.0f), Assets::Textures["CloseButton"], Assets::Textures["CloseButtonMO"], nullptr, Assets::Textures["CheckSmall"], Assets::Textures["CheckSmallMO"]));
 			y += 20.0f;
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Diffuse Alpha 1:", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxFloatZeroToOne(&Material->DiffuseAlpha1, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 20.0f;
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("              2:", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxFloatZeroToOne(&Material->DiffuseAlpha2, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 30.0f; 
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Base Material:", 4, 3, Assets::Fonts["Consolas16"])));
-			y += 20.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Diffuse Color (RGB):", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxRGB(&Material->DiffuseColor.x, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			AddItem(new TextBoxRGB(&Material->DiffuseColor.y, WindowPtr, this, Alignment::TopLeft, glm::vec2(g2, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			AddItem(new TextBoxRGB(&Material->DiffuseColor.z, WindowPtr, this, Alignment::TopLeft, glm::vec2(g3, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 20.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Diffuse Intensity:", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxFloatZeroPlus(&Material->DiffuseIntensity, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 30.0f;
-
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Specular Color (RGB):", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxRGB(&Material->SpecularColor.x, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			AddItem(new TextBoxRGB(&Material->SpecularColor.y, WindowPtr, this, Alignment::TopLeft, glm::vec2(g2, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			AddItem(new TextBoxRGB(&Material->SpecularColor.z, WindowPtr, this, Alignment::TopLeft, glm::vec2(g3, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 20.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Specular Intensity:", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxFloatZeroPlus(&Material->SpecularIntensity, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 20.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Specular Hardness:", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxFloatZeroPlus(&Material->SpecularHardness, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 30.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Emanative Color (RGB):", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxRGB(&Material->EmanativeColor.x, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			AddItem(new TextBoxRGB(&Material->EmanativeColor.y, WindowPtr, this, Alignment::TopLeft, glm::vec2(g2, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			AddItem(new TextBoxRGB(&Material->EmanativeColor.z, WindowPtr, this, Alignment::TopLeft, glm::vec2(g3, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 20.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Emanative Intensity:", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxRGB(&Material->EmanativeIntensity, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 30.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Material 2:", 4, 3, Assets::Fonts["Consolas16"])));
-			y += 20.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Diffuse Color (RGB):", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxRGB(&Material->DiffuseColor2.x, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			AddItem(new TextBoxRGB(&Material->DiffuseColor2.y, WindowPtr, this, Alignment::TopLeft, glm::vec2(g2, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			AddItem(new TextBoxRGB(&Material->DiffuseColor2.z, WindowPtr, this, Alignment::TopLeft, glm::vec2(g3, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 20.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Diffuse Intensity:", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxFloatZeroPlus(&Material->DiffuseIntensity2, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 30.0f;
-
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Specular Color (RGB):", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxRGB(&Material->SpecularColor2.x, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			AddItem(new TextBoxRGB(&Material->SpecularColor2.y, WindowPtr, this, Alignment::TopLeft, glm::vec2(g2, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			AddItem(new TextBoxRGB(&Material->SpecularColor2.z, WindowPtr, this, Alignment::TopLeft, glm::vec2(g3, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 20.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Specular Intensity:", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxFloatZeroPlus(&Material->SpecularIntensity2, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 20.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Specular Hardness:", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxFloatZeroPlus(&Material->SpecularHardness2, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 30.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Emanative Color (RGB):", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxRGB(&Material->EmanativeColor2.x, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			AddItem(new TextBoxRGB(&Material->EmanativeColor2.y, WindowPtr, this, Alignment::TopLeft, glm::vec2(g2, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			AddItem(new TextBoxRGB(&Material->EmanativeColor2.z, WindowPtr, this, Alignment::TopLeft, glm::vec2(g3, y), glm::vec2(30, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 20.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Emanative Intensity:", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxFloatZeroPlus(&Material->EmanativeIntensity2, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
-			y += 35.0f;
-
-			AddItem(new Border(Border::Orientation::Horizontal, this, Alignment::TopLeft, glm::vec2(1, y), glm::vec2(1, 1), nullptr, Assets::Textures["Border"]));
-			y += 15.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Index Of Refraction:", 4, 3, Assets::Fonts["Consolas16"])));
-			AddItem(new TextBoxFloatZeroPlus(&Material->IndexOfRefraction, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
+			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Opacity:", 4, 3, Assets::Fonts["Consolas16"])));
+			AddItem(new TextBoxFloatZeroToOne(&Material->Opacity, WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]), nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"]));
 			y += 30.0f;
 
 			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Density (e3):", 4, 3, Assets::Fonts["Consolas16"])));
 			auto den = new MaterialEditorDensityBox(WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]));
 			AddItem(den);
 			y += 30.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Young's Modulus (e9):", 4, 3, Assets::Fonts["Consolas16"])));
-			auto ym = new MaterialEditorYoungsModulusBox(WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]));
-			AddItem(ym);
-			y += 20.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Bulk Modulus (e9):", 4, 3, Assets::Fonts["Consolas16"])));
-			auto bm = new MaterialEditorBulkModulusBox(WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]));
-			AddItem(bm);
-			y += 20.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Shear Modulus (e9):", 4, 3, Assets::Fonts["Consolas16"])));
-			auto sm = new MaterialEditorShearModulusBox(WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]));
-			AddItem(sm);
-			y += 30.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Yield Strength (e6):", 4, 3, Assets::Fonts["Consolas16"])));
-			auto ys = new MaterialEditorYieldStrengthBox(WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]));
-			AddItem(ys);
-			y += 20.0f;
-
-			AddItem(new Item(this, Alignment::TopLeft, glm::vec2(3, y), glm::vec2(110, 20), new Text("Ultimate Strength (e6):", 4, 3, Assets::Fonts["Consolas16"])));
-			auto us = new MaterialEditorUltimateStrengthBox(WindowPtr, this, Alignment::TopLeft, glm::vec2(g1, y), glm::vec2(100, 20), new Text("v", 4, 3, Assets::Fonts["Consolas16"]));
-			AddItem(us);
-
 
 			Invalidate();
 		}
@@ -479,7 +388,7 @@ namespace Core
 
 
 
-
+		/*
 		MaterialEditorNoiseAlgorithmBox::MaterialEditorNoiseAlgorithmBox(Window* window, MaterialEditor* parent, Alignment alignment, glm::vec2 position, glm::vec2 size, Text* label)
 			: TextBox(window, parent, alignment, position, size, label, nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"])
 		{
@@ -514,7 +423,7 @@ namespace Core
 			auto v = (int)Editor->Material->Noise;
 			Label->UpdateText(std::to_string(v));
 		}
-
+		*/
 
 
 
@@ -544,166 +453,6 @@ namespace Core
 		void MaterialEditorDensityBox::RefreshData()
 		{
 			auto v = Editor->Material->Density / 1.0e3f;
-			Label->UpdateText(std::to_string(v));
-		}
-
-
-
-
-
-		MaterialEditorYoungsModulusBox::MaterialEditorYoungsModulusBox(Window* window, MaterialEditor* parent, Alignment alignment, glm::vec2 position, glm::vec2 size, Text* label)
-			: TextBox(window, parent, alignment, position, size, label, nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"])
-		{
-			Editor = parent;
-			RefreshData();
-		}
-
-		MaterialEditorYoungsModulusBox::~MaterialEditorYoungsModulusBox() {}
-
-		void MaterialEditorYoungsModulusBox::SaveValue()
-		{
-			float s = Editor->Material->YoungsModulus / 1.0e9f;
-			try	{
-				s = std::stof(Label->GetText());
-				Editor->Material->YoungsModulus = (s < 0) ? 0 : s * 1.0e9f;
-			}
-			catch (std::invalid_argument &e) { (void*)&e; }
-			catch (std::out_of_range &e) { (void*)&e; }
-			RefreshData();
-			TextBox::SaveValue();
-		}
-
-		void MaterialEditorYoungsModulusBox::RefreshData()
-		{
-			auto v = Editor->Material->YoungsModulus / 1.0e9f;
-			Label->UpdateText(std::to_string(v));
-		}
-
-
-
-
-
-		MaterialEditorBulkModulusBox::MaterialEditorBulkModulusBox(Window* window, MaterialEditor* parent, Alignment alignment, glm::vec2 position, glm::vec2 size, Text* label)
-			: TextBox(window, parent, alignment, position, size, label, nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"])
-		{
-			Editor = parent;
-			RefreshData();
-		}
-
-		MaterialEditorBulkModulusBox::~MaterialEditorBulkModulusBox() {}
-
-		void MaterialEditorBulkModulusBox::SaveValue()
-		{
-			float s = Editor->Material->BulkModulus / 1.0e9f;
-			try	{
-				s = std::stof(Label->GetText());
-				Editor->Material->BulkModulus = (s < 0) ? 0 : s * 1.0e9f;
-			}
-			catch (std::invalid_argument &e) { (void*)&e; }
-			catch (std::out_of_range &e) { (void*)&e; }
-			RefreshData();
-			TextBox::SaveValue();
-		}
-
-		void MaterialEditorBulkModulusBox::RefreshData()
-		{
-			auto v = Editor->Material->BulkModulus / 1.0e9f;
-			Label->UpdateText(std::to_string(v));
-		}
-
-
-
-
-
-		MaterialEditorShearModulusBox::MaterialEditorShearModulusBox(Window* window, MaterialEditor* parent, Alignment alignment, glm::vec2 position, glm::vec2 size, Text* label)
-			: TextBox(window, parent, alignment, position, size, label, nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"])
-		{
-			Editor = parent;
-			RefreshData();
-		}
-
-		MaterialEditorShearModulusBox::~MaterialEditorShearModulusBox() {}
-
-		void MaterialEditorShearModulusBox::SaveValue()
-		{
-			float s = Editor->Material->ShearModulus / 1.0e9f;
-			try	{
-				s = std::stof(Label->GetText());
-				Editor->Material->ShearModulus = (s < 0) ? 0 : s * 1.0e9f;
-			}
-			catch (std::invalid_argument &e) { (void*)&e; }
-			catch (std::out_of_range &e) { (void*)&e; }
-			RefreshData();
-			TextBox::SaveValue();
-		}
-
-		void MaterialEditorShearModulusBox::RefreshData()
-		{
-			auto v = Editor->Material->ShearModulus / 1.0e9f;
-			Label->UpdateText(std::to_string(v));
-		}
-
-
-
-
-
-		MaterialEditorYieldStrengthBox::MaterialEditorYieldStrengthBox(Window* window, MaterialEditor* parent, Alignment alignment, glm::vec2 position, glm::vec2 size, Text* label)
-			: TextBox(window, parent, alignment, position, size, label, nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"])
-		{
-			Editor = parent;
-			RefreshData();
-		}
-
-		MaterialEditorYieldStrengthBox::~MaterialEditorYieldStrengthBox() {}
-
-		void MaterialEditorYieldStrengthBox::SaveValue()
-		{
-			float s = Editor->Material->YieldStrength / 1.0e6f;
-			try	{
-				s = std::stof(Label->GetText());
-				Editor->Material->YieldStrength = (s < 0) ? 0 : s * 1.0e6f;
-			}
-			catch (std::invalid_argument &e) { (void*)&e; }
-			catch (std::out_of_range &e) { (void*)&e; }
-			RefreshData();
-			TextBox::SaveValue();
-		}
-
-		void MaterialEditorYieldStrengthBox::RefreshData()
-		{
-			auto v = Editor->Material->YieldStrength / 1.0e6f;
-			Label->UpdateText(std::to_string(v));
-		}
-
-
-
-
-
-		MaterialEditorUltimateStrengthBox::MaterialEditorUltimateStrengthBox(Window* window, MaterialEditor* parent, Alignment alignment, glm::vec2 position, glm::vec2 size, Text* label)
-			: TextBox(window, parent, alignment, position, size, label, nullptr, Assets::Textures["TextBoxMO"], nullptr, Assets::Textures["TextBoxEdit"])
-		{
-			Editor = parent;
-			RefreshData();
-		}
-
-		MaterialEditorUltimateStrengthBox::~MaterialEditorUltimateStrengthBox() {}
-
-		void MaterialEditorUltimateStrengthBox::SaveValue()
-		{
-			float s = Editor->Material->UltimateStrength / 1.0e6f;
-			try	{
-				s = std::stof(Label->GetText());
-				Editor->Material->UltimateStrength = (s < 0) ? 0 : s * 1.0e6f;
-			}
-			catch (std::invalid_argument &e) { (void*)&e; }
-			catch (std::out_of_range &e) { (void*)&e; }
-			RefreshData();
-			TextBox::SaveValue();
-		}
-
-		void MaterialEditorUltimateStrengthBox::RefreshData()
-		{
-			auto v = Editor->Material->UltimateStrength / 1.0e6f;
 			Label->UpdateText(std::to_string(v));
 		}
 

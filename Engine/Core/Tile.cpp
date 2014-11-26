@@ -284,6 +284,7 @@ namespace Core
 			mat.resize(ss);
 			file.read(&mat[0], ss);
 
+			mat = "Gold";
 			Meshes.push_back(std::pair<std::string, std::string>(mesh, mat));
 		}
 
@@ -551,7 +552,7 @@ namespace Core
 			if (n->ShapeType == Collider::Type::Box)
 				shape = new btBoxShape(btVector3(n->Transform.Scale.x, n->Transform.Scale.y, n->Transform.Scale.z) * 0.5f);
 			
-			e->AddComponent(new RigidBody(ScenePtr->PhysicsWorld, Assets::Materials["Concrete"], shape));
+			e->AddComponent(new RigidBody(ScenePtr->PhysicsWorld, Assets::Materials["Gold"], shape));
 		
 			Entities.push_back(e);
 			ScenePtr->AddEntity(e);
