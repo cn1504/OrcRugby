@@ -82,7 +82,8 @@ void main(void)
 	vec3 lightDir   = LightPosition - pos;
 	float dist      = dot(lightDir, lightDir);	
 	float distRel   = dist / (LightRadius * LightRadius);
-	float atten     = min(1.0 - distRel, 1.0);
+	//float atten     = min(1.0 - distRel, 1.0);
+	float atten =  1.0 / (dist);
 	
 	vec3 incident   = normalize(lightDir);
 		
@@ -101,13 +102,13 @@ void main(void)
 	float dotVN		= clamp(dot(viewDir, normal), 0.0, 1.0);
 	float dotLH		= clamp(dot(halfDir, incident), 0.0, 1.0);
 	
+	float F0 = MSR.y * 0.2;
 	float thetaD = acos(dotLH);
-	float cosDSquared = cos(thetaD * thetaD);
-	float fd90 = (0.5 + 2.0 * cosDSquared * MSR.z * MSR.z);
-	float diffuse = (1.0 + (fd90 - 1.0) * pow(1 - dotLN, 5.0)) * (1.0 + (fd90 - 1.0) * pow(1.0 - dotVN, 5.0)) / M_PI;
-
+	float Fd90 = 0.5 + 1.0 * cos(thetaD * thetaD) * MSR.z;
+	//float Fd90 = 0.5 + 2.0 * cos(thetaD * thetaD) * MSR.z;
+	vec3 diffuse = (mix(BaseColor.xyz, vec3(0.0), MSR.x) / M_PI) * (1.0 + (Fd90 - 1.0) * pow(1.0 - dotLN, 5.0)) * (1.0 + (Fd90 - 1.0) * pow(1.0 - dotVN, 5.0));
 	
-	float specFactor = LightingFuncGGX(normal, viewDir, incident, MSR.z, MSR.y * 0.2);
+	float specFactor = LightingFuncGGX(normal, viewDir, incident, MSR.z, F0);
 	
 	
 	// shadow map test
@@ -136,8 +137,8 @@ void main(void)
 	//const float c = 60.0; // Sharp shadows good for interior scenes
 	//const float c = 5.0; 	// Soft shadows, good for day time exterior scenes
 	//float result = clamp(exp(-c * ( dist - vShadowSample )), 0.0, 1.0);
+
 	
-	
-	outDiffuse = vec4(result * LightColor.xyz * atten * mix(BaseColor.xyz, vec3(0.0), MSR.x) * diffuse, 1.0);
+	outDiffuse = vec4(result * LightColor.xyz * atten * diffuse, 1.0);
 	outSpecular = vec4(result * mix(LightColor.xyz, LightColor.xyz * BaseColor.xyz, MSR.x) * atten * specFactor, 1.0);
 }
