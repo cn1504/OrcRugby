@@ -10,11 +10,16 @@ uniform mat4      ProjectionInverse;
 uniform mat4      ViewInverse;
 
 uniform samplerCube ShadowTexture;
-uniform float     LightRadius;
-uniform vec3      LightPosition;
-uniform vec4      LightColor;
 uniform mat4      LightViewMatrix;
 uniform mat4      LightProjectionMatrix;
+uniform vec3      LightPosition;
+uniform vec3      LightDirection;
+
+uniform float     LightInvSqrRadius;
+uniform vec4      LightColor;
+uniform float     LightIntensity;
+uniform float     LightAngleScale;
+uniform float     LightAngleOffset;
 
 layout(location = 0) in vec3 viewVertex;
 layout(location = 1) in vec3 viewNormal;
@@ -24,13 +29,48 @@ layout(location = 1) out vec4 outSpecular;
 
 #define M_PI 3.1415926535897932384626433832795
 
+// Shadow Mapping Functions
+//-------------------------------------------------------------------------------------------
 float unpack(vec3 color)
 {
 	const vec3 scale = vec3(65536.0, 256.0, 1.0) / 65793.0;
 	return dot(color, scale);
 }
 
-// Lighting Functions
+float ShadowMap(float sqrDist, float invSqrRadius, vec3 fragPosition)
+{
+	float distRel = sqrDist * invSqrRadius;
+	
+    //float bias = 0.005*tan(acos(lambert)); // cosTheta is dot( n,l ), clamped between 0 and 1
+	//bias = 1.0 - clamp(bias, 0.0, 0.01);
+	
+	vec4 position_ls = LightViewMatrix * ViewInverse * vec4(fragPosition, 1.0); 
+	vec4 sms = texture(ShadowTexture, position_ls.xyz);
+	float depth = unpack(sms.xyz);
+	float bias = 0.96;
+	float result = (distRel * bias > depth) ? 0.0 : 1.0;
+	
+	//vec4 abs_position = abs(position_ls);
+	//float fs_z = -max(abs_position.x, max(abs_position.y, abs_position.z));
+	//vec4 lclip = LightProjectionMatrix * vec4(0.0, 0.0, fs_z, 1.0);
+	//float depth = (lclip.z / lclip.w) * 0.5 + 0.5;
+	//float result = texture(ShadowTexture, vec4(position_ls.xyz, depth * 0.99999));
+		
+	//float fShadow = texture(ShadowTexture, -posW).r;
+	//fShadow = (length(lightDir / LightRadius) > depth) ? 0.3 : 1.0;
+	
+	//float vShadowSample = texture(ShadowTexture, -incident).r;
+	//float fShadow = (dot(lightDir, lightDir) - fDepthBias - vShadowSample / LightRadius < 0.0f) ? 1.0f : 0.3f;
+	
+	// ESM
+	//const float c = 60.0; // Sharp shadows good for interior scenes
+	//const float c = 5.0; 	// Soft shadows, good for day time exterior scenes
+	//float result = clamp(exp(-c * ( dist - vShadowSample )), 0.0, 1.0);
+	
+	return result;
+}
+
+// BRDF Functions
 //-------------------------------------------------------------------------------------------
 vec3 F_Schlick(vec3 f0, float f90, float u)
 {
@@ -65,6 +105,31 @@ float Fd_DisneyDiffuse(float NdotV, float NdotL, float LdotH, float linearRoughn
 	return lightScatter * viewScatter * energyFactor;
 }
 
+// Lighting Functions
+//-------------------------------------------------------------------------------------------
+float smoothDistanceAtt(float squaredDistance, float invSqrAttRadius)
+{
+	float factor = squaredDistance * invSqrAttRadius;
+	float smoothFactor = clamp(1.0 - factor * factor, 0.0, 1.0);
+	return smoothFactor;
+}
+
+float getDistanceAtt(float sqrDist, float invSqrAttRadius)
+{
+	float attenuation = 1.0 / (max(sqrDist, 0.01 * 0.01));
+	attenuation *= smoothDistanceAtt(sqrDist, invSqrAttRadius);
+	return attenuation;
+}
+
+float getAngleAtt(vec3 normalizedLightVector, vec3 lightDirection, float lightAngleScale, float lightAngleOffset)
+{
+	float cd = dot(lightDirection, normalizedLightVector);
+	float attenuation = clamp(cd * lightAngleScale + lightAngleOffset, 0.0, 1.0);
+	attenuation *= attenuation;
+	return attenuation;
+}
+
+
 void main(void)
 {
 	// Extract buffered pixel position and normal from textures
@@ -79,21 +144,16 @@ void main(void)
 	
 	// Calculate light amount
 	vec3 lightDir   = LightPosition - pos;
-	float dist      = dot(lightDir, lightDir);	
-	float distRel   = dist / (LightRadius * LightRadius);
-	//float atten     = min(1.0 - distRel, 1.0);
-	float atten =  1.0 / (dist);
-	
 	vec3 incident   = normalize(lightDir);
-		
+	
+	float sqrDist = dot(lightDir, lightDir);
+	float atten = getDistanceAtt(sqrDist, LightInvSqrRadius);
+	atten *= getAngleAtt(incident, LightDirection, LightAngleScale, LightAngleOffset);
+	
 	if(atten <= 0.0) 
 	{
 		discard;
 	}
-	if (dot(normal, incident) <= 0.0) 
-    {
-		discard;
-    }
 		
 	vec3 viewDir    = normalize(- pos);
 	vec3 halfDir	= normalize(viewDir + incident);
@@ -113,37 +173,12 @@ void main(void)
 	vec3  Fr  = D * F * Vis / M_PI;
 	
 	// Diffuse BRDF
-	float Fd = Fd_DisneyDiffuse(NdotV, LdotN, LdotH, MSR.z) / M_PI;
+	float Fd = Fd_DisneyDiffuse(NdotV, LdotN, LdotH, MSR.z) / M_PI;	
 	
-	
-	// shadow map test
-    //float bias = 0.005*tan(acos(lambert)); // cosTheta is dot( n,l ), clamped between 0 and 1
-	//bias = 1.0 - clamp(bias, 0.0, 0.01);
-	
-	vec4 position_ls = LightViewMatrix * ViewInverse * vec4(pos, 1.0); 
-	vec4 sms = texture(ShadowTexture, position_ls.xyz);
-	float depth = unpack(sms.xyz);
-	float bias = 0.96;
-	float result = (distRel * bias > depth) ? 0.0 : 1.0;
-	
-	//vec4 abs_position = abs(position_ls);
-	//float fs_z = -max(abs_position.x, max(abs_position.y, abs_position.z));
-	//vec4 lclip = LightProjectionMatrix * vec4(0.0, 0.0, fs_z, 1.0);
-	//float depth = (lclip.z / lclip.w) * 0.5 + 0.5;
-	//float result = texture(ShadowTexture, vec4(position_ls.xyz, depth * 0.99999));
-		
-	//float fShadow = texture(ShadowTexture, -posW).r;
-	//fShadow = (length(lightDir / LightRadius) > depth) ? 0.3 : 1.0;
-	
-	//float vShadowSample = texture(ShadowTexture, -incident).r;
-	//float fShadow = (dot(lightDir, lightDir) - fDepthBias - vShadowSample / LightRadius < 0.0f) ? 1.0f : 0.3f;
-	
-	// ESM
-	//const float c = 60.0; // Sharp shadows good for interior scenes
-	//const float c = 5.0; 	// Soft shadows, good for day time exterior scenes
-	//float result = clamp(exp(-c * ( dist - vShadowSample )), 0.0, 1.0);
+	// Shadow Mapping Result
+	float shadow = ShadowMap(sqrDist, LightInvSqrRadius, pos);
 
 	
-	outDiffuse = vec4(result * mix(BaseColor.xyz, vec3(0.0), MSR.x) * atten * Fd, 1.0);
-	outSpecular = vec4(result * LightColor.xyz * atten * Fr, 1.0);
+	outDiffuse = vec4(shadow * LightColor.xyz * atten * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd, 1.0);
+	outSpecular = vec4(shadow * LightColor.xyz * atten * Fr, 1.0);
 }

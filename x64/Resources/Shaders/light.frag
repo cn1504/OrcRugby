@@ -9,9 +9,14 @@ uniform vec2      PixelSize;
 uniform mat4      ProjectionInverse;
 uniform mat4      ViewInverse;
 
-uniform float     LightRadius;
 uniform vec3      LightPosition;
+uniform vec3      LightDirection;
+
+uniform float     LightInvSqrRadius;
 uniform vec4      LightColor;
+uniform float     LightIntensity;
+uniform float     LightAngleScale;
+uniform float     LightAngleOffset;
 
 layout(location = 0) in vec3 viewVertex;
 layout(location = 1) in vec3 viewNormal;
@@ -21,7 +26,7 @@ layout(location = 1) out vec4 outSpecular;
 
 #define M_PI 3.1415926535897932384626433832795
 
-// Lighting Functions
+// BRDF Functions
 //-------------------------------------------------------------------------------------------
 vec3 F_Schlick(vec3 f0, float f90, float u)
 {
@@ -56,6 +61,31 @@ float Fd_DisneyDiffuse(float NdotV, float NdotL, float LdotH, float linearRoughn
 	return lightScatter * viewScatter * energyFactor;
 }
 
+// Lighting Functions
+//-------------------------------------------------------------------------------------------
+float smoothDistanceAtt(float squaredDistance, float invSqrAttRadius)
+{
+	float factor = squaredDistance * invSqrAttRadius;
+	float smoothFactor = clamp(1.0 - factor * factor, 0.0, 1.0);
+	return smoothFactor;
+}
+
+float getDistanceAtt(float sqrDist, float invSqrAttRadius)
+{
+	float attenuation = 1.0 / (max(sqrDist, 0.01 * 0.01));
+	attenuation *= smoothDistanceAtt(sqrDist, invSqrAttRadius);
+	return attenuation;
+}
+
+float getAngleAtt(vec3 normalizedLightVector, vec3 lightDirection, float lightAngleScale, float lightAngleOffset)
+{
+	float cd = dot(lightDirection, normalizedLightVector);
+	float attenuation = clamp(cd * lightAngleScale + lightAngleOffset, 0.0, 1.0);
+	attenuation *= attenuation;
+	return attenuation;
+}
+
+
 void main(void)
 {
 	// Extract buffered pixel position and normal from textures
@@ -70,21 +100,16 @@ void main(void)
 	
 	// Calculate light amount
 	vec3 lightDir   = LightPosition - pos;
-	float dist      = dot(lightDir, lightDir);	
-	float distRel   = dist / (LightRadius * LightRadius);
-	//float atten     = min(1.0 - distRel, 1.0);
-	float atten =  1.0 / (dist);
-	
 	vec3 incident   = normalize(lightDir);
-		
+	
+	float sqrDist = dot(lightDir, lightDir);
+	float atten = getDistanceAtt(sqrDist, LightInvSqrRadius);
+	atten *= getAngleAtt(incident, LightDirection, LightAngleScale, LightAngleOffset);
+	
 	if(atten <= 0.0) 
 	{
 		discard;
 	}
-	if (dot(normal, incident) <= 0.0) 
-    {
-		discard;
-    }
 		
 	vec3 viewDir    = normalize(- pos);
 	vec3 halfDir	= normalize(viewDir + incident);
@@ -104,9 +129,9 @@ void main(void)
 	vec3  Fr  = D * F * Vis / M_PI;
 	
 	// Diffuse BRDF
-	float Fd = Fd_DisneyDiffuse(NdotV, LdotN, LdotH, MSR.z) / M_PI;
+	float Fd = Fd_DisneyDiffuse(NdotV, LdotN, LdotH, MSR.z) / M_PI;	
 	
 	
-	outDiffuse = vec4(mix(BaseColor.xyz, vec3(0.0), MSR.x) * atten * Fd, 1.0);
+	outDiffuse = vec4(LightColor.xyz * atten * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd, 1.0);
 	outSpecular = vec4(LightColor.xyz * atten * Fr, 1.0);
 }

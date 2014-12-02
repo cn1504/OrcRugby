@@ -4,6 +4,8 @@
 #include <Bullet/BulletCollision/CollisionDispatch/btGhostObject.h>
 #include "RenderBuffer.h"
 
+#include "Shader.h"
+
 namespace Core
 {
 	class Scene;
@@ -24,8 +26,11 @@ namespace Core
 		glm::mat4 Projection;
 		glm::vec3 Color;
 		float Radius;
+		float Intensity;
+		float CosInner;
+		float CosOuter;
 
-		LightSource(Scene* scene, glm::vec3 color, float radius, bool castsShadow = false);
+		LightSource(Scene* scene, glm::vec3 color, float radius, float intensity, float cosInner, float cosOuter, bool castsShadow = false);
 		virtual ~LightSource();
 
 		virtual void Load();
@@ -34,6 +39,7 @@ namespace Core
 		bool CastsShadow();
 		std::vector<Core::Entity*>* GetLitObjects();
 		GLuint GetShadowTexture();
+		void WriteShaderUniforms(Shader* shader);
 	};
 
 }

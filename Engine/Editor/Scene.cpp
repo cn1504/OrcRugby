@@ -517,12 +517,13 @@ namespace Core
 
 				glUniformMatrix4fv(LightWithShadowShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
 				glUniformMatrix4fv(LightWithShadowShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
-				glUniform4fv(LightWithShadowShader->GetUL("LightColor"), 1, glm::value_ptr(glm::vec4(1.0f)));
 				glUniform3fv(LightWithShadowShader->GetUL("LightPosition"), 1, glm::value_ptr(glm::vec3(V * glm::vec4(e->Transform.Position, 1.0))));
-				glUniform1f(LightWithShadowShader->GetUL("LightRadius"), r->Radius);
+				glUniform3fv(LightWithShadowShader->GetUL("LightDirection"), 1, glm::value_ptr(e->Transform.WSForward()));
 
 				glUniformMatrix4fv(LightWithShadowShader->GetUL("LightViewMatrix"), 1, GL_FALSE, glm::value_ptr(glm::translate(-e->Transform.Position)));
 				glUniformMatrix4fv(LightWithShadowShader->GetUL("LightProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(r->Projection));
+
+				r->WriteShaderUniforms(LightWithShadowShader);
 
 				Cube->EnableBuffers(LightWithShadowShader);
 				Cube->Render(LightWithShadowShader);
@@ -534,9 +535,10 @@ namespace Core
 
 				glUniformMatrix4fv(LightShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
 				glUniformMatrix4fv(LightShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
-				glUniform4fv(LightShader->GetUL("LightColor"), 1, glm::value_ptr(glm::vec4(1.0f)));
 				glUniform3fv(LightShader->GetUL("LightPosition"), 1, glm::value_ptr(glm::vec3(V * glm::vec4(e->Transform.Position, 1.0))));
-				glUniform1f(LightShader->GetUL("LightRadius"), r->Radius);
+				glUniform3fv(LightShader->GetUL("LightDirection"), 1, glm::value_ptr(e->Transform.WSForward()));
+
+				r->WriteShaderUniforms(LightShader);
 
 				Cube->EnableBuffers(LightShader);
 				Cube->Render(LightShader);
@@ -896,7 +898,7 @@ namespace Core
 		Entity* l = new Entity();
 		l->Transform.Position = glm::vec3(-1.0f, 1.5f, 0.0f);
 		l->Transform.Scale = glm::vec3(0.05f, 0.05f, 0.05f);
-		l->AddComponent(new LightSource(this, glm::vec3(256, 256, 256) / 256.0f, 7.0f, true));
+		l->AddComponent(new LightSource(this, glm::vec3(1.0f), 20.0f, 5.0f, -1.0f, -1.0f, true));
 		l->AddComponent(new OrbitingPosition(e, glm::vec3(0.0f, 0.0f, 1.0f), 1.0f));
 		l->AddComponent(Assets::Meshes["Sphere"]);
 		l->AddComponent(Assets::Materials["Gold"]);

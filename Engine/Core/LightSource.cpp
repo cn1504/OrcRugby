@@ -5,13 +5,16 @@
 namespace Core
 {
 
-	LightSource::LightSource(Scene* scene, glm::vec3 color, float radius, bool castsShadow)
+	LightSource::LightSource(Scene* scene, glm::vec3 color, float radius, float intensity, float cosInner, float cosOuter, bool castsShadow)
 	{
 		this->scene = scene;
 		Color = color;
 		shadow = castsShadow;
 		ShadowRB = nullptr;
 		Radius = radius;
+		Intensity = intensity;
+		CosInner = cosInner;
+		CosOuter = cosOuter;
 		shape = nullptr;
 	}
 
@@ -68,6 +71,18 @@ namespace Core
 	GLuint LightSource::GetShadowTexture()
 	{
 		return ShadowRB->GetOutputTexture(0);
+	}
+
+
+	void LightSource::WriteShaderUniforms(Shader* shader)
+	{
+		glUniform4fv(shader->GetUL("LightColor"), 1, glm::value_ptr(Color));
+		glUniform1f(shader->GetUL("LightInvSqrRadius"), 1.0f / (Radius * Radius));
+		glUniform1f(shader->GetUL("LightIntensity"), Intensity);
+
+		float anglescale = 1.0f / glm::max(0.001f, (CosInner - CosOuter));
+		glUniform1f(shader->GetUL("LightAngleScale"), anglescale);
+		glUniform1f(shader->GetUL("LightAngleOffset"), -CosOuter * anglescale);
 	}
 
 }
