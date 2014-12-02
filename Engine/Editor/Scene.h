@@ -10,7 +10,6 @@
 #include "Text.h"
 #include "LightSource.h"
 #include "GuiItem.h"
-#include "WorldGenerator.h"
 
 namespace Core
 {
@@ -99,8 +98,6 @@ namespace Core
 		Gui::Item* CharacterEditor;
 		Gui::Item* TileEditor;
 		Gui::Item* FeatureEditor;
-		Theme* Theme;
-		WorldGenerator* WG;
 		std::unordered_set<Entity*> DistantEntities;
 		
 		Scene(Core::Window* window);
@@ -117,8 +114,6 @@ namespace Core
 
 		void LoadScene(std::string sceneFile);
 		void LoadCharacter(std::string characterFile);
-		void LoadTile(std::string tileFile);
-		void LoadFeature(std::string featureFile);
 	};
 
 }

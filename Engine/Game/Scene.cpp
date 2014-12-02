@@ -17,7 +17,6 @@ namespace Core
 	Scene::Scene(Core::Window* window)
 	{
 		Window = window;
-		Theme = nullptr;
 
 		CubeMapViewMatrices[GL_TEXTURE_CUBE_MAP_POSITIVE_X - GL_TEXTURE_CUBE_MAP_POSITIVE_X] = glm::lookAt(glm::vec3(0.0, 0.0, 0.0), glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)); // +X
 		CubeMapViewMatrices[GL_TEXTURE_CUBE_MAP_NEGATIVE_X - GL_TEXTURE_CUBE_MAP_POSITIVE_X] = glm::lookAt(glm::vec3(0.0, 0.0, 0.0), glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)); // -X
@@ -105,8 +104,6 @@ namespace Core
 
 	Scene::~Scene()
 	{
-		delete WG;
-
 		delete GeometryRB;
 		delete LightRB;
 		delete GlowMapHorizontalRB;
@@ -178,10 +175,7 @@ namespace Core
 		Sphere = Assets::Meshes["Sphere"];
 
 		LoadScene("");
-
-		WG = nullptr;
-		LoadTile("Streets/Intersection");
-
+		
 		// Must be after camera is created
 		ResizeRenderBuffers();
 		
@@ -203,9 +197,7 @@ namespace Core
 
 		for (auto e : Entities)
 			e->Update();
-
-		WG->Update();
-
+		
 		AudioListener.Update();
 		P = Camera->GetProjectionMatrix();
 		V = Camera->GetViewMatrix();
@@ -492,7 +484,7 @@ namespace Core
 
 				glUniformMatrix4fv(LightWithShadowShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
 				glUniformMatrix4fv(LightWithShadowShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
-				glUniform4fv(LightWithShadowShader->GetUL("LightColor"), 1, glm::value_ptr(glm::vec4(r->Color * ((Theme != nullptr) ? Theme->LightColor : glm::vec3(1.0f)), 1.0f)));
+				glUniform4fv(LightWithShadowShader->GetUL("LightColor"), 1, glm::value_ptr(glm::vec4(1.0f)));
 				glUniform3fv(LightWithShadowShader->GetUL("LightPosition"), 1, glm::value_ptr(glm::vec3(V * glm::vec4(e->Transform.Position, 1.0))));
 				glUniform1f(LightWithShadowShader->GetUL("LightRadius"), r->Radius);
 
@@ -509,7 +501,7 @@ namespace Core
 
 				glUniformMatrix4fv(LightShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
 				glUniformMatrix4fv(LightShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
-				glUniform4fv(LightShader->GetUL("LightColor"), 1, glm::value_ptr(glm::vec4(r->Color * ((Theme != nullptr) ? Theme->LightColor : glm::vec3(1.0f)), 1.0f)));
+				glUniform4fv(LightShader->GetUL("LightColor"), 1, glm::value_ptr(glm::vec4(1.0f)));
 				glUniform3fv(LightShader->GetUL("LightPosition"), 1, glm::value_ptr(glm::vec3(V * glm::vec4(e->Transform.Position, 1.0))));
 				glUniform1f(LightShader->GetUL("LightRadius"), r->Radius);
 
@@ -602,7 +594,7 @@ namespace Core
 		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(4));
 		glUniform1i(BufferCombineShader->GetUL("EmissiveTexture"), 5);
 
-		glUniform3fv(BufferCombineShader->GetUL("AmbientLight"), 1, glm::value_ptr((Theme != nullptr) ? Theme->AmbientLight : glm::vec3(0.2f, 0.2f, 0.2f)));
+		glUniform3fv(BufferCombineShader->GetUL("AmbientLight"), 1, glm::value_ptr(glm::vec3(0.2f, 0.2f, 0.2f)));
 
 		SQuad.Render();
 	}
@@ -866,6 +858,16 @@ namespace Core
 		Window->Input->SetTargetEntity(e);
 		AddEntity(e);
 
+		// Ground Collider
+		e = new Entity();
+		e->Transform.Position = glm::vec3(0.0f, -5.0f, 0.0f);
+		e->Transform.Scale = glm::vec3(100.0f, 10.0f, 100.0f);
+		btCollisionShape* shape = new btBoxShape(btVector3(e->Transform.Scale.x, e->Transform.Scale.y, e->Transform.Scale.z) * 0.5f);
+		e->AddComponent(new RigidBody(PhysicsWorld, Assets::Materials["Gold"], shape));
+		e->AddComponent(Assets::Meshes["Cube"]);
+		e->AddComponent(Assets::Materials["Gold"]);
+		AddEntity(e);
+
 		for (auto e : Entities)
 			e->Load();
 
@@ -875,22 +877,7 @@ namespace Core
 		LoadCharacter("Character01.character", glm::vec3(5.0f,0.0f,5.0f), glm::quat(), false);
 	}
 
-
-	void Scene::LoadTile(std::string tileFile)
-	{
-		if (WG != nullptr)
-		{
-			delete WG;
-		}
-
-		Window->Scene->AppendConsole("Building world from starting tile: " + tileFile);
-		WG = new WorldGenerator(Window, tileFile, 2);
-
-		// Play BGM
-		AudioListener.PlayTrack(new Track(Assets::LoadAudioFile("Music/Sanpo", AudioFile::Type::MUSIC), Camera->Entity, 0.2f, true));
-	}
 	
-
 	void Scene::LoadCharacter(std::string charFile, glm::vec3 position, glm::quat rotation, bool isPlayer)
 	{
 		AppendConsole("Loading character: " + charFile);

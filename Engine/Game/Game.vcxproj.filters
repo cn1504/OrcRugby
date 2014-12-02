@@ -54,9 +54,6 @@
     <ClCompile Include="..\Core\Entity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Core\Feature.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Core\Font.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -108,9 +105,6 @@
     <ClCompile Include="..\Core\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Core\Tile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Core\Time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -118,9 +112,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Core\Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Core\WorldGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Core\TriggerEvent.cpp">
@@ -176,9 +167,6 @@
     <ClInclude Include="..\Core\Exceptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Core\Feature.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Core\Font.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -230,9 +218,6 @@
     <ClInclude Include="..\Core\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Core\Tile.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Core\Time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -240,9 +225,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Core\Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Core\WorldGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Core\TriggerEvent.h">

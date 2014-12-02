@@ -10,7 +10,6 @@
 #include "Text.h"
 #include "LightSource.h"
 #include "GuiItem.h"
-#include "WorldGenerator.h"
 
 namespace Core
 {
@@ -93,8 +92,6 @@ namespace Core
 	public:
 		DynamicsWorld* PhysicsWorld;
 		Gui::Item* Gui;
-		Theme* Theme;
-		WorldGenerator* WG;
 		std::unordered_set<Entity*> DistantEntities;
 		
 		Scene(Core::Window* window);
@@ -110,7 +107,6 @@ namespace Core
 		void AppendConsole(std::string msg);
 
 		void LoadScene(std::string sceneFile);
-		void LoadTile(std::string tileFile);
 		void LoadCharacter(std::string charFile, glm::vec3 position = glm::vec3(), glm::quat rotation = glm::quat(), bool isPlayer = true);
 	};
 

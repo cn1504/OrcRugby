@@ -10,8 +10,6 @@
 #include "DefaultButtons.h"
 #include "CharacterEditor.h"
 #include "MaterialEditor.h"
-#include "TileEditor.h"
-#include "FeatureEditor.h"
 
 #include "OrbitingPosition.h"
 
@@ -22,7 +20,6 @@ namespace Core
 	{
 		Window = window;
 		character = nullptr;
-		Theme = nullptr;
 
 		CubeMapViewMatrices[GL_TEXTURE_CUBE_MAP_POSITIVE_X - GL_TEXTURE_CUBE_MAP_POSITIVE_X] = glm::lookAt(glm::vec3(0.0, 0.0, 0.0), glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)); // +X
 		CubeMapViewMatrices[GL_TEXTURE_CUBE_MAP_NEGATIVE_X - GL_TEXTURE_CUBE_MAP_POSITIVE_X] = glm::lookAt(glm::vec3(0.0, 0.0, 0.0), glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)); // -X
@@ -113,8 +110,6 @@ namespace Core
 
 	Scene::~Scene()
 	{
-		delete WG;
-
 		delete GeometryRB;
 		delete LightRB;
 		delete GlowMapHorizontalRB;
@@ -200,20 +195,7 @@ namespace Core
 		Assets::Textures["CharacterButtonMO"] = new Texture;
 		Assets::Textures["CharacterButtonMO"]->LoadFromPNG("CharacterMO.png", 32, 32);
 		Gui->AddItem(new Gui::CharacterButton(Window, Gui, Gui::Item::Alignment::TopRight, glm::vec2(-124, 47), glm::vec2(32, 32), nullptr, Assets::Textures["CharacterButton"], Assets::Textures["CharacterButtonMO"]));
-
-		Assets::Textures["TileButton"] = new Texture;
-		Assets::Textures["TileButton"]->LoadFromPNG("tiles.png", 32, 32);
-		Assets::Textures["TileButtonMO"] = new Texture;
-		Assets::Textures["TileButtonMO"]->LoadFromPNG("tilesMo.png", 32, 32);
-		Gui->AddItem(new Gui::TileButton(Window, Gui, Gui::Item::Alignment::TopRight, glm::vec2(-176, 47), glm::vec2(32, 32), nullptr, Assets::Textures["TileButton"], Assets::Textures["TileButtonMO"]));
 		
-		Assets::Textures["FeatureButton"] = new Texture;
-		Assets::Textures["FeatureButton"]->LoadFromPNG("feature.png", 32, 32);
-		Assets::Textures["FeatureButtonMO"] = new Texture;
-		Assets::Textures["FeatureButtonMO"]->LoadFromPNG("featureMo.png", 32, 32);
-		Gui->AddItem(new Gui::FeatureButton(Window, Gui, Gui::Item::Alignment::TopRight, glm::vec2(-228, 47), glm::vec2(32, 32), nullptr, Assets::Textures["FeatureButton"], Assets::Textures["FeatureButtonMO"]));
-
-
 		Cube = Assets::Meshes["Cube"];
 		Cylinder = Assets::Meshes["Cylinder"];
 		Sphere = Assets::Meshes["Sphere"];
@@ -225,10 +207,7 @@ namespace Core
 
 		for (auto e : Entities)
 			e->Load();
-
-		WG = nullptr;
-		LoadTile("Streets/Intersection");
-
+		
 		if (Settings::Misc::VerboseLogging)
 		{
 			Debug::Log("Done loading scene:");
@@ -247,9 +226,7 @@ namespace Core
 
 		for (auto e : Entities)
 			e->Update();
-
-		WG->Update();
-
+		
 		AudioListener.Update();
 		P = Camera->GetProjectionMatrix();
 		V = Camera->GetViewMatrix();
@@ -540,7 +517,7 @@ namespace Core
 
 				glUniformMatrix4fv(LightWithShadowShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
 				glUniformMatrix4fv(LightWithShadowShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
-				glUniform4fv(LightWithShadowShader->GetUL("LightColor"), 1, glm::value_ptr(glm::vec4(r->Color * ((Theme != nullptr) ? Theme->LightColor : glm::vec3(1.0f)), 1.0f)));
+				glUniform4fv(LightWithShadowShader->GetUL("LightColor"), 1, glm::value_ptr(glm::vec4(1.0f)));
 				glUniform3fv(LightWithShadowShader->GetUL("LightPosition"), 1, glm::value_ptr(glm::vec3(V * glm::vec4(e->Transform.Position, 1.0))));
 				glUniform1f(LightWithShadowShader->GetUL("LightRadius"), r->Radius);
 
@@ -557,7 +534,7 @@ namespace Core
 
 				glUniformMatrix4fv(LightShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
 				glUniformMatrix4fv(LightShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
-				glUniform4fv(LightShader->GetUL("LightColor"), 1, glm::value_ptr(glm::vec4(r->Color * ((Theme != nullptr) ? Theme->LightColor : glm::vec3(1.0f)), 1.0f)));
+				glUniform4fv(LightShader->GetUL("LightColor"), 1, glm::value_ptr(glm::vec4(1.0f)));
 				glUniform3fv(LightShader->GetUL("LightPosition"), 1, glm::value_ptr(glm::vec3(V * glm::vec4(e->Transform.Position, 1.0))));
 				glUniform1f(LightShader->GetUL("LightRadius"), r->Radius);
 
@@ -650,7 +627,7 @@ namespace Core
 		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(4));
 		glUniform1i(BufferCombineShader->GetUL("EmissiveTexture"), 5);
 
-		glUniform3fv(BufferCombineShader->GetUL("AmbientLight"), 1, glm::value_ptr((Theme != nullptr) ? Theme->AmbientLight : glm::vec3(0.2f, 0.2f, 0.2f)));
+		glUniform3fv(BufferCombineShader->GetUL("AmbientLight"), 1, glm::value_ptr(glm::vec3(0.2f, 0.2f, 0.2f)));
 
 		SQuad.Render();
 	}
@@ -935,6 +912,16 @@ namespace Core
 		fb = new RigidBody(PhysicsWorld, Assets::Materials["Gold"], new btBoxShape(btVector3(1.0f, 1.0f, 1.0f) * 0.5f), glm::vec3(), Assets::Materials["Gold"]->Density, RigidBody::Type::DYNAMIC);
 		e->AddComponent(fb);
 		AddEntity(e);
+
+		// Ground Collider
+		e = new Entity();
+		e->Transform.Position = glm::vec3(0.0f, -5.0f, 0.0f);
+		e->Transform.Scale = glm::vec3(100.0f, 10.0f, 100.0f);
+		btCollisionShape* shape = new btBoxShape(btVector3(e->Transform.Scale.x, e->Transform.Scale.y, e->Transform.Scale.z) * 0.5f);
+		e->AddComponent(new RigidBody(PhysicsWorld, Assets::Materials["Gold"], shape));
+		e->AddComponent(Assets::Meshes["Cube"]);
+		e->AddComponent(Assets::Materials["Gold"]);
+		AddEntity(e);
 	}
 
 
@@ -996,49 +983,5 @@ namespace Core
 		CharacterEditor = new Gui::CharacterEditor(character, Window, Gui);
 		Gui->AddItem(CharacterEditor);
 	}
-
-
-	void Scene::LoadTile(std::string tileFile)
-	{
-		if (CharacterEditor != nullptr)
-			CharacterEditor->Destroy();
-		if (TileEditor != nullptr)
-			TileEditor->Destroy();
-		if (FeatureEditor != nullptr)
-			FeatureEditor->Destroy();
-		CharacterEditor = nullptr;
-		TileEditor = nullptr;
-		FeatureEditor = nullptr;
-
-		if (WG == nullptr)
-		{
-		}
-		else
-		{
-			delete WG;
-		}
-
-		Window->Scene->AppendConsole("Building world from starting tile: " + tileFile);
-		WG = new WorldGenerator(Window, tileFile, 2);
-
-		TileEditor = new Gui::TileEditor(tileFile, Window, Gui);
-		Gui->AddItem(TileEditor);
-	}
-
-
-	void Scene::LoadFeature(std::string featureFile)
-	{		
-		if (CharacterEditor != nullptr)
-			CharacterEditor->Destroy();
-		if (TileEditor != nullptr)
-			TileEditor->Destroy();
-		if (FeatureEditor != nullptr)
-			FeatureEditor->Destroy();
-		CharacterEditor = nullptr;
-		TileEditor = nullptr;
-		FeatureEditor = nullptr;
-				
-		FeatureEditor = new Gui::FeatureEditor(featureFile, Window, Gui);
-		Gui->AddItem(FeatureEditor);
-	}
+	
 }

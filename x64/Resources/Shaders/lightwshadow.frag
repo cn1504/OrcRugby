@@ -2,7 +2,6 @@
 
 uniform sampler2D DepthTexture;
 uniform sampler2D NormalTexture;
-uniform samplerCube ShadowTexture;
 uniform sampler2D BaseTexture;
 uniform sampler2D MSRTexture;
 
@@ -10,6 +9,7 @@ uniform vec2      PixelSize;
 uniform mat4      ProjectionInverse;
 uniform mat4      ViewInverse;
 
+uniform samplerCube ShadowTexture;
 uniform float     LightRadius;
 uniform vec3      LightPosition;
 uniform vec4      LightColor;
@@ -30,40 +30,39 @@ float unpack(vec3 color)
 	return dot(color, scale);
 }
 
-float G1V(float dotNV, float k)
+// Lighting Functions
+//-------------------------------------------------------------------------------------------
+vec3 F_Schlick(vec3 f0, float f90, float u)
 {
-	return 1.0f/(dotNV*(1.0f-k)+k);
+	return f0 + (f90 - f0) * pow(1.0 - u, 5.0);
 }
 
-float LightingFuncGGX(vec3 N, vec3 V, vec3 L, float roughness, float F0)
+float V_SmithGGXCorrelated(float NdotL, float NdotV, float alphaG)
 {
-	float alpha = roughness*roughness;
+	float alphaG2 = alphaG * alphaG;
+	float Lambda_GGXV = NdotL * sqrt((-NdotV * alphaG2 + NdotV) * NdotV + alphaG2);
+	float Lambda_GGXL = NdotV * sqrt((-NdotV * alphaG2 + NdotL) * NdotL + alphaG2);
+	return 0.5 / (Lambda_GGXV + Lambda_GGXL);
+}
 
-	vec3 H = normalize(V+L);
+float D_GGX(float NdotH, float m)
+{
+	// Divide by PI is applied later
+	float m2 = m * m;
+	float f = (NdotH * m2 - NdotH) * NdotH + 1.0;
+	return m2 / (f * f);
+}
 
-	float dotNL = clamp(dot(N,L), 0.0, 1.0);
-	float dotNV = clamp(dot(N,V), 0.0, 1.0);
-	float dotNH = clamp(dot(N,H), 0.0, 1.0);
-	float dotLH = clamp(dot(L,H), 0.0, 1.0);
-
-	float F, D, vis;
-
-	// D
-	float alphaSqr = alpha*alpha;
-	float pi = 3.14159f;
-	float denom = dotNH * dotNH *(alphaSqr-1.0) + 1.0f;
-	D = alphaSqr/(pi * denom * denom);
-
-	// F
-	float dotLH5 = pow(1.0f-dotLH,5);
-	F = F0 + (1.0-F0)*(dotLH5);
-
-	// V
-	float k = alpha/2.0f;
-	vis = G1V(dotNL,k)*G1V(dotNV,k);
-
-	float specular = dotNL * D * F * vis;
-	return specular;
+float Fd_DisneyDiffuse(float NdotV, float NdotL, float LdotH, float linearRoughness)
+{
+	float energyBias 	= mix(0.0, 0.5, linearRoughness);
+	float energyFactor 	= mix(1.0, 1.0 / 1.51, linearRoughness);
+	float fd90 			= energyBias + 2.0 * LdotH * LdotH * linearRoughness;
+	vec3 f0 			= vec3(1.0);
+	float lightScatter 	= F_Schlick(f0, fd90, NdotL).r;
+	float viewScatter 	= F_Schlick(f0, fd90, NdotV).r;
+	
+	return lightScatter * viewScatter * energyFactor;
 }
 
 void main(void)
@@ -98,17 +97,23 @@ void main(void)
 		
 	vec3 viewDir    = normalize(- pos);
 	vec3 halfDir	= normalize(viewDir + incident);
-	float dotLN		= clamp(dot(incident, normal), 0.0, 1.0);
-	float dotVN		= clamp(dot(viewDir, normal), 0.0, 1.0);
-	float dotLH		= clamp(dot(halfDir, incident), 0.0, 1.0);
+	float NdotV		= abs(dot(viewDir, normal)) + 1e-5f;	// avoids artifacts
+	float NdotH		= clamp(dot(normal, halfDir), 0.0, 1.0);
+	float LdotN		= clamp(dot(incident, normal), 0.0, 1.0);
+	float LdotH		= clamp(dot(halfDir, incident), 0.0, 1.0);
 	
-	float F0 = MSR.y * 0.2;
-	float thetaD = acos(dotLH);
-	float Fd90 = 0.5 + 1.0 * cos(thetaD * thetaD) * MSR.z;
-	//float Fd90 = 0.5 + 2.0 * cos(thetaD * thetaD) * MSR.z;
-	vec3 diffuse = (mix(BaseColor.xyz, vec3(0.0), MSR.x) / M_PI) * (1.0 + (Fd90 - 1.0) * pow(1.0 - dotLN, 5.0)) * (1.0 + (Fd90 - 1.0) * pow(1.0 - dotVN, 5.0));
+	float roughness = MSR.z * MSR.z * MSR.z * MSR.z;
+	float reflectance = 0.16 * MSR.y * MSR.y;
+	vec3 f0 = mix(vec3(reflectance), BaseColor.xyz, MSR.x);
 	
-	float specFactor = LightingFuncGGX(normal, viewDir, incident, MSR.z, F0);
+	// Specular BRDF
+	vec3  F   = F_Schlick(f0, 0.0, LdotH);
+	float Vis = V_SmithGGXCorrelated(NdotV, LdotN, MSR.z);
+	float D   = D_GGX(NdotH, roughness);
+	vec3  Fr  = D * F * Vis / M_PI;
+	
+	// Diffuse BRDF
+	float Fd = Fd_DisneyDiffuse(NdotV, LdotN, LdotH, MSR.z) / M_PI;
 	
 	
 	// shadow map test
@@ -139,6 +144,6 @@ void main(void)
 	//float result = clamp(exp(-c * ( dist - vShadowSample )), 0.0, 1.0);
 
 	
-	outDiffuse = vec4(result * LightColor.xyz * atten * diffuse, 1.0);
-	outSpecular = vec4(result * mix(LightColor.xyz, LightColor.xyz * BaseColor.xyz, MSR.x) * atten * specFactor, 1.0);
+	outDiffuse = vec4(result * mix(BaseColor.xyz, vec3(0.0), MSR.x) * atten * Fd, 1.0);
+	outSpecular = vec4(result * LightColor.xyz * atten * Fr, 1.0);
 }

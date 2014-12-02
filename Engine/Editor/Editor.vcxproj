@@ -30,7 +30,6 @@
     <ClCompile Include="..\Core\DefaultButtons.cpp" />
     <ClCompile Include="..\Core\DynamicsWorld.cpp" />
     <ClCompile Include="..\Core\Entity.cpp" />
-    <ClCompile Include="..\Core\Feature.cpp" />
     <ClCompile Include="..\Core\Font.cpp" />
     <ClCompile Include="..\Core\FreeBody.cpp" />
     <ClCompile Include="..\Core\GuiItem.cpp" />
@@ -48,19 +47,15 @@
     <ClCompile Include="..\Core\SoftBody.cpp" />
     <ClCompile Include="..\Core\Text.cpp" />
     <ClCompile Include="..\Core\Texture.cpp" />
-    <ClCompile Include="..\Core\Tile.cpp" />
     <ClCompile Include="..\Core\Time.cpp" />
     <ClCompile Include="..\Core\Transform.cpp" />
     <ClCompile Include="..\Core\TriggerEvent.cpp" />
     <ClCompile Include="..\Core\Window.cpp" />
-    <ClCompile Include="..\Core\WorldGenerator.cpp" />
     <ClCompile Include="CharacterEditor.cpp" />
-    <ClCompile Include="FeatureEditor.cpp" />
     <ClCompile Include="Importer.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="MaterialEditor.cpp" />
     <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="TileEditor.cpp" />
     <ClCompile Include="TriggerEventEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -78,7 +73,6 @@
     <ClInclude Include="..\Core\DynamicsWorld.h" />
     <ClInclude Include="..\Core\Entity.h" />
     <ClInclude Include="..\Core\Exceptions.h" />
-    <ClInclude Include="..\Core\Feature.h" />
     <ClInclude Include="..\Core\Font.h" />
     <ClInclude Include="..\Core\FreeBody.h" />
     <ClInclude Include="..\Core\GuiItem.h" />
@@ -96,19 +90,15 @@
     <ClInclude Include="..\Core\SoftBody.h" />
     <ClInclude Include="..\Core\Text.h" />
     <ClInclude Include="..\Core\Texture.h" />
-    <ClInclude Include="..\Core\Tile.h" />
     <ClInclude Include="..\Core\Time.h" />
     <ClInclude Include="..\Core\Transform.h" />
     <ClInclude Include="..\Core\TriggerEvent.h" />
     <ClInclude Include="..\Core\Window.h" />
-    <ClInclude Include="..\Core\WorldGenerator.h" />
     <ClInclude Include="CharacterEditor.h" />
-    <ClInclude Include="FeatureEditor.h" />
     <ClInclude Include="Importer.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="MaterialEditor.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="TileEditor.h" />
     <ClInclude Include="TriggerEventEditor.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
