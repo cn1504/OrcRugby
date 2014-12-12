@@ -35,7 +35,7 @@ namespace Core
 		{
 			shape = new btSphereShape(Radius);
 
-			ShadowRB = new RenderBuffer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1, true, true);
+			ShadowRB = new RenderBuffer(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), 1, RenderBufferType::ShadowCubeMap);
 		}
 	}
 		

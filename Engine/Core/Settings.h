@@ -32,6 +32,7 @@ namespace Core
 			extern bool ShowFPS;
 			
 			extern int ShadowResolution;
+			extern int LightmapResolution;
 		}
 
 		namespace Audio 

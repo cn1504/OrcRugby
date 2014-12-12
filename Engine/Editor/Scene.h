@@ -26,6 +26,8 @@ namespace Core
 		RenderBuffer* GlowMapVerticalRB;
 		RenderBuffer* BufferCombineRB;
 		
+		RenderBuffer* DistantLightProbe;
+		
 		// Shaders
 		Shader* NOAAShader;
 		Shader* FXAAShader;

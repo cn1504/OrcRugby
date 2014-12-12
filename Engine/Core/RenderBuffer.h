@@ -5,19 +5,19 @@
 namespace Core
 {
 
+	enum class RenderBufferType { GBuffer, CBuffer, LightProbe, ShadowCubeMap, ShadowMap };
+
 	class RenderBuffer
 	{
 	protected:
+		RenderBufferType Type;
 		GLuint FBO;
 		std::vector<Texture*> ColorTextures;
 		Texture* DepthTexture;
-
 		glm::vec4 ClearColor;
-		bool IsCubeMap;
-		bool HasDepthTexture;
 
 	public:
-		RenderBuffer(glm::vec4 clearColor, int colorBufferCount, bool hasDepthTexture = true, bool isCubeMap = false);
+		RenderBuffer(glm::vec4 clearColor, int colorBufferCount, RenderBufferType type);
 		virtual ~RenderBuffer();
 
 		virtual void MakeCurrent();

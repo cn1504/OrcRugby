@@ -47,8 +47,8 @@ float ShadowMap(float sqrDist, float invSqrRadius, vec3 fragPosition)
 	vec4 position_ls = LightViewMatrix * ViewInverse * vec4(fragPosition, 1.0); 
 	vec4 sms = texture(ShadowTexture, position_ls.xyz);
 	float depth = unpack(sms.xyz);
-	float bias = 0.96;
-	float result = (distRel * bias > depth) ? 0.0 : 1.0;
+	//float bias = 0.96;
+	//float result = (distRel * bias > depth) ? 0.0 : 1.0;
 	
 	//vec4 abs_position = abs(position_ls);
 	//float fs_z = -max(abs_position.x, max(abs_position.y, abs_position.z));
@@ -63,9 +63,9 @@ float ShadowMap(float sqrDist, float invSqrRadius, vec3 fragPosition)
 	//float fShadow = (dot(lightDir, lightDir) - fDepthBias - vShadowSample / LightRadius < 0.0f) ? 1.0f : 0.3f;
 	
 	// ESM
-	//const float c = 60.0; // Sharp shadows good for interior scenes
+	const float c = 120.0; // Sharp shadows good for interior scenes
 	//const float c = 5.0; 	// Soft shadows, good for day time exterior scenes
-	//float result = clamp(exp(-c * ( dist - vShadowSample )), 0.0, 1.0);
+	float result = clamp(exp(-c * ( distRel - depth )), 0.0, 1.0);
 	
 	return result;
 }
