@@ -112,7 +112,8 @@ namespace Core
 
 		if (Type == RenderBufferType::ShadowCubeMap || Type == RenderBufferType::LightProbe)
 		{
-			Debug::Log("Building Cubemap... Textures: " + std::to_string(ColorTextures.size()));
+			if (Settings::Misc::VerboseLogging)
+				Debug::Log("Building Cubemap... Textures: " + std::to_string(ColorTextures.size()));
 			glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
 			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, DepthTexture->GetID(), 0);

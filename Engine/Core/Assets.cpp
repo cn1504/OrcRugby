@@ -48,179 +48,182 @@ namespace Core
 		void CreateStandardTextures()
 		{
 			Texture* t = new Texture;
-			t->LoadFromPNG("Consolas16.png", 256, 256, GL_NEAREST, GL_NEAREST);
+			t->LoadFromPNG("Consolas16", 256, 256, GL_NEAREST, GL_NEAREST);
 			Textures["Consolas16"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("Consolas24.png", 384, 384, GL_NEAREST, GL_NEAREST);
+			t->LoadFromPNG("Consolas24", 384, 384, GL_NEAREST, GL_NEAREST);
 			Textures["Consolas24"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("Consolas32.png", 512, 512, GL_NEAREST, GL_NEAREST);
+			t->LoadFromPNG("Consolas32", 512, 512, GL_NEAREST, GL_NEAREST);
 			Textures["Consolas32"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("Consolas64.png", 1024, 1024, GL_NEAREST, GL_NEAREST);
+			t->LoadFromPNG("Consolas64", 1024, 1024, GL_NEAREST, GL_NEAREST);
 			Textures["Consolas64"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("Close.png", 17, 17);
+			t->LoadFromPNG("Close", 17, 17);
 			Assets::Textures["CloseButton"] = t;
 			
 			t = new Texture;
-			t->LoadFromPNG("CloseMouseOver.png", 17, 17);
+			t->LoadFromPNG("CloseMouseOver", 17, 17);
 			Assets::Textures["CloseButtonMO"] = t;
 			
 			t = new Texture;
-			t->LoadFromPNG("Maximize.png", 17, 17);
+			t->LoadFromPNG("Maximize", 17, 17);
 			Assets::Textures["MaximizeButton"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("MaximizeMouseOver.png", 17, 17);
+			t->LoadFromPNG("MaximizeMouseOver", 17, 17);
 			Assets::Textures["MaximizeButtonMO"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("Minimize.png", 17, 17);
+			t->LoadFromPNG("Minimize", 17, 17);
 			Assets::Textures["MinimizeButton"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("MinimizeMouseOver.png", 17, 17);
+			t->LoadFromPNG("MinimizeMouseOver", 17, 17);
 			Assets::Textures["MinimizeButtonMO"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("Resize.png", 17, 17);
+			t->LoadFromPNG("Resize", 17, 17);
 			Assets::Textures["ResizeButton"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("ResizeMouseOver.png", 17, 17);
+			t->LoadFromPNG("ResizeMouseOver", 17, 17);
 			Assets::Textures["ResizeButtonMO"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("Windowed.png", 17, 17);
+			t->LoadFromPNG("Windowed", 17, 17);
 			Assets::Textures["WindowedButton"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("WindowedMouseOver.png", 17, 17);
+			t->LoadFromPNG("WindowedMouseOver", 17, 17);
 			Assets::Textures["WindowedButtonMO"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("CheckSmall.png", 17, 17);
+			t->LoadFromPNG("CheckSmall", 17, 17);
 			Assets::Textures["CheckSmall"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("CheckSmallMouseOver.png", 17, 17);
+			t->LoadFromPNG("CheckSmallMouseOver", 17, 17);
 			Assets::Textures["CheckSmallMO"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("folder.png", 32, 32);
+			t->LoadFromPNG("folder", 32, 32);
 			Assets::Textures["Folder"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("Border.png", 1, 1);
+			t->LoadFromPNG("Border", 1, 1);
 			Assets::Textures["Border"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("DialogBackground.png", 1, 1);
+			t->LoadFromPNG("DialogBackground", 1, 1);
 			Assets::Textures["DialogBackground"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("DialogBackgroundMouseOver.png", 1, 1);
+			t->LoadFromPNG("DialogBackgroundMouseOver", 1, 1);
 			Assets::Textures["DialogBackgroundMO"] = t;
 			Assets::Textures["TextBoxMO"] = new Texture(*Assets::Textures["DialogBackgroundMO"]);
 
 			t = new Texture;
-			t->LoadFromPNG("TextBoxEditBack.png", 1, 1);
+			t->LoadFromPNG("TextBoxEditBack", 1, 1);
 			Assets::Textures["TextBoxEdit"] = t;
 
 
 			t = new Texture;
-			t->LoadFromPNG("in.png", 32, 32);
+			t->LoadFromPNG("in", 32, 32);
 			Assets::Textures["In"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("inMo.png", 32, 32);
+			t->LoadFromPNG("inMo", 32, 32);
 			Assets::Textures["InMO"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("out.png", 32, 32);
+			t->LoadFromPNG("out", 32, 32);
 			Assets::Textures["Out"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("outMo.png", 32, 32);
+			t->LoadFromPNG("outMo", 32, 32);
 			Assets::Textures["OutMO"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("down.png", 16, 16);
+			t->LoadFromPNG("down", 16, 16);
 			Assets::Textures["Down"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("downMo.png", 16, 16);
+			t->LoadFromPNG("downMo", 16, 16);
 			Assets::Textures["DownMO"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("up.png", 16, 16);
+			t->LoadFromPNG("up", 16, 16);
 			Assets::Textures["Up"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("upMo.png", 16, 16);
+			t->LoadFromPNG("upMo", 16, 16);
 			Assets::Textures["UpMO"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("copy.png", 32, 32);
+			t->LoadFromPNG("copy", 32, 32);
 			Assets::Textures["Copy"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("CopyMo.png", 32, 32);
+			t->LoadFromPNG("CopyMo", 32, 32);
 			Assets::Textures["CopyMO"] = t;
 			
 			t = new Texture;
-			t->LoadFromPNG("plus.png", 32, 32);
+			t->LoadFromPNG("plus", 32, 32);
 			Assets::Textures["Plus"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("plusMo.png", 32, 32);
+			t->LoadFromPNG("plusMo", 32, 32);
 			Assets::Textures["PlusMO"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("trash.png", 32, 32);
+			t->LoadFromPNG("trash", 32, 32);
 			Assets::Textures["Trash"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("trashMo.png", 32, 32);
+			t->LoadFromPNG("trashMo", 32, 32);
 			Assets::Textures["TrashMO"] = t;
 			
 			t = new Texture;
-			t->LoadFromPNG("play.png", 32, 32);
+			t->LoadFromPNG("play", 32, 32);
 			Assets::Textures["Play"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("playMo.png", 32, 32);
+			t->LoadFromPNG("playMo", 32, 32);
 			Assets::Textures["PlayMO"] = t;
 			
 			t = new Texture;
-			t->LoadFromPNG("material.png", 32, 32);
+			t->LoadFromPNG("material", 32, 32);
 			Assets::Textures["Material"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("materialMo.png", 32, 32);
+			t->LoadFromPNG("materialMo", 32, 32);
 			Assets::Textures["MaterialMO"] = t;
 			
 			t = new Texture;
-			t->LoadFromPNG("check.png", 32, 32);
+			t->LoadFromPNG("check", 32, 32);
 			Assets::Textures["Check"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("checkMo.png", 32, 32);
+			t->LoadFromPNG("checkMo", 32, 32);
 			Assets::Textures["CheckMO"] = t;
 			
 			t = new Texture;
-			t->LoadFromPNG("save.png", 32, 32);
+			t->LoadFromPNG("save", 32, 32);
 			Assets::Textures["Save"] = t;
 
 			t = new Texture;
-			t->LoadFromPNG("saveMo.png", 32, 32);
+			t->LoadFromPNG("saveMo", 32, 32);
 			Assets::Textures["SaveMO"] = t;
 
+			t = new Texture;
+			t->LoadSkyboxFromPNG("Skyboxes/Sky", 1024, 1024);
+			Assets::Textures["Skybox"] = t;
 		}
 
 

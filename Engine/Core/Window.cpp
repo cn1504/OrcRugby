@@ -56,9 +56,11 @@ namespace Core
 
 	Window::~Window()
 	{
-		Debug::Log("Deleting Scene.");
+		if (Settings::Misc::VerboseLogging)
+			Debug::Log("Deleting Scene.");
 		delete Scene;
-		Debug::Log("Deleting Input.");
+		if (Settings::Misc::VerboseLogging)
+			Debug::Log("Deleting Input.");
 		delete Input;
 
 		glfwDestroyWindow(WindowPtr);

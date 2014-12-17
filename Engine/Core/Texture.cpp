@@ -139,7 +139,7 @@ namespace Core
 	{
 		std::vector<unsigned char> image;
 
-		unsigned error = LibTexture::LoadPNG(image, width, height, "Resources/Textures/" + pngFilename);
+		unsigned error = LibTexture::LoadPNG(image, width, height, "Resources/Textures/" + pngFilename + ".png");
 
 		// If there's an error, display it.
 		if (error != 0)
@@ -148,6 +148,44 @@ namespace Core
 		}
 
 		CreateTexture(&image[0], width, height, GL_RGBA, GL_RGBA, GL_CLAMP_TO_EDGE, mag_filter, min_filter);
+	}
+
+	
+	void Texture::LoadSkyboxFromPNG(const std::string& pngFilename, GLuint width, GLuint height, GLfloat mag_filter, GLfloat min_filter)
+	{
+		glGenTextures(1, &Id);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, Id);
+		
+		char suffix[] = { 'R', 'L', 'U', 'D', 'F', 'B'};
+		for (unsigned int i = 0; i < 6; i++)
+		{
+			std::vector<unsigned char> image;
+
+			std::string filename = "Resources/Textures/" + pngFilename + "_" + std::string(1, suffix[i]) + ".png";
+			Debug::Log(filename);
+			unsigned error = LibTexture::LoadPNG(image, width, height, filename);
+
+			// If there's an error, display it.
+			if (error != 0)
+			{
+				Debug::Error("Error loading png texture file: " + std::to_string(error));
+			}
+
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
+				GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image[0]);
+		}
+
+		glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, mag_filter);
+		glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, min_filter);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+
+		// Unbind
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+		Debug::GLError("Error creating CubeMap texture.");		
 	}
 
 }

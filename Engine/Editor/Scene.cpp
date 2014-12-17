@@ -46,8 +46,10 @@ namespace Core
 		SkeletalMeshShader = new Shader("skeletalmesh.vert", "material.frag");
 		SphereShader = new Shader("mesh.vert", "sphere.frag");
 		CylinderShader = new Shader("mesh.vert", "cylinder.frag");
+		SkyboxShader = new Shader("skybox.vert", "skybox.frag");
 		LightShader = new Shader("mesh.vert", "light.frag");
 		LightWithShadowShader = new Shader("mesh.vert", "lightwshadow.frag");
+		LightProbeShader = new Shader("mesh.vert", "lightprobe.frag");
 		BufferCombineShader = new Shader("fspassthrough.vert", "combinebuffers.frag");
 		FontShader = new Shader("font.vert", "font.frag");
 		GuiTextureShader = new Shader("guitexture.vert", "guitexture.frag");
@@ -127,8 +129,10 @@ namespace Core
 		delete SkeletalMeshShader;
 		delete SphereShader;
 		delete CylinderShader;
+		delete SkyboxShader;
 		delete LightShader;
 		delete LightWithShadowShader;
+		delete LightProbeShader;
 		delete BufferCombineShader;
 		delete FontShader;
 		delete GuiTextureShader;
@@ -184,21 +188,21 @@ namespace Core
 		Gui->AddItem(new Gui::ImportButton(Window, Gui, Gui::Item::Alignment::TopRight, glm::vec2(-20, 47), glm::vec2(32, 32), nullptr, Assets::Textures["In"], Assets::Textures["InMO"]));
 
 		Assets::Textures["Camera"] = new Texture;
-		Assets::Textures["Camera"]->LoadFromPNG("Camera.png", 32, 32);
+		Assets::Textures["Camera"]->LoadFromPNG("Camera", 32, 32);
 		Assets::Textures["CameraMO"] = new Texture;
-		Assets::Textures["CameraMO"]->LoadFromPNG("CameraMO.png", 32, 32);
+		Assets::Textures["CameraMO"]->LoadFromPNG("CameraMO", 32, 32);
 		Assets::Textures["GameCamera"] = new Texture;
-		Assets::Textures["GameCamera"]->LoadFromPNG("GameCamera.png", 32, 32);
+		Assets::Textures["GameCamera"]->LoadFromPNG("GameCamera", 32, 32);
 		Assets::Textures["GameCameraMO"] = new Texture;
-		Assets::Textures["GameCameraMO"]->LoadFromPNG("GameCameraMO.png", 32, 32);
+		Assets::Textures["GameCameraMO"]->LoadFromPNG("GameCameraMO", 32, 32);
 		Gui->AddItem(new Gui::CameraToggleButton(Window, Gui, Gui::Item::Alignment::BottomRight, glm::vec2(-27, -6), glm::vec2(16, 16), nullptr, Assets::Textures["Camera"], Assets::Textures["CameraMO"], nullptr, Assets::Textures["GameCamera"], Assets::Textures["GameCameraMO"]));
 
 		Gui->AddItem(new Gui::MaterialButton(Window, Gui, Gui::Item::Alignment::TopRight, glm::vec2(-72, 47), glm::vec2(32, 32), nullptr, Assets::Textures["Material"], Assets::Textures["MaterialMO"]));
 
 		Assets::Textures["CharacterButton"] = new Texture;
-		Assets::Textures["CharacterButton"]->LoadFromPNG("Character.png", 32, 32);
+		Assets::Textures["CharacterButton"]->LoadFromPNG("Character", 32, 32);
 		Assets::Textures["CharacterButtonMO"] = new Texture;
-		Assets::Textures["CharacterButtonMO"]->LoadFromPNG("CharacterMO.png", 32, 32);
+		Assets::Textures["CharacterButtonMO"]->LoadFromPNG("CharacterMO", 32, 32);
 		Gui->AddItem(new Gui::CharacterButton(Window, Gui, Gui::Item::Alignment::TopRight, glm::vec2(-124, 47), glm::vec2(32, 32), nullptr, Assets::Textures["CharacterButton"], Assets::Textures["CharacterButtonMO"]));
 		
 		Cube = Assets::Meshes["Cube"];
@@ -343,6 +347,19 @@ namespace Core
 			}
 		}
 		
+		// Render Skybox
+		glCullFace(GL_FRONT);
+		SkyboxShader->MakeCurrent();
+		glUniformMatrix4fv(SkyboxShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(P * V * Camera->Entity->Transform.ToMatrix() * glm::scale(glm::vec3(Settings::Video::MaxDrawDistance))));
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, Assets::Textures["Skybox"]->GetID());
+		glUniform1i(SkyboxShader->GetUL("gCubemapTexture"), 0);
+		
+		Cube->EnableBuffers(SkyboxShader);
+		Cube->Render(SkyboxShader);
+		Cube->DisableBuffers(SkyboxShader);
+		glCullFace(GL_BACK);
 	}
 
 
@@ -481,6 +498,8 @@ namespace Core
 		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(2));
 		glActiveTexture(GL_TEXTURE3);
 		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(0));
+		glActiveTexture(GL_TEXTURE5);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, Assets::Textures["Skybox"]->GetID());
 
 
 		LightShader->MakeCurrent();
@@ -501,6 +520,17 @@ namespace Core
 		glUniform2f(LightWithShadowShader->GetUL("PixelSize"), 1.0f / (float)(Settings::Window::Width), 1.0f / (float)(Settings::Window::Height));
 		glUniformMatrix4fv(LightWithShadowShader->GetUL("ProjectionInverse"), 1, GL_FALSE, glm::value_ptr(PInverse));
 		glUniformMatrix4fv(LightWithShadowShader->GetUL("ViewInverse"), 1, GL_FALSE, glm::value_ptr(VInverse));
+
+
+
+		LightProbeShader->MakeCurrent();
+		glUniform1i(LightProbeShader->GetUL("DepthTexture"), 0);
+		glUniform1i(LightProbeShader->GetUL("NormalTexture"), 1);
+		glUniform1i(LightProbeShader->GetUL("BaseTexture"), 3);
+		glUniform1i(LightProbeShader->GetUL("MSRTexture"), 2);
+		glUniform1i(LightProbeShader->GetUL("DistantProbe"), 5);
+		glUniform2f(LightProbeShader->GetUL("PixelSize"), 1.0f / (float)(Settings::Window::Width), 1.0f / (float)(Settings::Window::Height));
+		glUniformMatrix4fv(LightProbeShader->GetUL("ProjectionInverse"), 1, GL_FALSE, glm::value_ptr(PInverse));
 
 
 		glCullFace(GL_FRONT);
@@ -551,6 +581,20 @@ namespace Core
 			}
 
 		}
+
+		// Light Probe
+		LightProbeShader->MakeCurrent();
+
+		glm::mat4 M = Camera->Entity->Transform.ToMatrix() * glm::scale(glm::vec3(Settings::Video::MaxDrawDistance));
+		glm::mat4 MV = V * M;
+		glm::mat4 MVP = P * MV;
+		glUniformMatrix4fv(LightProbeShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
+		glUniformMatrix4fv(LightProbeShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
+
+		Cube->EnableBuffers(LightProbeShader);
+		Cube->Render(LightProbeShader);
+		Cube->DisableBuffers(LightProbeShader);
+		
 
 		glCullFace(GL_BACK);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	// Reset Blending
@@ -633,8 +677,7 @@ namespace Core
 		glActiveTexture(GL_TEXTURE6);
 		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(4));
 		glUniform1i(BufferCombineShader->GetUL("EmissiveTexture"), 5);
-
-		glUniform3fv(BufferCombineShader->GetUL("AmbientLight"), 1, glm::value_ptr(glm::vec3(0.2f, 0.2f, 0.2f)));
+				
 
 		SQuad.Render();
 	}

@@ -36,9 +36,11 @@ namespace Core
 		Shader* SkeletalMeshShader;
 		Shader* SphereShader;
 		Shader* CylinderShader;
+		Shader* SkyboxShader;
 
 		Shader* LightShader;
 		Shader* LightWithShadowShader;
+		Shader* LightProbeShader;
 		Shader* BufferCombineShader;
 
 		Shader* FontShader;
