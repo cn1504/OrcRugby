@@ -9,6 +9,7 @@ uniform samplerCube DistantProbe;
 
 uniform vec2      PixelSize;
 uniform mat4      ProjectionInverse;
+uniform mat4      ViewInverse;
 
 layout(location = 0) in vec3 viewVertex;
 layout(location = 1) in vec3 viewNormal;
@@ -59,14 +60,20 @@ void main(void)
 	vec3 pos 		= vec3((gl_FragCoord.x * PixelSize.x), 
 						   (gl_FragCoord.y * PixelSize.y), 0.0);
 	pos.z           = texture(DepthTexture, pos.xy).r;
+	
+	// For Skybox
+	if(pos.z >= 1.0f - 1e-5f) discard;
+	
 	vec3 normal     = normalize(texture(NormalTexture, pos.xy).xyz * 2.0 - 1.0);
 	vec4 BaseColor	= texture(BaseTexture, pos.xy);	
 	vec4 MSR  		= texture(MSRTexture, pos.xy);	
-	vec4 clip       = ProjectionInverse * vec4(pos * 2.0 - 1.0, 1.0);
+	vec4 clip       = ProjectionInverse * vec4(pos * 2.0 - 1.0, 1.0);	
 	pos             = clip.xyz / clip.w;
-		
+	
+	
 	vec3 viewDir    = normalize(- pos);
-	vec3 incident   = reflect(viewDir, normal);
+	vec3 incident   = normalize(reflect(pos, normal));
+	vec3 reflected  = normalize(vec3(ViewInverse * vec4(incident, 0.0)));
 	vec3 halfDir	= normalize(viewDir + incident);
 	float NdotV		= abs(dot(viewDir, normal)) + 1e-5f;	// avoids artifacts
 	float NdotH		= clamp(dot(normal, halfDir), 0.0, 1.0);
@@ -87,8 +94,8 @@ void main(void)
 	float Fd = Fd_DisneyDiffuse(NdotV, LdotN, LdotH, MSR.z) / M_PI;	
 	
 	// Sample from Light Probes
-	vec4 LightColor = texture(DistantProbe, incident);
+	vec4 LightColor = texture(DistantProbe, reflected);
 	
-	outDiffuse = vec4(LightColor.xyz * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd, 1.0);
-	outSpecular = vec4(LightColor.xyz * Fr, 1.0);
+	outDiffuse = vec4(LightColor.xyz * mix(BaseColor.xyz, vec3(0.0), MSR.x) * (1.0 - reflectance), 1.0);
+	outSpecular = vec4(LightColor.xyz * f0, 1.0);
 }

@@ -44,7 +44,7 @@ namespace Core
 		glTexImage2D(
 			GL_TEXTURE_2D,
 			0,
-			depth ? GL_DEPTH_COMPONENT : GL_RGBA,
+			depth ? GL_DEPTH_COMPONENT : GL_SRGB_ALPHA,
 			width,
 			height,
 			0,
@@ -106,7 +106,7 @@ namespace Core
 		// Create all faces
 		for (unsigned int i = 0; i < 6; i++)
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, 
-				depth ? GL_DEPTH_COMPONENT24 : GL_RGBA, 
+				depth ? GL_DEPTH_COMPONENT24 : GL_SRGB_ALPHA, 
 				width, height, 0, 
 				depth ? GL_DEPTH_COMPONENT : GL_RGBA, 
 				depth ? GL_FLOAT : GL_UNSIGNED_BYTE, 
@@ -147,7 +147,7 @@ namespace Core
 			Debug::Error("Error loading png texture file: " + std::to_string(error));
 		}
 
-		CreateTexture(&image[0], width, height, GL_RGBA, GL_RGBA, GL_CLAMP_TO_EDGE, mag_filter, min_filter);
+		CreateTexture(&image[0], width, height, GL_SRGB_ALPHA, GL_RGBA, GL_CLAMP_TO_EDGE, mag_filter, min_filter);
 	}
 
 	
@@ -172,7 +172,7 @@ namespace Core
 			}
 
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0,
-				GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image[0]);
+				GL_SRGB_ALPHA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image[0]);
 		}
 
 		glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, mag_filter);

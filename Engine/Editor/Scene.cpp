@@ -29,7 +29,7 @@ namespace Core
 		CubeMapViewMatrices[GL_TEXTURE_CUBE_MAP_NEGATIVE_Z - GL_TEXTURE_CUBE_MAP_POSITIVE_X] = glm::lookAt(glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)); // -Z
 
 		// Load RenderBuffers
-		GeometryRB = new RenderBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 5, RenderBufferType::GBuffer);
+		GeometryRB = new RenderBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 6, RenderBufferType::GBuffer);
 		LightRB = new RenderBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 2, RenderBufferType::CBuffer);
 		GlowMapHorizontalRB = new RenderBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 1, RenderBufferType::CBuffer);
 		GlowMapVerticalRB = new RenderBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 1, RenderBufferType::CBuffer);
@@ -93,6 +93,7 @@ namespace Core
 		glUniformMatrix4fv(ShadowCylinderShader->GetUL("CubeMapViews[5]"), 1, GL_FALSE, glm::value_ptr(CubeMapViewMatrices[5]));
 
 		// Rendering settings
+		glEnable(GL_FRAMEBUFFER_SRGB);
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glDepthFunc(GL_LEQUAL);
@@ -531,6 +532,7 @@ namespace Core
 		glUniform1i(LightProbeShader->GetUL("DistantProbe"), 5);
 		glUniform2f(LightProbeShader->GetUL("PixelSize"), 1.0f / (float)(Settings::Window::Width), 1.0f / (float)(Settings::Window::Height));
 		glUniformMatrix4fv(LightProbeShader->GetUL("ProjectionInverse"), 1, GL_FALSE, glm::value_ptr(PInverse));
+		glUniformMatrix4fv(LightProbeShader->GetUL("ViewInverse"), 1, GL_FALSE, glm::value_ptr(VInverse));
 
 
 		glCullFace(GL_FRONT);
@@ -676,8 +678,11 @@ namespace Core
 
 		glActiveTexture(GL_TEXTURE6);
 		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(4));
-		glUniform1i(BufferCombineShader->GetUL("EmissiveTexture"), 5);
+		glUniform1i(BufferCombineShader->GetUL("EmissiveTexture"), 6);
 				
+		glActiveTexture(GL_TEXTURE7);
+		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(5));
+		glUniform1i(BufferCombineShader->GetUL("SkyboxTexture"), 7);
 
 		SQuad.Render();
 	}

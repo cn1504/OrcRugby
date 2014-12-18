@@ -8,8 +8,9 @@ layout(location = 0) out vec4 outBase;
 layout(location = 1) out vec4 outNormal;
 layout(location = 2) out vec4 outMSR;
 layout(location = 4) out vec4 outEmissive;
+layout(location = 5) out vec4 outSkybox;
 
 void main()
 {
-    outEmissive = texture(gCubemapTexture, Vertex);
+    outSkybox = texture(gCubemapTexture, Vertex);
 } 

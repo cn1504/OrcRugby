@@ -16,6 +16,7 @@ layout(location = 0) out vec4 outBase;
 layout(location = 1) out vec4 outNormal;
 layout(location = 2) out vec4 outMSR;
 layout(location = 4) out vec4 outEmissive;
+layout(location = 5) out vec4 outSkybox;
 
 void main(void)
 {		
@@ -23,4 +24,5 @@ void main(void)
 	outNormal 	= vec4(normalize(viewNormal) * 0.5 + 0.5, 1.0);
 	outMSR 		= vec4(Metallic, Specular, Roughness, 1.0);
 	outEmissive = vec4(BaseColor.rgb * Emissive, 1.0);
+	outSkybox   = vec4(0.0, 0.0, 0.0, 1.0);
 }
