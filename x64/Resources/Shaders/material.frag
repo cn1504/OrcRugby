@@ -18,10 +18,15 @@ layout(location = 2) out vec4 outMSR;
 layout(location = 4) out vec4 outEmissive;
 layout(location = 5) out vec4 outSkybox;
 
+vec4 EncodeNormal (vec3 n)
+{
+    return vec4(n.xyz * 0.5 + 0.5, 1.0);
+}
+
 void main(void)
 {		
 	outBase 	= BaseColor;
-	outNormal 	= vec4(normalize(viewNormal) * 0.5 + 0.5, 1.0);
+	outNormal 	= EncodeNormal(normalize(viewNormal));
 	outMSR 		= vec4(Metallic, Specular, Roughness, 1.0);
 	outEmissive = vec4(BaseColor.rgb * Emissive, 1.0);
 	outSkybox   = vec4(0.0, 0.0, 0.0, 1.0);

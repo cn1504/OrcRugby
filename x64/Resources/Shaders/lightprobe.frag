@@ -54,6 +54,12 @@ float Fd_DisneyDiffuse(float NdotV, float NdotL, float LdotH, float linearRoughn
 	return lightScatter * viewScatter * energyFactor;
 }
 
+
+vec3 DecodeNormal (vec4 enc)
+{
+	return enc.xyz * 2 - 1;
+}
+
 void main(void)
 {
 	// Extract buffered pixel position and normal from textures
@@ -64,7 +70,7 @@ void main(void)
 	// For Skybox
 	if(pos.z >= 1.0f - 1e-5f) discard;
 	
-	vec3 normal     = normalize(texture(NormalTexture, pos.xy).xyz * 2.0 - 1.0);
+	vec3 normal     = DecodeNormal(texture(NormalTexture, pos.xy));
 	vec4 BaseColor	= texture(BaseTexture, pos.xy);	
 	vec4 MSR  		= texture(MSRTexture, pos.xy);	
 	vec4 clip       = ProjectionInverse * vec4(pos * 2.0 - 1.0, 1.0);	

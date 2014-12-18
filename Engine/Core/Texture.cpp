@@ -44,7 +44,7 @@ namespace Core
 		glTexImage2D(
 			GL_TEXTURE_2D,
 			0,
-			depth ? GL_DEPTH_COMPONENT : GL_SRGB_ALPHA,
+			depth ? GL_DEPTH_COMPONENT32 : GL_RGBA32F,
 			width,
 			height,
 			0,
@@ -106,7 +106,7 @@ namespace Core
 		// Create all faces
 		for (unsigned int i = 0; i < 6; i++)
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, 
-				depth ? GL_DEPTH_COMPONENT24 : GL_SRGB_ALPHA, 
+				depth ? GL_DEPTH_COMPONENT24 : GL_RGBA,
 				width, height, 0, 
 				depth ? GL_DEPTH_COMPONENT : GL_RGBA, 
 				depth ? GL_FLOAT : GL_UNSIGNED_BYTE, 
@@ -162,7 +162,6 @@ namespace Core
 			std::vector<unsigned char> image;
 
 			std::string filename = "Resources/Textures/" + pngFilename + "_" + std::string(1, suffix[i]) + ".png";
-			Debug::Log(filename);
 			unsigned error = LibTexture::LoadPNG(image, width, height, filename);
 
 			// If there's an error, display it.

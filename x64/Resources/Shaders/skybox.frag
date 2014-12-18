@@ -12,5 +12,9 @@ layout(location = 5) out vec4 outSkybox;
 
 void main()
 {
+	outBase = vec4(0.0, 0.0, 0.0, 1.0);
+	outNormal = vec4(0.0, 0.0, 0.0, 1.0);
+	outMSR = vec4(0.0, 0.0, 0.0, 1.0);
+	outEmissive = vec4(0.0, 0.0, 0.0, 1.0);
     outSkybox = texture(gCubemapTexture, Vertex);
 } 

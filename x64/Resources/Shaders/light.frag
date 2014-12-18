@@ -85,6 +85,10 @@ float getAngleAtt(vec3 normalizedLightVector, vec3 lightDirection, float lightAn
 	return attenuation;
 }
 
+vec3 DecodeNormal (vec4 enc)
+{
+	return enc.xyz * 2 - 1;
+}
 
 void main(void)
 {
@@ -92,7 +96,7 @@ void main(void)
 	vec3 pos 		= vec3((gl_FragCoord.x * PixelSize.x), 
 						   (gl_FragCoord.y * PixelSize.y), 0.0);
 	pos.z           = texture(DepthTexture, pos.xy).r;
-	vec3 normal     = normalize(texture(NormalTexture, pos.xy).xyz * 2.0 - 1.0);
+	vec3 normal     = DecodeNormal(texture(NormalTexture, pos.xy));
 	vec4 BaseColor	= texture(BaseTexture, pos.xy);	
 	vec4 MSR  		= texture(MSRTexture, pos.xy);	
 	vec4 clip       = ProjectionInverse * vec4(pos * 2.0 - 1.0, 1.0);

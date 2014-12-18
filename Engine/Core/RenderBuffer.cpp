@@ -143,7 +143,9 @@ namespace Core
 				DepthTexture->CreateTexture(true, (int)(Settings::Window::Width), (int)(Settings::Window::Height));
 
 			for (int i = 0; i < ColorTextures.size(); i++)
+			{
 				ColorTextures[i]->CreateTexture(false, (int)(Settings::Window::Width), (int)(Settings::Window::Height));
+			}
 		}
 
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);

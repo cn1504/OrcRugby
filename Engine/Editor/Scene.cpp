@@ -93,7 +93,6 @@ namespace Core
 		glUniformMatrix4fv(ShadowCylinderShader->GetUL("CubeMapViews[5]"), 1, GL_FALSE, glm::value_ptr(CubeMapViewMatrices[5]));
 
 		// Rendering settings
-		glEnable(GL_FRAMEBUFFER_SRGB);
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glDepthFunc(GL_LEQUAL);
