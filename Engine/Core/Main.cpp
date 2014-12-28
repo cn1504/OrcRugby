@@ -51,6 +51,293 @@ int main(int argc, char* argv[])
 }
 
 
+namespace std
+{
+	std::string to_string(const glm::ivec2& v)
+	{
+		return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ")";
+	}
+
+	std::string to_string(const glm::ivec3& v)
+	{
+		return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ", " + std::to_string(v.z) + ")";
+	}
+
+	std::string to_string(const glm::ivec4& v)
+	{
+		return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ", " + std::to_string(v.z) + ", " + std::to_string(v.w) + ")";
+	}
+
+	std::string to_string(const glm::vec2& v)
+	{
+		return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ")";
+	}
+
+	std::string to_string(const glm::vec3& v)
+	{
+		return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ", " + std::to_string(v.z) + ")";
+	}
+
+	std::string to_string(const glm::vec4& v)
+	{
+		return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ", " + std::to_string(v.z) + ", " + std::to_string(v.w) + ")";
+	}
+
+	std::string to_string(const glm::quat& v)
+	{
+		return "(" + std::to_string(v.w) + ", " + std::to_string(v.x) + ", " + std::to_string(v.y) + ", " + std::to_string(v.z) + ")";
+	}
+
+	std::string to_string(const glm::mat4& v)
+	{
+		return "[" + std::to_string(v[0]) + ", " + std::to_string(v[1]) + ", " + std::to_string(v[2]) + ", " + std::to_string(v[3]) + "]";
+	}
+	
+
+	glm::ivec2 stoivec2(const std::string& v)
+	{
+		glm::ivec2 result;
+
+		auto s = v.find("(");
+		if (s == std::string::npos)
+			return result;
+
+		auto c1 = v.find(",", s + 1);
+		if (c1 == std::string::npos)
+			return result;
+
+		auto e = v.find(")", c1 + 1);
+		if (e == std::string::npos)
+			return result;
+		
+		result.x = std::stoi(v.substr(s + 1, c1));
+		result.y = std::stoi(v.substr(c1 + 1, e));	
+
+		return result;
+	}
+
+	glm::ivec3 stoivec3(const std::string& v)
+	{
+		glm::ivec3 result;
+
+		auto s = v.find("(");
+		if (s == std::string::npos)
+			return result;
+
+		auto c1 = v.find(",", s + 1);
+		if (c1 == std::string::npos)
+			return result;
+
+		auto c2 = v.find(",", c1 + 1);
+		if (c2 == std::string::npos)
+			return result;
+
+		auto e = v.find(")", c2 + 1);
+		if (e == std::string::npos)
+			return result;
+
+		result.x = std::stoi(v.substr(s + 1, c1));
+		result.y = std::stoi(v.substr(c1 + 1, c2));
+		result.z = std::stoi(v.substr(c2 + 1, e));
+
+		return result;
+	}
+	
+	glm::ivec4 stoivec4(const std::string& v)
+	{
+		glm::ivec4 result;
+
+		auto s = v.find("(");
+		if (s == std::string::npos)
+			return result;
+
+		auto c1 = v.find(",", s + 1);
+		if (c1 == std::string::npos)
+			return result;
+
+		auto c2 = v.find(",", c1 + 1);
+		if (c2 == std::string::npos)
+			return result;
+
+		auto c3 = v.find(",", c2 + 1);
+		if (c3 == std::string::npos)
+			return result;
+
+		auto e = v.find(")", c3 + 1);
+		if (e == std::string::npos)
+			return result;
+
+		result.x = std::stoi(v.substr(s + 1, c1));
+		result.y = std::stoi(v.substr(c1 + 1, c2));
+		result.z = std::stoi(v.substr(c2 + 1, c3));
+		result.w = std::stoi(v.substr(c3 + 1, e));
+
+		return result;
+	}
+
+	glm::vec2 stovec2(const std::string& v)
+	{
+		glm::vec2 result;
+
+		auto s = v.find("(");
+		if (s == std::string::npos)
+			return result;
+
+		auto c1 = v.find(",", s + 1);
+		if (c1 == std::string::npos)
+			return result;
+
+		auto e = v.find(")", c1 + 1);
+		if (e == std::string::npos)
+			return result;
+
+		result.x = std::stof(v.substr(s + 1, c1));
+		result.y = std::stof(v.substr(c1 + 1, e));
+
+		return result;
+	}
+
+	glm::vec3 stovec3(const std::string& v)
+	{
+		glm::vec3 result;
+
+		auto s = v.find("(");
+		if (s == std::string::npos)
+			return result;
+
+		auto c1 = v.find(",", s + 1);
+		if (c1 == std::string::npos)
+			return result;
+
+		auto c2 = v.find(",", c1 + 1);
+		if (c2 == std::string::npos)
+			return result;
+
+		auto e = v.find(")", c2 + 1);
+		if (e == std::string::npos)
+			return result;
+
+		result.x = std::stof(v.substr(s + 1, c1));
+		result.y = std::stof(v.substr(c1 + 1, c2));
+		result.z = std::stof(v.substr(c2 + 1, e));
+
+		return result;
+	}
+
+	glm::vec4 stovec4(const std::string& v)
+	{
+		glm::vec4 result;
+
+		auto s = v.find("(");
+		if (s == std::string::npos)
+			return result;
+
+		auto c1 = v.find(",", s + 1);
+		if (c1 == std::string::npos)
+			return result;
+
+		auto c2 = v.find(",", c1 + 1);
+		if (c2 == std::string::npos)
+			return result;
+
+		auto c3 = v.find(",", c2 + 1);
+		if (c3 == std::string::npos)
+			return result;
+
+		auto e = v.find(")", c3 + 1);
+		if (e == std::string::npos)
+			return result;
+
+		result.x = std::stof(v.substr(s + 1, c1));
+		result.y = std::stof(v.substr(c1 + 1, c2));
+		result.z = std::stof(v.substr(c2 + 1, c3));
+		result.w = std::stof(v.substr(c3 + 1, e));
+
+		return result;
+	}
+
+	glm::quat stoquat(const std::string& v)
+	{
+		glm::quat result;
+
+		auto s = v.find("(");
+		if (s == std::string::npos)
+			return result;
+
+		auto c1 = v.find(",", s + 1);
+		if (c1 == std::string::npos)
+			return result;
+
+		auto c2 = v.find(",", c1 + 1);
+		if (c2 == std::string::npos)
+			return result;
+
+		auto c3 = v.find(",", c2 + 1);
+		if (c3 == std::string::npos)
+			return result;
+
+		auto e = v.find(")", c3 + 1);
+		if (e == std::string::npos)
+			return result;
+
+		result.w = std::stof(v.substr(s + 1, c1));
+		result.x = std::stof(v.substr(c1 + 1, c2));
+		result.y = std::stof(v.substr(c2 + 1, c3));
+		result.z = std::stof(v.substr(c3 + 1, e));
+
+		return result;
+	}
+
+	glm::mat4 stomat4(const std::string& v)
+	{
+		glm::mat4 result;
+		
+		auto s = v.find("[");
+		if (s == std::string::npos)
+			return result;
+
+		auto v1 = v.find(")", s + 1);
+		if (v1 == std::string::npos)
+			return result;
+
+		auto c1 = v.find(",", v1 + 1);
+		if (c1 == std::string::npos)
+			return result;
+
+		auto v2 = v.find(")", c1 + 1);
+		if (v2 == std::string::npos)
+			return result;
+
+		auto c2 = v.find(",", v2 + 1);
+		if (c2 == std::string::npos)
+			return result;
+
+		auto v3 = v.find(")", c2 + 1);
+		if (v3 == std::string::npos)
+			return result;
+
+		auto c3 = v.find(",", v3 + 1);
+		if (c3 == std::string::npos)
+			return result;
+
+		auto v4 = v.find(")", c2 + 1);
+		if (v3 == std::string::npos)
+			return result;
+
+		auto e = v.find("]", v4 + 1);
+		if (e == std::string::npos)
+			return result;
+
+		result[0] = std::stovec4(v.substr(s + 1, c1));
+		result[1] = std::stovec4(v.substr(c1 + 1, c2));
+		result[2] = std::stovec4(v.substr(c2 + 1, c3));
+		result[3] = std::stovec4(v.substr(c3 + 1, e));
+
+		return result;
+	}
+}
+
+
 glm::quat RotationBetweenVectors(glm::vec3 start, glm::vec3 dest)
 {
 	start = glm::normalize(start);

@@ -40,6 +40,7 @@
     <ClCompile Include="..\Core\OrbitingPosition.cpp" />
     <ClCompile Include="..\Core\RenderBuffer.cpp" />
     <ClCompile Include="..\Core\RigidBody.cpp" />
+    <ClCompile Include="..\Core\Scene.cpp" />
     <ClCompile Include="..\Core\ScreenQuad.cpp" />
     <ClCompile Include="..\Core\Settings.cpp" />
     <ClCompile Include="..\Core\Shader.cpp" />
@@ -52,7 +53,6 @@
     <ClCompile Include="..\Core\TriggerEvent.cpp" />
     <ClCompile Include="..\Core\Window.cpp" />
     <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Core\Assets.h" />
@@ -79,6 +79,7 @@
     <ClInclude Include="..\Core\Renderable.h" />
     <ClInclude Include="..\Core\RenderBuffer.h" />
     <ClInclude Include="..\Core\RigidBody.h" />
+    <ClInclude Include="..\Core\Scene.h" />
     <ClInclude Include="..\Core\ScreenQuad.h" />
     <ClInclude Include="..\Core\Settings.h" />
     <ClInclude Include="..\Core\Shader.h" />
@@ -91,7 +92,6 @@
     <ClInclude Include="..\Core\TriggerEvent.h" />
     <ClInclude Include="..\Core\Window.h" />
     <ClInclude Include="Input.h" />
-    <ClInclude Include="Scene.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D92779CA-22B9-46E4-BDBF-E72BAAABBC54}</ProjectGuid>

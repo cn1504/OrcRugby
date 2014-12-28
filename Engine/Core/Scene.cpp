@@ -26,12 +26,15 @@ namespace Core
 		CubeMapViewMatrices[GL_TEXTURE_CUBE_MAP_NEGATIVE_Z - GL_TEXTURE_CUBE_MAP_POSITIVE_X] = glm::lookAt(glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)); // -Z
 
 		// Load RenderBuffers
-		GeometryRB = new RenderBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 5, RenderBufferType::GBuffer);
+		GeometryRB = new RenderBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 6, RenderBufferType::GBuffer);
 		LightRB = new RenderBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 2, RenderBufferType::CBuffer);
 		GlowMapHorizontalRB = new RenderBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 1, RenderBufferType::CBuffer);
 		GlowMapVerticalRB = new RenderBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 1, RenderBufferType::CBuffer);
 		BufferCombineRB = new RenderBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 1, RenderBufferType::CBuffer);
 		Debug::GLError("ERROR: Could not complete renderbuffers.");
+
+		DistantLightProbe = new RenderBuffer(glm::vec4(0.0f, 0.0f, 0.0f, 1.0f), 2, RenderBufferType::LightProbe);
+		Debug::GLError("ERROR: Could not create light probes.");
 
 		// Load Shader Programs
 		NOAAShader = new Shader("fspassthrough.vert", "noaa.frag");
@@ -40,8 +43,10 @@ namespace Core
 		SkeletalMeshShader = new Shader("skeletalmesh.vert", "material.frag");
 		SphereShader = new Shader("mesh.vert", "sphere.frag");
 		CylinderShader = new Shader("mesh.vert", "cylinder.frag");
+		SkyboxShader = new Shader("skybox.vert", "skybox.frag");
 		LightShader = new Shader("mesh.vert", "light.frag");
 		LightWithShadowShader = new Shader("mesh.vert", "lightwshadow.frag");
+		LightProbeShader = new Shader("mesh.vert", "lightprobe.frag");
 		BufferCombineShader = new Shader("fspassthrough.vert", "combinebuffers.frag");
 		FontShader = new Shader("font.vert", "font.frag");
 		GuiTextureShader = new Shader("guitexture.vert", "guitexture.frag");
@@ -49,12 +54,12 @@ namespace Core
 		ShadowSkeletalMeshShader = new Shader("skeletalmesh.vert", "cubemap.geom", "shadow.frag");
 		ShadowSphereShader = new Shader("mesh.vert", "cubemap.geom", "shadowsphere.frag");
 		ShadowCylinderShader = new Shader("mesh.vert", "cubemap.geom", "shadowcylinder.frag");
-		BlurShader = new Shader("fspassthrough.vert", "blur.frag");
+		BlurShader = new Shader("fspassthrough.vert", "blur.frag"); 
 		TranslucentMeshShader = new Shader("mesh.vert", "translucentmaterial.frag");
 		TranslucentSphereShader = new Shader("mesh.vert", "translucentsphere.frag");
 		TranslucentCylinderShader = new Shader("mesh.vert", "translucentcylinder.frag");
 		Debug::GLError("ERROR: Could not complete shader compilation.");
-
+		
 		ShadowMeshShader->MakeCurrent();
 		glUniformMatrix4fv(ShadowMeshShader->GetUL("CubeMapViews[0]"), 1, GL_FALSE, glm::value_ptr(CubeMapViewMatrices[0]));
 		glUniformMatrix4fv(ShadowMeshShader->GetUL("CubeMapViews[1]"), 1, GL_FALSE, glm::value_ptr(CubeMapViewMatrices[1]));
@@ -95,9 +100,8 @@ namespace Core
 		glFrontFace(GL_CCW);
 		Debug::GLError("ERROR: Could not set OpenGL culling options");
 
-		// Initialize Physics
+		// Initialize Properties
 		PhysicsWorld = new DynamicsWorld();
-
 		Gui = nullptr;
 	}
 
@@ -108,7 +112,9 @@ namespace Core
 		delete LightRB;
 		delete GlowMapHorizontalRB;
 		delete GlowMapVerticalRB;
-		delete BufferCombineRB;
+		delete BufferCombineRB; 
+
+		delete DistantLightProbe;
 
 		delete NOAAShader;
 		delete FXAAShader;
@@ -116,8 +122,10 @@ namespace Core
 		delete SkeletalMeshShader;
 		delete SphereShader;
 		delete CylinderShader;
+		delete SkyboxShader;
 		delete LightShader;
 		delete LightWithShadowShader;
+		delete LightProbeShader;
 		delete BufferCombineShader;
 		delete FontShader;
 		delete GuiTextureShader;
@@ -169,15 +177,40 @@ namespace Core
 		Window->Input->SetConsole(ci);
 		Gui->AddItem(ci);
 
+		/*
+		// Editor Specific Gui Objects
+		Gui->AddItem(new Gui::ImportButton(Window, Gui, Gui::Item::Alignment::TopRight, glm::vec2(-20, 47), glm::vec2(32, 32), nullptr, Assets::Textures["In"], Assets::Textures["InMO"]));
+
+		Assets::Textures["Camera"] = new Texture;
+		Assets::Textures["Camera"]->LoadFromPNG("Camera", 32, 32);
+		Assets::Textures["CameraMO"] = new Texture;
+		Assets::Textures["CameraMO"]->LoadFromPNG("CameraMO", 32, 32);
+		Assets::Textures["GameCamera"] = new Texture;
+		Assets::Textures["GameCamera"]->LoadFromPNG("GameCamera", 32, 32);
+		Assets::Textures["GameCameraMO"] = new Texture;
+		Assets::Textures["GameCameraMO"]->LoadFromPNG("GameCameraMO", 32, 32);
+		Gui->AddItem(new Gui::CameraToggleButton(Window, Gui, Gui::Item::Alignment::BottomRight, glm::vec2(-27, -6), glm::vec2(16, 16), nullptr, Assets::Textures["Camera"], Assets::Textures["CameraMO"], nullptr, Assets::Textures["GameCamera"], Assets::Textures["GameCameraMO"]));
+
+		Gui->AddItem(new Gui::MaterialButton(Window, Gui, Gui::Item::Alignment::TopRight, glm::vec2(-72, 47), glm::vec2(32, 32), nullptr, Assets::Textures["Material"], Assets::Textures["MaterialMO"]));
+
+		Assets::Textures["CharacterButton"] = new Texture;
+		Assets::Textures["CharacterButton"]->LoadFromPNG("Character", 32, 32);
+		Assets::Textures["CharacterButtonMO"] = new Texture;
+		Assets::Textures["CharacterButtonMO"]->LoadFromPNG("CharacterMO", 32, 32);
+		Gui->AddItem(new Gui::CharacterButton(Window, Gui, Gui::Item::Alignment::TopRight, glm::vec2(-124, 47), glm::vec2(32, 32), nullptr, Assets::Textures["CharacterButton"], Assets::Textures["CharacterButtonMO"]));
+		*/
 
 		Cube = Assets::Meshes["Cube"];
 		Cylinder = Assets::Meshes["Cylinder"];
 		Sphere = Assets::Meshes["Sphere"];
-
-		LoadScene("");
 		
+		LoadScene("");
+
 		// Must be after camera is created
 		ResizeRenderBuffers();
+
+		for (auto e : Entities)
+			e->Load();
 		
 		if (Settings::Misc::VerboseLogging)
 		{
@@ -203,7 +236,7 @@ namespace Core
 		V = Camera->GetViewMatrix();
 		PInverse = glm::inverse(P);
 		VInverse = glm::inverse(V);
-
+		
 		RenderShadows();
 		RenderGeometry();
 		RenderLight();
@@ -213,7 +246,7 @@ namespace Core
 		RenderPost();
 		RenderUI();
 	}
-
+	
 
 	void Scene::RenderGeometry()
 	{
@@ -228,7 +261,7 @@ namespace Core
 				continue;
 
 			if (e->IsRenderable()) {
-
+				
 				auto mat = e->GetComponent<Material>();
 				if (mat != nullptr && mat->IsTranslucent)
 				{
@@ -248,7 +281,7 @@ namespace Core
 					glUniformMatrix4fv(SkeletalMeshShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
 					glUniformMatrix4fv(SkeletalMeshShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
 					glUniformMatrix4fv(SkeletalMeshShader->GetUL("ProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(P));
-
+					
 					anim->Render(SkeletalMeshShader);
 				}
 				else // Mesh
@@ -263,7 +296,7 @@ namespace Core
 						glUniformMatrix4fv(SphereShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
 						glUniformMatrix4fv(SphereShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
 						glUniformMatrix4fv(SphereShader->GetUL("ProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(P));
-
+												
 						glUniform3fv(SphereShader->GetUL("SpherePosition"), 1, glm::value_ptr(glm::vec3(V * glm::vec4(e->Transform.Position, 1.0f))));
 						glUniform1f(SphereShader->GetUL("Radius"), r->Entity->Transform.Scale.x / 2);
 
@@ -285,7 +318,7 @@ namespace Core
 						glUniform3fv(CylinderShader->GetUL("Center"), 1, glm::value_ptr(glm::vec3(V * glm::vec4(e->Transform.Position, 1.0f))));
 						glUniform1f(CylinderShader->GetUL("Length"), r->Entity->Transform.Scale.y);
 						glUniform1f(CylinderShader->GetUL("Radius"), r->Entity->Transform.Scale.x / 2);
-
+					
 						r->EnableBuffers(CylinderShader);
 						r->Render(CylinderShader);
 						r->DisableBuffers(CylinderShader);
@@ -308,14 +341,27 @@ namespace Core
 
 			}
 		}
+		
+		// Render Skybox
+		glCullFace(GL_FRONT);
+		SkyboxShader->MakeCurrent();
+		glUniformMatrix4fv(SkyboxShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(P * V * Camera->Entity->Transform.ToMatrix() * glm::scale(glm::vec3(Settings::Video::MaxDrawDistance))));
 
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, Assets::Textures["Skybox"]->GetID());
+		glUniform1i(SkyboxShader->GetUL("gCubemapTexture"), 0);
+		
+		Cube->EnableBuffers(SkyboxShader);
+		Cube->Render(SkyboxShader);
+		Cube->DisableBuffers(SkyboxShader);
+		glCullFace(GL_BACK);
 	}
 
 
 	void Scene::RenderShadows()
-	{
+	{		
 		//glCullFace(GL_FRONT);
-
+		
 
 		for (auto l : Lights)
 		{
@@ -326,20 +372,20 @@ namespace Core
 				Debug::GLError("ERROR: Could not initialize the shadow framebuffer.");
 
 
-				l->Projection = glm::perspective(90.0f, 1.0f, 0.01f, l->Radius);
+				l->Projection = glm::perspective(90.0f, 1.0f, 0.01f, l->Radius);	
 
 				glm::mat4 LV = glm::translate(-l->Entity->Transform.Position);
-
-
+				
+					
 				// Get objects within light range
 				auto objs = l->GetLitObjects();
 
 				// Render them
 				for (auto e : *objs)
 				{
-					// Render everything
-					//for (auto e : Entities)
-					//{
+				// Render everything
+				//for (auto e : Entities)
+				//{
 					if (e->IsRenderable() && e != l->Entity) {
 
 						glm::mat4 M = e->Transform.ToMatrix();
@@ -366,10 +412,10 @@ namespace Core
 							anim->Render(ShadowSkeletalMeshShader);
 						}
 						else // Mesh
-						{
+						{								
 							auto r = e->GetRenderable();
 							if (r == Sphere)
-							{
+							{	
 								ShadowSphereShader->MakeCurrent();
 
 								glUniformMatrix4fv(ShadowSphereShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
@@ -380,7 +426,7 @@ namespace Core
 
 								r->EnableBuffers(ShadowSphereShader);
 								r->Render(ShadowSphereShader);
-								r->DisableBuffers(ShadowSphereShader);
+								r->DisableBuffers(ShadowSphereShader);								
 							}
 							else if (r == Cylinder)
 							{
@@ -444,13 +490,18 @@ namespace Core
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(1));
 		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(3));
+		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(2));
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(0));
+		glActiveTexture(GL_TEXTURE5);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, Assets::Textures["Skybox"]->GetID());
 
 
 		LightShader->MakeCurrent();
 		glUniform1i(LightShader->GetUL("DepthTexture"), 0);
 		glUniform1i(LightShader->GetUL("NormalTexture"), 1);
-		glUniform1i(LightShader->GetUL("HardnessTexture"), 2);
+		glUniform1i(LightShader->GetUL("BaseTexture"), 3);
+		glUniform1i(LightShader->GetUL("MSRTexture"), 2);
 		glUniform2f(LightShader->GetUL("PixelSize"), 1.0f / (float)(Settings::Window::Width), 1.0f / (float)(Settings::Window::Height));
 		glUniformMatrix4fv(LightShader->GetUL("ProjectionInverse"), 1, GL_FALSE, glm::value_ptr(PInverse));
 
@@ -459,10 +510,23 @@ namespace Core
 		LightWithShadowShader->MakeCurrent();
 		glUniform1i(LightWithShadowShader->GetUL("DepthTexture"), 0);
 		glUniform1i(LightWithShadowShader->GetUL("NormalTexture"), 1);
-		glUniform1i(LightWithShadowShader->GetUL("HardnessTexture"), 2);
+		glUniform1i(LightWithShadowShader->GetUL("BaseTexture"), 3);
+		glUniform1i(LightWithShadowShader->GetUL("MSRTexture"), 2);
 		glUniform2f(LightWithShadowShader->GetUL("PixelSize"), 1.0f / (float)(Settings::Window::Width), 1.0f / (float)(Settings::Window::Height));
 		glUniformMatrix4fv(LightWithShadowShader->GetUL("ProjectionInverse"), 1, GL_FALSE, glm::value_ptr(PInverse));
 		glUniformMatrix4fv(LightWithShadowShader->GetUL("ViewInverse"), 1, GL_FALSE, glm::value_ptr(VInverse));
+
+
+
+		LightProbeShader->MakeCurrent();
+		glUniform1i(LightProbeShader->GetUL("DepthTexture"), 0);
+		glUniform1i(LightProbeShader->GetUL("NormalTexture"), 1);
+		glUniform1i(LightProbeShader->GetUL("BaseTexture"), 3);
+		glUniform1i(LightProbeShader->GetUL("MSRTexture"), 2);
+		glUniform1i(LightProbeShader->GetUL("DistantProbe"), 5);
+		glUniform2f(LightProbeShader->GetUL("PixelSize"), 1.0f / (float)(Settings::Window::Width), 1.0f / (float)(Settings::Window::Height));
+		glUniformMatrix4fv(LightProbeShader->GetUL("ProjectionInverse"), 1, GL_FALSE, glm::value_ptr(PInverse));
+		glUniformMatrix4fv(LightProbeShader->GetUL("ViewInverse"), 1, GL_FALSE, glm::value_ptr(VInverse));
 
 
 		glCullFace(GL_FRONT);
@@ -477,19 +541,20 @@ namespace Core
 			if (r->CastsShadow() && r->GetLitObjects()->size() > 0)
 			{
 				LightWithShadowShader->MakeCurrent();
-
-				glActiveTexture(GL_TEXTURE3);
+				
+				glActiveTexture(GL_TEXTURE4);
 				glBindTexture(GL_TEXTURE_CUBE_MAP, r->GetShadowTexture());
-				glUniform1i(LightWithShadowShader->GetUL("ShadowTexture"), 3);
+				glUniform1i(LightWithShadowShader->GetUL("ShadowTexture"), 4);
 
 				glUniformMatrix4fv(LightWithShadowShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
 				glUniformMatrix4fv(LightWithShadowShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
-				glUniform4fv(LightWithShadowShader->GetUL("LightColor"), 1, glm::value_ptr(glm::vec4(1.0f)));
 				glUniform3fv(LightWithShadowShader->GetUL("LightPosition"), 1, glm::value_ptr(glm::vec3(V * glm::vec4(e->Transform.Position, 1.0))));
-				glUniform1f(LightWithShadowShader->GetUL("LightRadius"), r->Radius);
+				glUniform3fv(LightWithShadowShader->GetUL("LightDirection"), 1, glm::value_ptr(e->Transform.WSForward()));
 
 				glUniformMatrix4fv(LightWithShadowShader->GetUL("LightViewMatrix"), 1, GL_FALSE, glm::value_ptr(glm::translate(-e->Transform.Position)));
 				glUniformMatrix4fv(LightWithShadowShader->GetUL("LightProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(r->Projection));
+
+				r->WriteShaderUniforms(LightWithShadowShader);
 
 				Cube->EnableBuffers(LightWithShadowShader);
 				Cube->Render(LightWithShadowShader);
@@ -501,9 +566,10 @@ namespace Core
 
 				glUniformMatrix4fv(LightShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
 				glUniformMatrix4fv(LightShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
-				glUniform4fv(LightShader->GetUL("LightColor"), 1, glm::value_ptr(glm::vec4(1.0f)));
 				glUniform3fv(LightShader->GetUL("LightPosition"), 1, glm::value_ptr(glm::vec3(V * glm::vec4(e->Transform.Position, 1.0))));
-				glUniform1f(LightShader->GetUL("LightRadius"), r->Radius);
+				glUniform3fv(LightShader->GetUL("LightDirection"), 1, glm::value_ptr(e->Transform.WSForward()));
+
+				r->WriteShaderUniforms(LightShader);
 
 				Cube->EnableBuffers(LightShader);
 				Cube->Render(LightShader);
@@ -512,12 +578,26 @@ namespace Core
 
 		}
 
+		// Light Probe
+		LightProbeShader->MakeCurrent();
+
+		glm::mat4 M = Camera->Entity->Transform.ToMatrix() * glm::scale(glm::vec3(Settings::Video::MaxDrawDistance));
+		glm::mat4 MV = V * M;
+		glm::mat4 MVP = P * MV;
+		glUniformMatrix4fv(LightProbeShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
+		glUniformMatrix4fv(LightProbeShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
+
+		Cube->EnableBuffers(LightProbeShader);
+		Cube->Render(LightProbeShader);
+		Cube->DisableBuffers(LightProbeShader);
+		
+
 		glCullFace(GL_BACK);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	// Reset Blending
 
 	}
 
-
+	
 	void Scene::RenderBloom()
 	{
 		GlowMapHorizontalRB->MakeCurrent();
@@ -525,7 +605,7 @@ namespace Core
 
 		BlurShader->MakeCurrent();
 		glUniform2f(BlurShader->GetUL("texelSize"), 1.0f / ((float)Settings::Window::Width), 1.0f / ((float)Settings::Window::Height));
-
+				
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(4));
 		glUniform1i(BlurShader->GetUL("textureSample"), 0);
@@ -552,27 +632,27 @@ namespace Core
 		glUniform1i(BlurShader->GetUL("orientation"), 1);
 
 		SQuad.Render();
-
+				
 
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);	// Reset Blending
 	}
-
+	
 
 	void Scene::CombineGeometryAndLight()
 	{
 		// Combine render buffer output into final texture
 		BufferCombineRB->MakeCurrent();
 		BufferCombineRB->Clear();
-
+		
 		BufferCombineShader->MakeCurrent();
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(0));
-		glUniform1i(BufferCombineShader->GetUL("DiffuseTexture"), 0);
+		glUniform1i(BufferCombineShader->GetUL("BaseTexture"), 0);
 
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(2));
-		glUniform1i(BufferCombineShader->GetUL("SpecularTexture"), 1);
+		glUniform1i(BufferCombineShader->GetUL("MSRTexture"), 1);
 
 		//glActiveTexture(GL_TEXTURE2);
 		//glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(3));
@@ -592,9 +672,11 @@ namespace Core
 
 		glActiveTexture(GL_TEXTURE6);
 		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(4));
-		glUniform1i(BufferCombineShader->GetUL("EmissiveTexture"), 5);
-
-		glUniform3fv(BufferCombineShader->GetUL("AmbientLight"), 1, glm::value_ptr(glm::vec3(0.2f, 0.2f, 0.2f)));
+		glUniform1i(BufferCombineShader->GetUL("EmissiveTexture"), 6);
+				
+		glActiveTexture(GL_TEXTURE7);
+		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetOutputTexture(5));
+		glUniform1i(BufferCombineShader->GetUL("SkyboxTexture"), 7);
 
 		SQuad.Render();
 	}
@@ -603,7 +685,7 @@ namespace Core
 	void Scene::RenderTranslucent()
 	{
 		BufferCombineRB->MakeCurrent();
-
+		
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, GeometryRB->GetDepthTexture());
 
@@ -619,7 +701,7 @@ namespace Core
 		glUniform1i(TranslucentCylinderShader->GetUL("DepthTexture"), 0);
 		glUniform2f(TranslucentCylinderShader->GetUL("PixelSize"), 1.0f / (float)(Settings::Window::Width), 1.0f / (float)(Settings::Window::Height));
 		glUniformMatrix4fv(TranslucentCylinderShader->GetUL("ProjectionInverse"), 1, GL_FALSE, glm::value_ptr(PInverse));
-
+		
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -629,7 +711,7 @@ namespace Core
 		{
 			auto e = pair.second;
 			auto mat = e->GetComponent<Material>();
-
+			
 			glm::mat4 M = e->Transform.ToMatrix();
 			glm::mat4 MV = V * M;
 			glm::mat4 MVP = P * MV;
@@ -710,11 +792,11 @@ namespace Core
 			glUniform1i(NOAAShader->GetUL("sourceTexture"), 0);
 			SQuad.Render();
 		}
-
+		
 		glUseProgram(0);
 	}
 
-
+	
 	void Scene::RenderUI()
 	{
 		glViewport(0, 0, Settings::Window::Width, Settings::Window::Height);
@@ -731,7 +813,7 @@ namespace Core
 		}
 
 		Gui->Render(GuiTextureShader, FontShader);
-
+		
 
 		//glDisable(GL_BLEND);
 		//glEnable(GL_ALPHA_TEST);
@@ -744,7 +826,7 @@ namespace Core
 	{
 		GeometryRB->Rebuild();
 		LightRB->Rebuild();
-		BufferCombineRB->Rebuild();
+		BufferCombineRB->Rebuild(); 
 		GlowMapHorizontalRB->Rebuild();
 		GlowMapVerticalRB->Rebuild();
 
@@ -757,7 +839,7 @@ namespace Core
 			}
 		}
 	}
-
+	
 
 	void Scene::SetActiveCamera(Core::Camera* camera)
 	{
@@ -801,7 +883,6 @@ namespace Core
 		Lights.push_back(l);
 	}
 
-
 	void Scene::RemoveLight(LightSource* e)
 	{
 		int i = 0;
@@ -818,7 +899,7 @@ namespace Core
 		Lights.resize(Lights.size() - 1);
 	}
 
-
+	
 	void Scene::AppendConsole(std::string msg)
 	{
 		consoleLines.push_back(msg);
@@ -836,7 +917,7 @@ namespace Core
 		consoleText->UpdateText(text);
 	}
 
-
+	
 	void Scene::LoadScene(std::string sceneFile)
 	{
 		// Load Scene Objects
@@ -849,13 +930,36 @@ namespace Core
 		Window->Input->SetCameraEntity(c);
 		AudioListener.SetCurrentListener(c);
 		AddEntity(c);
-		
+
+		Entity* e;
+		RigidBody* fb;
+
 		// Camera Target Center Point
-		auto e = new Entity();
+		e = new Entity();
 		e->Transform.Position = glm::vec3(0.0f, 1.0f, 0.0f);
 		CameraTarget = new Core::CameraTarget(nullptr);
 		e->AddComponent(CameraTarget);
 		Window->Input->SetTargetEntity(e);
+		AddEntity(e);
+
+		Entity* l = new Entity();
+		l->Transform.Position = glm::vec3(-1.0f, 1.5f, 0.0f);
+		l->Transform.Scale = glm::vec3(0.05f, 0.05f, 0.05f);
+		l->AddComponent(new LightSource(this, glm::vec3(1.0f), 20.0f, 5.0f, -1.0f, -1.0f, true));
+		l->AddComponent(new OrbitingPosition(e, glm::vec3(0.0f, 0.0f, 1.0f), 1.0f));
+		l->AddComponent(Assets::Meshes["Sphere"]);
+		l->AddComponent(Assets::Materials["Gold"]);
+		AddEntity(l);
+				
+
+		e = new Entity();
+		e->Transform.Position = glm::vec3(0.0f, 5.0f, -2.0f);
+		e->Transform.Scale = glm::vec3(1.0f, 1.0f, 1.0f);
+		e->Transform.Rotation = glm::quat(glm::vec3(45.0f, 0.0f, 45.0f));
+		e->AddComponent(Assets::Meshes["Cube"]);
+		e->AddComponent(Assets::Materials["Gold"]);
+		fb = new RigidBody(PhysicsWorld, Assets::Materials["Gold"], new btBoxShape(btVector3(1.0f, 1.0f, 1.0f) * 0.5f), glm::vec3(), Assets::Materials["Gold"]->Density, RigidBody::Type::DYNAMIC);
+		e->AddComponent(fb);
 		AddEntity(e);
 
 		// Ground Collider
@@ -867,33 +971,22 @@ namespace Core
 		e->AddComponent(Assets::Meshes["Cube"]);
 		e->AddComponent(Assets::Materials["Gold"]);
 		AddEntity(e);
-
-		for (auto e : Entities)
-			e->Load();
-
-		// Load default player character
-		LoadCharacter("Character01.character", glm::vec3(0.0f, 0.0f, 0.0f), glm::quat());
-
-		LoadCharacter("Character01.character", glm::vec3(5.0f,0.0f,5.0f), glm::quat(), false);
 	}
 
-	
-	void Scene::LoadCharacter(std::string charFile, glm::vec3 position, glm::quat rotation, bool isPlayer)
-	{
-		AppendConsole("Loading character: " + charFile);
 
+	void Scene::LoadCharacter(std::string characterFile)
+	{	
+		Window->Scene->AppendConsole("Loading character: " + characterFile);
+		
 		auto character = new Entity();
-		auto c = new Character(character, charFile);
+		auto c = new Character(character, characterFile);
 		character->AddComponent(c);
-		character->Transform.Position = position + glm::vec3(0.0f, c->Height * 0.5f, 0.0f);
-		character->Transform.Rotation = rotation;
+		character->Transform.Position = glm::vec3(0.0f, c->Height * 0.5f, 0.0f);
 		auto fb = new RigidBody(PhysicsWorld, Assets::Materials["Gold"], new btCapsuleShape(0.25f, 1.3f), glm::vec3(0, -(c->Height * 0.5f), 0), 100.0f, RigidBody::Type::DYNAMIC);
 		character->AddComponent(fb);
 		character->Load();
-
-		// fb->DisableFriction();
-
-		fb->GetBody()->setActivationState(DISABLE_DEACTIVATION);
+		
+		//fb->GetBody()->setActivationState(DISABLE_DEACTIVATION);
 		btTransform t;
 		t.setIdentity();
 		auto constraint = new btGeneric6DofConstraint(*fb->GetBody(), t, false);
@@ -904,20 +997,16 @@ namespace Core
 		constraint->setLimit(3, 0, 0);
 		constraint->setLimit(4, 1, 0);
 		constraint->setLimit(5, 0, 0);
-
+		
 		// constraint->getTranslationalLimitMotor()->m_enableMotor[0] = true;
 		// pGen6DOF->getTranslationalLimitMotor()->m_targetVelocity[0] = 5.0f;
 		// pGen6DOF->getTranslationalLimitMotor()->m_maxMotorForce[0] = 0.1f;
 
 		PhysicsWorld->AddConstraint(constraint);
 
-		if (isPlayer)
-		{
-			CameraTarget->SetTarget(character);
-			Window->Input->SetCharacterEntity(character);
-		}
-
+		CameraTarget->SetTarget(character);
+		Window->Input->SetCharacterEntity(character);
 		Window->Scene->AddEntity(character);
 	}
-
+	
 }

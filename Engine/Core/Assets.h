@@ -28,5 +28,9 @@ namespace Core
 
 		void LoadMaterials();
 		void SaveMaterials();
+
+		void FromJSON(std::string& input, std::unordered_map<std::string, std::string>& output);
+		std::string ToJSON(std::unordered_map<std::string, std::string>& input);
+		void IndentEachLine(std::string& input);
 	}
 }

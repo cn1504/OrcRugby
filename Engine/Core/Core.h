@@ -8,6 +8,7 @@
 #include <sstream>
 #include <vector>
 #include <list>
+#include <stack>
 #include <deque>
 #include <unordered_set>
 #include <unordered_map>
@@ -55,6 +56,8 @@
 #include <Bullet/BulletSoftBody/btSoftBodyHelpers.h>
 #pragma comment(lib, "Bullet.lib")
 
+#include "json.h"
+
 #include "Exceptions.h"
 #include "Settings.h"
 #include "Debug.h"
@@ -68,6 +71,27 @@ namespace Core
 	class Renderable;
 	class Window;
 	class Scene;
+}
+
+namespace std
+{
+	std::string to_string(const glm::ivec2& v);
+	std::string to_string(const glm::ivec3& v);
+	std::string to_string(const glm::ivec4& v);
+	std::string to_string(const glm::vec2& v);
+	std::string to_string(const glm::vec3& v);
+	std::string to_string(const glm::vec4& v);
+	std::string to_string(const glm::quat& v);
+	std::string to_string(const glm::mat4& v);
+	
+	glm::ivec2 stoivec2(const std::string& v);
+	glm::ivec3 stoivec3(const std::string& v);
+	glm::ivec4 stoivec4(const std::string& v);
+	glm::vec2 stovec2(const std::string& v);
+	glm::vec3 stovec3(const std::string& v);
+	glm::vec4 stovec4(const std::string& v);
+	glm::quat stoquat(const std::string& v);
+	glm::mat4 stomat4(const std::string& v);
 }
 
 glm::quat RotationBetweenVectors(glm::vec3 start, glm::vec3 dest);

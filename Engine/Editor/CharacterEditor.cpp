@@ -282,8 +282,6 @@ namespace Core
 		{
 			if (ShouldClose && !IsMoving())
 			{
-				if (WindowPtr->Scene->CharacterEditor == this)
-					WindowPtr->Scene->CharacterEditor = nullptr;
 				Item::Destroy();
 			}
 

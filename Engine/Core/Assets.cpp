@@ -18,6 +18,7 @@ namespace Core
 			CreateStandardTextures();
 			CreateStandardFonts();
 			CreateStandardMeshes();
+			SaveMaterials();
 		}
 
 		
@@ -289,6 +290,8 @@ namespace Core
 
 		void LoadMaterials()
 		{
+			
+			/*
 			std::ifstream file;
 			file.open("Resources/Materials.bin", std::ios::binary);
 
@@ -302,11 +305,29 @@ namespace Core
 			}
 
 			file.close();
+			*/
+			
+			
+			std::ifstream file;
+			file.open("Resources/Materials.json");
+			std::string in((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+			file.close();
+
+			json::Object root = json::Deserialize(in).ToObject();
+			auto mats = root["Content"].ToArray();
+			for (auto m : mats)
+			{
+				Material* mat = new Material();
+				mat->Deserialize(m.ToObject());
+				Materials[mat->Name] = mat;
+			}
+			
 		}
 
 
 		void SaveMaterials()
 		{
+			/*
 			std::ofstream file;
 			file.open("Resources/Materials.bin", std::ios::binary);
 
@@ -318,6 +339,36 @@ namespace Core
 			}
 
 			file.close();
+			*/
+
+			json::Object root;
+			root["DataType"] = "Materials";
+			root["Count"] = (int)Materials.size();
+
+			json::Array content;
+			for (auto mat : Materials)
+			{
+				content.push_back(mat.second->Serialize());
+			}
+			root["Content"] = content;
+
+			std::ofstream file;
+			file.open("Resources/Materials.json");
+			file << json::Serialize(json::Value(root));
+			file.close();
+		}
+
+
+		void IndentEachLine(std::string& input)
+		{
+			input.insert(0, "\t");
+
+			std::size_t found = input.find("\n");
+			while (found != std::string::npos)
+			{
+				input.insert(found + 1, "\t");
+				found = input.find("\n", found + 2);
+			}
 		}
 
 	}

@@ -23,6 +23,8 @@ namespace Core
 
 		void WriteShaderUniforms(Shader* shader);
 
+		json::Value Serialize();
+		void Deserialize(json::Object& obj);
 		
 		std::string Name;
 

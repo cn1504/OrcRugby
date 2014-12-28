@@ -49,7 +49,44 @@ namespace Core
 	void Material::Update()
 	{
 	}
-	
+
+
+	json::Value Material::Serialize()
+	{
+		json::Object obj;
+		obj["DataType"] = "Material";
+		obj["Name"] = Name;
+
+		obj["BaseColor"] = std::to_string(BaseColor);
+		obj["Metallic"] = Metallic;
+		obj["Specular"] = Specular;
+		obj["Roughness"] = Roughness;
+		obj["Emissive"] = Emissive;
+
+		obj["IsTranslucent"] = IsTranslucent;
+		obj["Opacity"] = Opacity;
+
+		obj["Density"] = Density;
+		return obj;
+	}
+
+
+	void Material::Deserialize(json::Object& obj)
+	{
+		Name = obj["Name"];
+
+		BaseColor = std::stovec3(obj["BaseColor"]);
+		Metallic = obj["Metallic"];
+		Specular = obj["Specular"];
+		Roughness = obj["Roughness"];
+		Emissive = obj["Emissive"];
+
+		IsTranslucent = obj["IsTranslucent"];
+		Opacity = obj["Opacity"];
+
+		Density = obj["Density"];
+	}	
+
 
 	void Material::LoadFile(std::istream& file)
 	{

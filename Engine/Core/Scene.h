@@ -92,16 +92,10 @@ namespace Core
 
 		void AddLight(LightSource*);
 		void RemoveLight(LightSource*);
-
-		// Editor Specific:
-		Entity* character;
-
+		
 	public:
 		DynamicsWorld* PhysicsWorld;
 		Gui::Item* Gui;
-		Gui::Item* CharacterEditor;
-		Gui::Item* TileEditor;
-		Gui::Item* FeatureEditor;
 		std::unordered_set<Entity*> DistantEntities;
 		
 		Scene(Core::Window* window);
@@ -117,6 +111,7 @@ namespace Core
 		void AppendConsole(std::string msg);
 
 		void LoadScene(std::string sceneFile);
+		void LoadEntity();
 		void LoadCharacter(std::string characterFile);
 	};
 
