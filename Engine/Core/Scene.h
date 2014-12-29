@@ -37,6 +37,7 @@ namespace Core
 		Shader* SphereShader;
 		Shader* CylinderShader;
 		Shader* SkyboxShader;
+		Shader* PointCloudShader;
 
 		Shader* LightShader;
 		Shader* LightWithShadowShader;
@@ -50,6 +51,7 @@ namespace Core
 		Shader* ShadowSkeletalMeshShader;
 		Shader* ShadowSphereShader;
 		Shader* ShadowCylinderShader;
+		Shader* ShadowPointCloudShader;
 
 		Shader* TranslucentMeshShader;
 		Shader* TranslucentSphereShader;

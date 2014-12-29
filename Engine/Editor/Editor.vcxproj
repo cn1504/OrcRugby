@@ -39,6 +39,7 @@
     <ClCompile Include="..\Core\Material.cpp" />
     <ClCompile Include="..\Core\Mesh.cpp" />
     <ClCompile Include="..\Core\OrbitingPosition.cpp" />
+    <ClCompile Include="..\Core\PointCloud.cpp" />
     <ClCompile Include="..\Core\RenderBuffer.cpp" />
     <ClCompile Include="..\Core\RigidBody.cpp" />
     <ClCompile Include="..\Core\Scene.cpp" />
@@ -82,6 +83,7 @@
     <ClInclude Include="..\Core\Material.h" />
     <ClInclude Include="..\Core\Mesh.h" />
     <ClInclude Include="..\Core\OrbitingPosition.h" />
+    <ClInclude Include="..\Core\PointCloud.h" />
     <ClInclude Include="..\Core\Renderable.h" />
     <ClInclude Include="..\Core\RenderBuffer.h" />
     <ClInclude Include="..\Core\RigidBody.h" />

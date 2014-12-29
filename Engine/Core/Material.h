@@ -17,10 +17,7 @@ namespace Core
 		virtual ~Material();
 		virtual void Load();
 		virtual void Update();
-
-		void LoadFile(std::istream& file);
-		void SaveFile(std::ostream& file);
-
+		
 		void WriteShaderUniforms(Shader* shader);
 
 		json::Value Serialize();

@@ -1,6 +1,7 @@
 #pragma once
 #include "Core.h"
 #include "Renderable.h"
+#include "PointCloud.h"
 
 namespace Core
 {
@@ -37,6 +38,8 @@ namespace Core
 		virtual void EnableBuffers(Shader* shader);
 		virtual void Render(Shader* shader);
 		virtual void DisableBuffers(Shader* shader);
+
+		PointCloud* ToPointCloud();
 
 		bool HasBones();
 

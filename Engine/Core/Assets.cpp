@@ -6,6 +6,7 @@ namespace Core
 	namespace Assets
 	{
 		std::unordered_map<std::string, Mesh*> Meshes;
+		std::unordered_map<std::string, PointCloud*> PointClouds;
 		std::unordered_map<std::string, Material*> Materials;
 		std::unordered_map<std::string, Texture*> Textures;
 		std::unordered_map<std::string, Font*> Fonts;
@@ -250,12 +251,23 @@ namespace Core
 			Meshes["Cube"] = m;
 			Meshes["Sphere"] = new Mesh(Meshes["Cube"]);
 			Meshes["Cylinder"] = new Mesh(Meshes["Cube"]);
+
+			//PointCloud* pc = new PointCloud();
+			PointClouds["CubeFromMesh"] = m->ToPointCloud();
+			PointClouds["CubeFromMesh"]->SaveToFile("CubeFromMesh.pc");
+			PointClouds["Cube"] = new PointCloud();
+			PointClouds["Cube"]->BuildTestObject();
 		}
 
 		
 		void Clear()
 		{
 			for (auto c : Meshes)
+			{
+				delete c.second;
+			}
+
+			for (auto c : PointClouds)
 			{
 				delete c.second;
 			}
@@ -281,6 +293,7 @@ namespace Core
 			}
 
 			Meshes.clear();
+			PointClouds.clear();
 			Materials.clear();
 			Fonts.clear();
 			Textures.clear();
@@ -289,25 +302,7 @@ namespace Core
 
 
 		void LoadMaterials()
-		{
-			
-			/*
-			std::ifstream file;
-			file.open("Resources/Materials.bin", std::ios::binary);
-
-			auto size = Materials.size();
-			file.read((char*)&size, sizeof(size));
-			for (unsigned long long i = 0; i < size; i++)
-			{
-				Material* mat = new Material();
-				mat->LoadFile(file);
-				Materials[mat->Name] = mat;
-			}
-
-			file.close();
-			*/
-			
-			
+		{			
 			std::ifstream file;
 			file.open("Resources/Materials.json");
 			std::string in((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
@@ -320,27 +315,12 @@ namespace Core
 				Material* mat = new Material();
 				mat->Deserialize(m.ToObject());
 				Materials[mat->Name] = mat;
-			}
-			
+			}			
 		}
 
 
 		void SaveMaterials()
 		{
-			/*
-			std::ofstream file;
-			file.open("Resources/Materials.bin", std::ios::binary);
-
-			auto size = Materials.size();
-			file.write((char*)&size, sizeof(size));
-			for (auto mat : Materials)
-			{
-				mat.second->SaveFile(file);
-			}
-
-			file.close();
-			*/
-
 			json::Object root;
 			root["DataType"] = "Materials";
 			root["Count"] = (int)Materials.size();

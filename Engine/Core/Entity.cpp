@@ -3,6 +3,7 @@
 #include <typeinfo>
 
 #include "Mesh.h"
+#include "PointCloud.h"
 #include "Material.h"
 
 namespace Core
@@ -20,6 +21,10 @@ namespace Core
 		{
 			Mesh* r = dynamic_cast<Mesh*>(c);
 			if (r != nullptr)
+				continue;
+
+			PointCloud* pc = dynamic_cast<PointCloud*>(c);
+			if (pc != nullptr)
 				continue;
 
 			Material* s = dynamic_cast<Material*>(c);

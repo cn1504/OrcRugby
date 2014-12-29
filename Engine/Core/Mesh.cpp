@@ -342,4 +342,12 @@ namespace Core
 		return new btConvexTriangleMeshShape(triMesh);		
 	}
 
+	
+	PointCloud* Mesh::ToPointCloud()
+	{
+		PointCloud* pc = new PointCloud();
+		pc->BuildFromMesh(indices, indexed_vertices, indexed_uvs, indexed_normals);
+		return pc;
+	}
+
 }

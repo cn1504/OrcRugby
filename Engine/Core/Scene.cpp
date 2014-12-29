@@ -44,6 +44,7 @@ namespace Core
 		SphereShader = new Shader("mesh.vert", "sphere.frag");
 		CylinderShader = new Shader("mesh.vert", "cylinder.frag");
 		SkyboxShader = new Shader("skybox.vert", "skybox.frag");
+		PointCloudShader = new Shader("pc.vert", "pc.geom", "material.frag");
 		LightShader = new Shader("mesh.vert", "light.frag");
 		LightWithShadowShader = new Shader("mesh.vert", "lightwshadow.frag");
 		LightProbeShader = new Shader("mesh.vert", "lightprobe.frag");
@@ -54,6 +55,7 @@ namespace Core
 		ShadowSkeletalMeshShader = new Shader("skeletalmesh.vert", "cubemap.geom", "shadow.frag");
 		ShadowSphereShader = new Shader("mesh.vert", "cubemap.geom", "shadowsphere.frag");
 		ShadowCylinderShader = new Shader("mesh.vert", "cubemap.geom", "shadowcylinder.frag");
+		ShadowPointCloudShader = new Shader("pc.vert", "pccubemap.geom", "shadow.frag");
 		BlurShader = new Shader("fspassthrough.vert", "blur.frag"); 
 		TranslucentMeshShader = new Shader("mesh.vert", "translucentmaterial.frag");
 		TranslucentSphereShader = new Shader("mesh.vert", "translucentsphere.frag");
@@ -88,8 +90,17 @@ namespace Core
 		glUniformMatrix4fv(ShadowCylinderShader->GetUL("CubeMapViews[3]"), 1, GL_FALSE, glm::value_ptr(CubeMapViewMatrices[3]));
 		glUniformMatrix4fv(ShadowCylinderShader->GetUL("CubeMapViews[4]"), 1, GL_FALSE, glm::value_ptr(CubeMapViewMatrices[4]));
 		glUniformMatrix4fv(ShadowCylinderShader->GetUL("CubeMapViews[5]"), 1, GL_FALSE, glm::value_ptr(CubeMapViewMatrices[5]));
+		ShadowPointCloudShader->MakeCurrent();
+		glUniformMatrix4fv(ShadowPointCloudShader->GetUL("CubeMapViews[0]"), 1, GL_FALSE, glm::value_ptr(CubeMapViewMatrices[0]));
+		glUniformMatrix4fv(ShadowPointCloudShader->GetUL("CubeMapViews[1]"), 1, GL_FALSE, glm::value_ptr(CubeMapViewMatrices[1]));
+		glUniformMatrix4fv(ShadowPointCloudShader->GetUL("CubeMapViews[2]"), 1, GL_FALSE, glm::value_ptr(CubeMapViewMatrices[2]));
+		glUniformMatrix4fv(ShadowPointCloudShader->GetUL("CubeMapViews[3]"), 1, GL_FALSE, glm::value_ptr(CubeMapViewMatrices[3]));
+		glUniformMatrix4fv(ShadowPointCloudShader->GetUL("CubeMapViews[4]"), 1, GL_FALSE, glm::value_ptr(CubeMapViewMatrices[4]));
+		glUniformMatrix4fv(ShadowPointCloudShader->GetUL("CubeMapViews[5]"), 1, GL_FALSE, glm::value_ptr(CubeMapViewMatrices[5]));
 
 		// Rendering settings
+		glEnable(GL_PROGRAM_POINT_SIZE);
+
 		glEnable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 		glDepthFunc(GL_LEQUAL);
@@ -98,7 +109,7 @@ namespace Core
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		glFrontFace(GL_CCW);
-		Debug::GLError("ERROR: Could not set OpenGL culling options");
+		Debug::GLError("ERROR: Could not set OpenGL culling options");		
 
 		// Initialize Properties
 		PhysicsWorld = new DynamicsWorld();
@@ -123,6 +134,7 @@ namespace Core
 		delete SphereShader;
 		delete CylinderShader;
 		delete SkyboxShader;
+		delete PointCloudShader;
 		delete LightShader;
 		delete LightWithShadowShader;
 		delete LightProbeShader;
@@ -133,6 +145,7 @@ namespace Core
 		delete ShadowSkeletalMeshShader;
 		delete ShadowSphereShader;
 		delete ShadowCylinderShader;
+		delete ShadowPointCloudShader;
 		delete BlurShader;
 		delete TranslucentMeshShader;
 		delete TranslucentSphereShader;
@@ -274,6 +287,7 @@ namespace Core
 				glm::mat4 MVP = P * MV;
 
 				auto anim = e->GetComponent<SkeletalAnimation>();
+				auto pc = e->GetComponent<PointCloud>();
 				if (anim != nullptr)
 				{
 					SkeletalMeshShader->MakeCurrent();
@@ -283,6 +297,20 @@ namespace Core
 					glUniformMatrix4fv(SkeletalMeshShader->GetUL("ProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(P));
 					
 					anim->Render(SkeletalMeshShader);
+				}
+				else if (pc != nullptr)
+				{
+					PointCloudShader->MakeCurrent();
+
+					glUniformMatrix4fv(PointCloudShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
+					glUniformMatrix4fv(PointCloudShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
+					glUniformMatrix4fv(PointCloudShader->GetUL("ProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(P));
+
+					mat->WriteShaderUniforms(PointCloudShader);
+
+					pc->EnableBuffers(PointCloudShader);
+					pc->Render(PointCloudShader);
+					pc->DisableBuffers(PointCloudShader);
 				}
 				else // Mesh
 				{
@@ -393,6 +421,7 @@ namespace Core
 						glm::mat4 MVP = MV;
 
 						auto anim = e->GetComponent<SkeletalAnimation>();
+						auto pc = e->GetComponent<PointCloud>();
 						if (anim != nullptr)
 						{
 							ShadowSkeletalMeshShader->MakeCurrent();
@@ -410,6 +439,28 @@ namespace Core
 							glUniformMatrix4fv(ShadowSkeletalMeshShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
 
 							anim->Render(ShadowSkeletalMeshShader);
+						}
+						else if (pc != nullptr)
+						{
+							/*
+							ShadowPointCloudShader->MakeCurrent();
+
+							glUniformMatrix4fv(ShadowPointCloudShader->GetUL("CubeMapProjections[0]"), 1, GL_FALSE, glm::value_ptr(l->Projection * CubeMapViewMatrices[0]));
+							glUniformMatrix4fv(ShadowPointCloudShader->GetUL("CubeMapProjections[1]"), 1, GL_FALSE, glm::value_ptr(l->Projection * CubeMapViewMatrices[1]));
+							glUniformMatrix4fv(ShadowPointCloudShader->GetUL("CubeMapProjections[2]"), 1, GL_FALSE, glm::value_ptr(l->Projection * CubeMapViewMatrices[2]));
+							glUniformMatrix4fv(ShadowPointCloudShader->GetUL("CubeMapProjections[3]"), 1, GL_FALSE, glm::value_ptr(l->Projection * CubeMapViewMatrices[3]));
+							glUniformMatrix4fv(ShadowPointCloudShader->GetUL("CubeMapProjections[4]"), 1, GL_FALSE, glm::value_ptr(l->Projection * CubeMapViewMatrices[4]));
+							glUniformMatrix4fv(ShadowPointCloudShader->GetUL("CubeMapProjections[5]"), 1, GL_FALSE, glm::value_ptr(l->Projection * CubeMapViewMatrices[5]));
+
+							glUniform1f(ShadowPointCloudShader->GetUL("MaxDepth"), l->Radius);
+
+							glUniformMatrix4fv(ShadowPointCloudShader->GetUL("ModelViewProjectionMatrix"), 1, GL_FALSE, glm::value_ptr(MVP));
+							glUniformMatrix4fv(ShadowPointCloudShader->GetUL("ModelViewMatrix"), 1, GL_FALSE, glm::value_ptr(MV));
+
+							pc->EnableBuffers(ShadowPointCloudShader);
+							pc->Render(ShadowPointCloudShader);
+							pc->DisableBuffers(ShadowPointCloudShader);
+							*/
 						}
 						else // Mesh
 						{								
@@ -970,6 +1021,28 @@ namespace Core
 		e->AddComponent(new RigidBody(PhysicsWorld, Assets::Materials["Gold"], shape));
 		e->AddComponent(Assets::Meshes["Cube"]);
 		e->AddComponent(Assets::Materials["Gold"]);
+		AddEntity(e);
+
+		// Point Cloud Test
+		e = new Entity();
+		e->Transform.Position = glm::vec3(2.0f, 2.0f, 2.0f);
+		e->Transform.Scale = glm::vec3(1.0f, 1.0f, 1.0f);
+		e->Transform.Rotation = glm::quat(glm::vec3(45.0f, 0.0f, 45.0f));
+		e->AddComponent(Assets::PointClouds["Cube"]);
+		e->AddComponent(Assets::Materials["Gold"]);
+		fb = new RigidBody(PhysicsWorld, Assets::Materials["Gold"], new btBoxShape(btVector3(1.0f, 1.0f, 1.0f) * 0.5f), glm::vec3(), Assets::Materials["Gold"]->Density, RigidBody::Type::DYNAMIC);
+		e->AddComponent(fb);
+		AddEntity(e);
+
+		// Point Cloud Test
+		e = new Entity();
+		e->Transform.Position = glm::vec3(-2.0f, 2.0f, 2.0f);
+		e->Transform.Scale = glm::vec3(1.0f, 1.0f, 1.0f);
+		e->Transform.Rotation = glm::quat(glm::vec3(45.0f, 0.0f, 45.0f));
+		e->AddComponent(Assets::PointClouds["CubeFromMesh"]);
+		e->AddComponent(Assets::Materials["Gold"]);
+		fb = new RigidBody(PhysicsWorld, Assets::Materials["Gold"], new btBoxShape(btVector3(1.0f, 1.0f, 1.0f) * 0.5f), glm::vec3(), Assets::Materials["Gold"]->Density, RigidBody::Type::DYNAMIC);
+		e->AddComponent(fb);
 		AddEntity(e);
 	}
 
