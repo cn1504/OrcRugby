@@ -308,6 +308,7 @@ namespace Core
 
 					mat->WriteShaderUniforms(PointCloudShader);
 
+					pc->ViewPosition = Camera->Entity->Transform.Position;
 					pc->EnableBuffers(PointCloudShader);
 					pc->Render(PointCloudShader);
 					pc->DisableBuffers(PointCloudShader);

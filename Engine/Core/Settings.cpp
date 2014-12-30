@@ -17,6 +17,10 @@ namespace Core
 		}
 
 		namespace Video {
+			bool CalculatedFOVY;
+			float DistanceFromScreen;	// in inches
+			float ScreenSize;			// in inches
+
 			float FOVY;
 			float MinDrawDistance;
 			float MaxDrawDistance;
@@ -70,16 +74,21 @@ namespace Core
 		void Init(int argc, char* argv[])
 		{
 			// Initialize to default settings
-			Window::Width = 1280;
-			Window::Height = 720;
+			auto pm = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+			Window::Width = pm->width;
+			Window::Height = pm->height;
 			Window::DefaultWidth = 1280;
 			Window::DefaultHeight = 720;
-			Window::X = (glfwGetVideoMode(glfwGetPrimaryMonitor())->width - Window::Width) / 2;
-			Window::Y = (glfwGetVideoMode(glfwGetPrimaryMonitor())->height - Window::Height) / 2;
-			Window::Fullscreen = false;
+			Window::X = 0;
+			Window::Y = 0;
+			Window::Fullscreen = true;
 
-			Video::FOVY = 45;
-			Video::MinDrawDistance = 0.1f;
+			Video::CalculatedFOVY = true;
+			Video::DistanceFromScreen = 30.0f;
+			Video::ScreenSize = 40.0f;
+			Video::FOVY = 45.0f;
+			Video::MinDrawDistance = 5.0f;
 			Video::MaxDrawDistance = 1000;
 			Video::FXAA = 1;
 			Video::VSync = true;
@@ -125,6 +134,9 @@ namespace Core
 					else if (setting == "DefaultWindowHeight") { Window::DefaultHeight = std::stoi(value); }
 					else if (setting == "Fullscreen") { Window::Fullscreen = (std::stoi(value) > 0); }
 
+					else if (setting == "CalculatedFOVY") { Video::CalculatedFOVY = (std::stoi(value) > 0); }
+					else if (setting == "DistanceFromScreen") { Video::DistanceFromScreen = std::stof(value); }
+					else if (setting == "ScreenSize") { Video::ScreenSize = std::stof(value); }
 					else if (setting == "FOVY") { Video::FOVY = std::stof(value); }
 					else if (setting == "MinDrawDistance") { Video::MinDrawDistance = std::stof(value); }
 					else if (setting == "MaxDrawDistance") { Video::MaxDrawDistance = std::stof(value); }
@@ -179,6 +191,9 @@ namespace Core
 				settingsFile << "DefaultWindowHeight" << ": " << Window::DefaultHeight << std::endl;
 				settingsFile << "Fullscreen" << ": " << Window::Fullscreen << std::endl;
 
+				settingsFile << "CalculatedFOVY" << ": " << Video::CalculatedFOVY << std::endl;
+				settingsFile << "DistanceFromScreen" << ": " << Video::DistanceFromScreen << std::endl;
+				settingsFile << "ScreenSize" << ": " << Video::ScreenSize << std::endl;
 				settingsFile << "FOVY" << ": " << Video::FOVY << std::endl;
 				settingsFile << "MinDrawDistance" << ": " << Video::MinDrawDistance << std::endl;
 				settingsFile << "MaxDrawDistance" << ": " << Video::MaxDrawDistance << std::endl;
@@ -207,6 +222,21 @@ namespace Core
 			else
 			{
 				Debug::Log("Invalid settings file.");
+			}
+		}
+
+		void CalculateFOVY()
+		{
+			if (Video::CalculatedFOVY)
+			{
+				auto pm = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+				float moniterHeight = (Video::ScreenSize / ((float)pm->width / (float)pm->height));
+				float moniterDPI = ((float)pm->height) / moniterHeight;
+				float windowHeight = Window::Height / moniterDPI;
+				Video::FOVY = glm::degrees(glm::atan(windowHeight / Video::DistanceFromScreen));
+
+				// Debug::Log("Moniter Height, DPI, Window Height, FOVY: " + std::to_string(moniterHeight) + ", " + std::to_string(moniterDPI) + ", " + std::to_string(windowHeight) + ", " + std::to_string(Video::FOVY) + ".");
 			}
 		}
 	}

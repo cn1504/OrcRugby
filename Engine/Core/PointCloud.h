@@ -5,22 +5,33 @@
 namespace Core
 {
 
+	struct PointCloudDetailLevel
+	{
+		float Resolution = 0.01f;
+
+		GLsizei IndexSize = 0;
+		GLuint VertexBuffer = 0;
+		GLuint UvBuffer = 0;
+		GLuint NormalBuffer = 0;
+
+		std::vector<glm::vec3> vertices;
+		std::vector<glm::vec2> uvs;
+		std::vector<glm::vec3> normals;
+	};
+
 	class PointCloud
 		: public Renderable
 	{
 	protected:
-		GLsizei IndexSize;
-		GLuint VertexBuffer;
-		GLuint UvBuffer;
-		GLuint NormalBuffer;
+		int currentLevel;
+		std::vector<PointCloudDetailLevel*> geometry;
 		
-		std::vector<glm::vec3> vertices;
-		std::vector<glm::vec2> uvs;
-		std::vector<glm::vec3> normals;
-
 		void Subdivide(const glm::vec3& u, const glm::vec3& v, const glm::vec3& w, const glm::vec2& uv_u, const glm::vec2& uv_v, const glm::vec2& uv_w, const glm::vec3& norm_u, const glm::vec3& norm_v, const glm::vec3& norm_w);
+		void BuildDetailLevel(int lvl, float resolution);
 
 	public:
+		glm::vec3 ViewPosition;
+
 		PointCloud();
 		PointCloud(const std::string& filename);
 		virtual ~PointCloud();

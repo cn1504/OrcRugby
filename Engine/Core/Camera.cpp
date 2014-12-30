@@ -24,6 +24,7 @@ namespace Core
 
 
 	void Camera::UpdateProjection() {
+		Settings::CalculateFOVY();
 		projection = glm::perspective(
 			Settings::Video::FOVY,
 			((float)Settings::Window::Width) / ((float)Settings::Window::Height),

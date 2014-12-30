@@ -253,10 +253,14 @@ namespace Core
 			Meshes["Cylinder"] = new Mesh(Meshes["Cube"]);
 
 			//PointCloud* pc = new PointCloud();
+			/*
 			PointClouds["CubeFromMesh"] = m->ToPointCloud();
 			PointClouds["CubeFromMesh"]->SaveToFile("CubeFromMesh.pc");
 			PointClouds["Cube"] = new PointCloud();
 			PointClouds["Cube"]->BuildTestObject();
+			*/
+			PointClouds["Cube"] = new PointCloud("Cube.pc");
+			PointClouds["CubeFromMesh"] = new PointCloud("CubeFromMesh.pc");
 		}
 
 		

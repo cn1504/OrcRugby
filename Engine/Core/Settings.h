@@ -65,5 +65,7 @@ namespace Core
 
 		void Init(int argc, char* argv[]);
 		void Close();
+
+		void CalculateFOVY();
 	};
 }
