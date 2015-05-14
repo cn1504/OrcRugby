@@ -5,3 +5,5 @@
 *.cfg
 *.opensdf
 x64/Log.txt
+x64/prefs.dat
+x64/save.dat
