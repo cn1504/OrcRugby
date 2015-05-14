@@ -1,0 +1,378 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Time">
+      <UniqueIdentifier>{cf7bdd39-26b2-4b10-a5f7-8ad8f74f3e8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Assets">
+      <UniqueIdentifier>{d26d937b-107f-4fe5-9726-a9b113b2f4b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{be7d0fbf-337e-4df8-bba8-88c8bb639401}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{5c393754-ed0c-4d80-96a3-c82345c8855c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Window">
+      <UniqueIdentifier>{d392faff-e6c4-46de-a178-22f3c73fb665}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{18fab429-14bf-4268-b68f-803e6ea19edd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debug">
+      <UniqueIdentifier>{5b2edff1-c767-4a9e-be9a-38922c94be57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{28b85dfc-eff5-4431-b876-3b50e217abcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Gui">
+      <UniqueIdentifier>{d5b3a1f3-0706-45a3-9e33-b4ab817e5a8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Space">
+      <UniqueIdentifier>{086f5eae-e5e8-48e8-bd90-96849e65e4b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Renderers">
+      <UniqueIdentifier>{3f71acc7-0c07-4c01-a517-5c6f46538e10}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Assets\Texture.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug\Debug.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.h" />
+    <ClInclude Include="Exceptions.h" />
+    <ClInclude Include="Window\Window.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\State.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\DefaultWindow.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Space\Rotatable.h">
+      <Filter>Space</Filter>
+    </ClInclude>
+    <ClInclude Include="Space\Scalable.h">
+      <Filter>Space</Filter>
+    </ClInclude>
+    <ClInclude Include="Space\Translatable.h">
+      <Filter>Space</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\BufferClearBehavior.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\GeometryRenderer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\GeometryToCubeMapRenderer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\GuiRenderer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\LightRenderer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\OffScreenBuffer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\PostProcessingRenderer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\Renderable.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\RenderBuffer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\Renderers.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\ScreenBuffer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\ScreenQuad.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\Shader.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\ShadowCubeMapRenderer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\ShadowMapRenderer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\SimpleBuffer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\SimpleCubeMapBuffer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\ShadowBuffer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\ShadowCubeMapBuffer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\GBuffer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\GCubeMapBuffer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\WindowAction.h">
+      <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Input.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Action.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Map.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Font.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Gui\Item.h">
+      <Filter>Components\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Space\Transform2D.h">
+      <Filter>Space</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Gui\Panel.h">
+      <Filter>Components\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Space\Transform.h">
+      <Filter>Space</Filter>
+    </ClInclude>
+    <ClInclude Include="Space\Transform2DIF.h">
+      <Filter>Space</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Gui\Anchored.h">
+      <Filter>Components\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Gui\Alignment.h">
+      <Filter>Components\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Database.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\AssetDB.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\SQLiteDB.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\VertexBuffer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Gui\Label.h">
+      <Filter>Components\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Space\TransformIF.h">
+      <Filter>Space</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Entity.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Camera.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\Timer.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug\Log.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\StaticMesh.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\LightBuffer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\LightSource.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\Light.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\MeshRenderer.h">
+      <Filter>Renderers</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\DayNightCycle.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\AudioSource.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\Track.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Audio\Listener.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets\AudioFile.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Assets\Texture.cpp">
+      <Filter>Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\Debug.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Window\Window.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\State.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\DefaultWindow.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Space\Translatable.cpp">
+      <Filter>Space</Filter>
+    </ClCompile>
+    <ClCompile Include="Space\Scalable.cpp">
+      <Filter>Space</Filter>
+    </ClCompile>
+    <ClCompile Include="Space\Rotatable.cpp">
+      <Filter>Space</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\BufferClearBehavior.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\GeometryRenderer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\GeometryToCubeMapRenderer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\GuiRenderer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\LightRenderer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\OffScreenBuffer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\PostProcessingRenderer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\RenderBuffer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\Renderers.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\ScreenBuffer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\ScreenQuad.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\Shader.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\ShadowMapRenderer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\SimpleBuffer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\SimpleCubeMapBuffer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\ShadowBuffer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\ShadowCubeMapBuffer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\GBuffer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\GCubeMapBuffer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Window\WindowAction.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\Action.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\ShadowCubeMapRenderer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\Map.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\Input.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Space\Transform2D.cpp">
+      <Filter>Space</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Gui\Panel.cpp">
+      <Filter>Components\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Space\Transform.cpp">
+      <Filter>Space</Filter>
+    </ClCompile>
+    <ClCompile Include="Assets\SQLiteDB.cpp">
+      <Filter>Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="Assets\AssetDB.cpp">
+      <Filter>Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\VertexBuffer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Gui\Label.cpp">
+      <Filter>Components\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Camera.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Time\Timer.cpp">
+      <Filter>Time</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug\Log.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\StaticMesh.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\LightBuffer.cpp">
+      <Filter>Renderers</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\LightSource.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\DayNightCycle.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\AudioSource.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio\Track.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Audio\Listener.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Assets\AudioFile.cpp">
+      <Filter>Assets</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

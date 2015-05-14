@@ -158,6 +158,7 @@ void main(void)
 	{
 		discard;
 	}
+	atten *= LightIntensity;
 		
 	vec3 viewDir    = normalize(- pos);
 	vec3 halfDir	= normalize(viewDir + incident);

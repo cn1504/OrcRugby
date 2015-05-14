@@ -19,79 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Core\Assets.cpp" />
-    <ClCompile Include="..\Core\AudioFile.cpp" />
-    <ClCompile Include="..\Core\AudioListener.cpp" />
-    <ClCompile Include="..\Core\Camera.cpp" />
-    <ClCompile Include="..\Core\CameraTarget.cpp" />
-    <ClCompile Include="..\Core\Character.cpp" />
-    <ClCompile Include="..\Core\CharacterStats.cpp" />
-    <ClCompile Include="..\Core\Debug.cpp" />
-    <ClCompile Include="..\Core\DefaultButtons.cpp" />
-    <ClCompile Include="..\Core\DynamicsWorld.cpp" />
-    <ClCompile Include="..\Core\Entity.cpp" />
-    <ClCompile Include="..\Core\Font.cpp" />
-    <ClCompile Include="..\Core\FreeBody.cpp" />
-    <ClCompile Include="..\Core\GuiItem.cpp" />
-    <ClCompile Include="..\Core\LightSource.cpp" />
-    <ClCompile Include="..\Core\Main.cpp" />
-    <ClCompile Include="..\Core\Material.cpp" />
-    <ClCompile Include="..\Core\Mesh.cpp" />
-    <ClCompile Include="..\Core\OrbitingPosition.cpp" />
-    <ClCompile Include="..\Core\RenderBuffer.cpp" />
-    <ClCompile Include="..\Core\RigidBody.cpp" />
-    <ClCompile Include="..\Core\Scene.cpp" />
-    <ClCompile Include="..\Core\ScreenQuad.cpp" />
-    <ClCompile Include="..\Core\Settings.cpp" />
-    <ClCompile Include="..\Core\Shader.cpp" />
-    <ClCompile Include="..\Core\SkeletalAnimation.cpp" />
-    <ClCompile Include="..\Core\SoftBody.cpp" />
-    <ClCompile Include="..\Core\Text.cpp" />
-    <ClCompile Include="..\Core\Texture.cpp" />
-    <ClCompile Include="..\Core\Time.cpp" />
-    <ClCompile Include="..\Core\Transform.cpp" />
-    <ClCompile Include="..\Core\TriggerEvent.cpp" />
-    <ClCompile Include="..\Core\Window.cpp" />
-    <ClCompile Include="Input.cpp" />
+    <ClInclude Include="Components\CameraControls.h" />
+    <ClInclude Include="Components\GameStateController.h" />
+    <ClInclude Include="Components\Grid.h" />
+    <ClInclude Include="Components\Hex.h" />
+    <ClInclude Include="Components\PrefsDB.h" />
+    <ClInclude Include="Components\SaveDB.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="MainWindow.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Core\Assets.h" />
-    <ClInclude Include="..\Core\AudioFile.h" />
-    <ClInclude Include="..\Core\AudioListener.h" />
-    <ClInclude Include="..\Core\Camera.h" />
-    <ClInclude Include="..\Core\CameraTarget.h" />
-    <ClInclude Include="..\Core\Character.h" />
-    <ClInclude Include="..\Core\CharacterStats.h" />
-    <ClInclude Include="..\Core\Component.h" />
-    <ClInclude Include="..\Core\Core.h" />
-    <ClInclude Include="..\Core\Debug.h" />
-    <ClInclude Include="..\Core\DefaultButtons.h" />
-    <ClInclude Include="..\Core\DynamicsWorld.h" />
-    <ClInclude Include="..\Core\Entity.h" />
-    <ClInclude Include="..\Core\Exceptions.h" />
-    <ClInclude Include="..\Core\Font.h" />
-    <ClInclude Include="..\Core\FreeBody.h" />
-    <ClInclude Include="..\Core\GuiItem.h" />
-    <ClInclude Include="..\Core\LightSource.h" />
-    <ClInclude Include="..\Core\Material.h" />
-    <ClInclude Include="..\Core\Mesh.h" />
-    <ClInclude Include="..\Core\OrbitingPosition.h" />
-    <ClInclude Include="..\Core\Renderable.h" />
-    <ClInclude Include="..\Core\RenderBuffer.h" />
-    <ClInclude Include="..\Core\RigidBody.h" />
-    <ClInclude Include="..\Core\Scene.h" />
-    <ClInclude Include="..\Core\ScreenQuad.h" />
-    <ClInclude Include="..\Core\Settings.h" />
-    <ClInclude Include="..\Core\Shader.h" />
-    <ClInclude Include="..\Core\SkeletalAnimation.h" />
-    <ClInclude Include="..\Core\SoftBody.h" />
-    <ClInclude Include="..\Core\Text.h" />
-    <ClInclude Include="..\Core\Texture.h" />
-    <ClInclude Include="..\Core\Time.h" />
-    <ClInclude Include="..\Core\Transform.h" />
-    <ClInclude Include="..\Core\TriggerEvent.h" />
-    <ClInclude Include="..\Core\Window.h" />
-    <ClInclude Include="Input.h" />
+    <ClCompile Include="Components\CameraControls.cpp" />
+    <ClCompile Include="Components\GameStateController.cpp" />
+    <ClCompile Include="Components\Grid.cpp" />
+    <ClCompile Include="Components\Hex.cpp" />
+    <ClCompile Include="Components\PrefsDB.cpp" />
+    <ClCompile Include="Components\SaveDB.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D92779CA-22B9-46E4-BDBF-E72BAAABBC54}</ProjectGuid>
@@ -187,14 +132,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <DebugInformationFormat>None</DebugInformationFormat>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <IgnoreSpecificDefaultLibraries>
-      </IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>msvcrt.lib</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

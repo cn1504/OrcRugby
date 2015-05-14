@@ -1,0 +1,2482 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.1">
+  <zoom_level>8</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2312</x>
+      <y>840</y>
+      <w>360</w>
+      <h>576</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;abstract&gt;&gt;
+Window
+--
+-glfwWindowPtr: GLFWwindow*
+-glewContextPtr: GLEWContext*
+
+-title: string
+-position: ivec2
+-size: ivec2
+-renderBuffers: vector&lt;RenderBuffer*&gt;
+
++CurrentState: State*
++Input: InputMap*
+#ScreenBuffer: ScreenBuffer*
+--
++Window(title: string, position: ivec2, size: ivec2, initialState: State*)
+/+~Window()/
+
++GetGLFWWindow(): GLFWwindow* const
++GetGlewContext(): GLEWContext* const
+
++GetTitle(): string
++GetPosition(): ivec2
++GetSize(): ivec2
+
++Translate(delta: ivec2): void
++Scale(delta: ivec2): void
+
+#BeginUpdate(): void
+/+Update(): void/
+
++Close(): void
++Minimize(): void
++Maximize(): void
++Restore(): void
++Move(delta: vec2&amp;): void
++Resize(delta: vec2&amp;): void
++Focus(): void
++Defocus(): void
+--
+Responsibilities:
+  Is a window
+  Creates and destroys itself
+  Responds to window input (minimize, maximize, etc.)
+    based on its current state
+  Sends user input to its input map  </panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3320</x>
+      <y>848</y>
+      <w>208</w>
+      <h>304</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;abstract&gt;&gt;
+State
+--
+#Context: Window*
+
+#CloseAction: WindowAction*
+#MinimizeAction: WindowAction*
+#MaximizeAction: WindowAction*
+#RestoreAction: WindowAction*
+#MoveAction: Translate2DIntAction*
+#ResizeAction: Scale2DIntAction*
+#FocusAction: WindowAction*
+#DefocusAction: WindowAction*
+--
+/+GetName(): string/
+
++Close(): void
++Minimize(): void
++Maximize(): void
++Restore(): void
++Move(delta: vec2&amp;): void
++Resize(delta: vec2&amp;): void
++Focus(): void
++Defocus(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3104</x>
+      <y>1448</y>
+      <w>208</w>
+      <h>168</h>
+    </coordinates>
+    <panel_attributes>Minimized
+--
+#CloseAction = Close
+#MinimizeAction = DoNothing
+#MaximizeAction = SwitchToFullscreen
+#RestoreAction = SwitchToWindowed
+#MoveAction = DoNothing
+#ResizeAction = DoNothing
+#FocusAction = DoNothing
+#DefocusAction = DoNothing
+--
++GetName(): string</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3536</x>
+      <y>1448</y>
+      <w>200</w>
+      <h>168</h>
+    </coordinates>
+    <panel_attributes>Maximized
+--
+#CloseAction = Close
+#MinimizeAction = Iconify
+#MaximizeAction = DoNothing
+#RestoreAction = SwitchToWindowed
+#MoveAction = DoNothing
+#ResizeAction = DoNothing
+#FocusAction = TakeFocus
+#DefocusAction = DoNothing
+--
++GetName(): string</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3320</x>
+      <y>1448</y>
+      <w>208</w>
+      <h>168</h>
+    </coordinates>
+    <panel_attributes>Windowed
+--
+#CloseAction = Close
+#MinimizeAction = Iconify
+#MaximizeAction = SwitchToFullscreen
+#RestoreAction = DoNothing
+#MoveAction = Translate2DInt
+#ResizeAction = Scale2DInt
+#FocusAction = TakeFocus
+#DefocusAction = DoNothing
+--
++GetName(): string</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2856</x>
+      <y>776</y>
+      <w>280</w>
+      <h>128</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;namespace&gt;&gt;
+Core::Window
+--
+-Map: unordered_map&lt;name: string, Window*&gt;
++CurrentWindow: Window*
+--
++Get(name: string): Window*
++SaveAll(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2888</x>
+      <y>1208</y>
+      <w>208</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>MessageBox
+--
++WindowedMessageBoxState: State
+--
+MessageBox(message: string)
+/+~MessageBox()/
+
+/+Update(): void/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2664</x>
+      <y>1248</y>
+      <w>240</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;280.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2664</x>
+      <y>976</y>
+      <w>672</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1 ... n
+Has</panel_attributes>
+    <additional_attributes>10.0;20.0;820.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2328</x>
+      <y>1448</y>
+      <w>328</w>
+      <h>184</h>
+    </coordinates>
+    <panel_attributes>DefaultWindow
+--
++Gui: Gui::Item*
+--
++Scale(delta: ivec2): void
++Update(): void
+--
+Responsibilities:
+  Window that has normal window behavior 
+  and stores its state between invocations
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2648</x>
+      <y>1520</y>
+      <w>464</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+layer=2</panel_attributes>
+    <additional_attributes>10.0;10.0;560.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3344</x>
+      <y>1208</y>
+      <w>168</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>MessageBoxOpen
+--
+#CloseAction = Close
+#MinimizeAction = DoNothing
+#MaximizeAction = DoNothing
+#RestoreAction = DoNothing
+#MoveAction = Translate2DInt
+#ResizeAction = DoNothing
+#FocusAction = TakeFocus
+#DefocusAction = TakeFocus
+--
++GetName(): string</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3088</x>
+      <y>1248</y>
+      <w>272</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+layer=2</panel_attributes>
+    <additional_attributes>10.0;10.0;320.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2232</x>
+      <y>1520</y>
+      <w>112</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;120.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1912</x>
+      <y>1024</y>
+      <w>256</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;abstract&gt;&gt;
+RenderBuffer
+Implements Scalable2DInt
+--
+#Size: ivec2
+#ClearBehavior: BufferClearBehavior
+--
++Clear(): void
+/+SetAsTarget(): void/
+/+Scale(delta: ivec2): void/
+--
+Responsibilities:
+  Manages a render target (texture or screen)
+  If rendertarget is a texture surface
+    Has ownership of the texture
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2208</x>
+      <y>1304</y>
+      <w>120</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1
+Has A</panel_attributes>
+    <additional_attributes>130.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2088</x>
+      <y>1496</y>
+      <w>152</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+Persistant
+--
+/+Load(); void/
+/+Save(): void/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2488</x>
+      <y>1408</y>
+      <w>24</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3424</x>
+      <y>1144</y>
+      <w>24</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2688</x>
+      <y>160</y>
+      <w>176</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;abstract&gt;&gt;
+WindowAction
+--
+#Target: Window*</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2688</x>
+      <y>256</y>
+      <w>176</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>DoNothing
+--
++Perform(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2688</x>
+      <y>312</y>
+      <w>176</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>SwitchToFullscreen
+--
++Perform(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2688</x>
+      <y>368</y>
+      <w>176</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>SwitchToWindowed
+--
++Perform(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2688</x>
+      <y>424</y>
+      <w>176</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>Iconify
+--
++Perform(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2688</x>
+      <y>480</y>
+      <w>176</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>TakeFocus
+--
++Perform(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3936</x>
+      <y>1216</y>
+      <w>280</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>DontTranslate Family
+
+{innerclass
+DontTranslate3D
+--
++Perform(object: Translatable3D&amp;, delta: vec3): void
+innerclass}
+{innerclass
+DontTranslate2D
+--
++Perform(object: Translatable2D&amp;, delta: vec2): void
+innerclass}
+{innerclass
+DontTranslate2DInt
+--
++Perform(object: Translatable2DInt&amp;, delta: ivec2): void
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2688</x>
+      <y>536</y>
+      <w>176</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>Close
+--
++Perform(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3936</x>
+      <y>1408</y>
+      <w>280</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>Translate Family
+
+{innerclass
+Translate3D
+--
++Perform(object: Translatable3D&amp;, delta: vec3): void
+innerclass}
+{innerclass
+Translate2D
+--
++Perform(object: Translatable2D&amp;, delta: vec2): void
+innerclass}
+{innerclass
+Translate2DInt
+--
++Perform(object: Translatable2DInt&amp;, delta: ivec2): void
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3928</x>
+      <y>1024</y>
+      <w>296</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>TranslateAction Interface Family
+
+{innerclass
+Translate3DAction
+--
+/+Perform(object: Translatable3D&amp;, delta: vec3): void/
+innerclass}
+{innerclass
+Translate2DAction
+--
+/+Perform(object: Translatable2D&amp;, delta: vec2): void/
+innerclass}
+{innerclass
+Translate2DIntAction
+--
+/+Perform(object: Translatable2DInt&amp;, delta: ivec2): void/
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4336</x>
+      <y>600</y>
+      <w>160</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>Transform
+--
+-position: vec3
+-rotation: quat
+-scale: vec3
+--
++Translate(delta: vec3): void
++Rotate(delta: quat): void
++Rotate(delta: vec3): void
++Scale(delta: vec3): void
+
++ToMatrix(): mat4</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4408</x>
+      <y>736</y>
+      <w>24</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;110.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4064</x>
+      <y>760</y>
+      <w>360</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0;430.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4408</x>
+      <y>760</y>
+      <w>352</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>420.0;80.0;420.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3984</x>
+      <y>824</y>
+      <w>176</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>Translatable Interface Family
+
+{innerclass
+Translatable3D
+--
+/+Translate(delta: vec3): void/
+innerclass}
+{innerclass
+Translatable2D
+--
+/+Translate(delta: vec2): void/
+innerclass}
+{innerclass
+Translatable2DInt
+--
+/+Translate(delta: ivec2): void/
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4064</x>
+      <y>1160</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4064</x>
+      <y>1352</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4064</x>
+      <y>960</y>
+      <w>48</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+  Uses</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4328</x>
+      <y>824</y>
+      <w>176</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Rotatable Interface Family
+
+{innerclass
+Rotatable3D
+--
+/+Rotate(delta: quat): void/
+/+Rotate(deltaEuler: vec3): void/
+innerclass}
+{innerclass
+Rotatable2D
+--
+/+Rotate(delta: float): void/
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4280</x>
+      <y>1024</y>
+      <w>264</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>RotateAction Interface Family
+
+{innerclass
+Rotate3DAction
+--
+/+Perform(object: rotatable3D&amp;, delta: quat): void/
+innerclass}
+{innerclass
+Rotate3DEulerAction
+--
+/+Perform(object: rotatable3D&amp;, delta: vec3): void/
+innerclass}
+{innerclass
+Rotate2DAction
+--
+/+Perform(object: rotatable2D&amp;, delta: float): void/
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4280</x>
+      <y>1216</y>
+      <w>264</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>DontRotate RotateAction Family
+
+{innerclass
+DontRotate3D
+--
++Perform(object: rotatable3D&amp;, delta: quat): void
+innerclass}
+{innerclass
+DontRotate3DEuler
+--
++Perform(object: rotatable3D&amp;, delta: vec3): void
+innerclass}
+{innerclass
+DontRotate2D
+--
++Perform(object: rotatable2D&amp;, delta: float): void
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4408</x>
+      <y>936</y>
+      <w>48</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+  Uses</panel_attributes>
+    <additional_attributes>10.0;110.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4408</x>
+      <y>1160</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4280</x>
+      <y>1408</y>
+      <w>264</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>Rotate RotateAction Family
+
+{innerclass
+Rotate3D
+--
++Perform(object: rotatable3D&amp;, delta: quat): void
+innerclass}
+{innerclass
+Rotate3DEuler
+--
++Perform(object: rotatable3D&amp;, delta: vec3): void
+innerclass}
+{innerclass
+Rotate2D
+--
++Perform(object: rotatable2D&amp;, delta: float): void
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4408</x>
+      <y>1352</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4656</x>
+      <y>824</y>
+      <w>176</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>Scalable Interface Family
+
+{innerclass
+Scalable3D
+--
+/+Scale(delta: vec3): void/
+innerclass}
+{innerclass
+Scalable2D
+--
+/+Scale(delta: vec2): void/
+innerclass}
+{innerclass
+Scalable2DInt
+--
+/+Scale(delta: ivec2): void/
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4736</x>
+      <y>960</y>
+      <w>48</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+  Uses</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4600</x>
+      <y>1024</y>
+      <w>296</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>ScaleAction Interface Family
+
+{innerclass
+Scale3DAction
+--
+/+Perform(object: Scalable3D&amp;, delta: vec3): void/
+innerclass}
+{innerclass
+Scale2DAction
+--
+/+Perform(object: Scalable2D&amp;, delta: vec2): void/
+innerclass}
+{innerclass
+Scale2DIntAction
+--
+/+Perform(object: Scalable2DInt&amp;, delta: ivec2): void/
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4736</x>
+      <y>1160</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4608</x>
+      <y>1216</y>
+      <w>280</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>DontScale ScaleAction Family
+
+{innerclass
+DontScale3D
+--
++Perform(object: Scalable3D&amp;, delta: vec3): void
+innerclass}
+{innerclass
+DontScale2D
+--
++Perform(object: Scalable2D&amp;, delta: vec2): void
+innerclass}
+{innerclass
+DontScale2DInt
+--
++Perform(object: Scalable2DInt&amp;, delta: ivec2): void
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4736</x>
+      <y>1352</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4608</x>
+      <y>1408</y>
+      <w>280</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>Scale ScaleAction Family
+
+{innerclass
+Scale3D
+--
++Perform(object: Scalable3D&amp;, delta: vec3): void
+innerclass}
+{innerclass
+Scale2D
+--
++Perform(object: Scalable2D&amp;, delta: vec2): void
+innerclass}
+{innerclass
+Scale2DInt
+--
++Perform(object: Scalable2DInt&amp;, delta: ivec2): void
+innerclass}</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3912</x>
+      <y>568</y>
+      <w>1008</w>
+      <h>1008</h>
+    </coordinates>
+    <panel_attributes>lt=.
+Space Namespace</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2480</x>
+      <y>784</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2424</x>
+      <y>744</y>
+      <w>128</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>Translatable2DInt</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2424</x>
+      <y>768</y>
+      <w>128</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>Scalable2DInt</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2768</x>
+      <y>216</y>
+      <w>24</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3424</x>
+      <y>1352</y>
+      <w>24</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3096</x>
+      <y>1424</y>
+      <w>648</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>DefaultWindow States</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2176</x>
+      <y>360</y>
+      <w>432</w>
+      <h>224</h>
+    </coordinates>
+    <panel_attributes>InputMap
+--
+-Buttons: unordered_map&lt;string, ButtonActions&gt;
+-AxisListener: 
+-MousePositionUpdate:
+--
++AddButtonPressAction(button: Button, state: string, action: weak_ptr&lt;Action&gt;): void
++AddAxisListener(
+--
+Responsibilities:
+  Parse input events into "Actions"
+
+  Buttons: Many to Many Observer Pattern
+    Subject(Key/MouseButton/JoystickButton) 
+    Observer(ButtonActions)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2376</x>
+      <y>576</y>
+      <w>56</w>
+      <h>280</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=1
+Has A</panel_attributes>
+    <additional_attributes>10.0;330.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2328</x>
+      <y>1744</y>
+      <w>328</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>SceneWindow
+--
+#Camera: Camera*
+--
++Scale(delta: ivec2): void
+
++Update(): void
+--
+Responsibilities:
+  Window that renders the scene from its camera
+  and can have a Gui interface.</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2488</x>
+      <y>1624</y>
+      <w>24</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;150.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>896</x>
+      <y>512</y>
+      <w>512</w>
+      <h>440</h>
+    </coordinates>
+    <panel_attributes>Shader
+--
+-ProgramId: GLuint
+--
++Shader(vertex: string, fragment: string): void
++Shader(vertex: string, geometry: string, fragment: string): void
++Shader(vertex: string, tessControl: string, tessEval: string, fragment: string): void
++Shader(vertex: string, tessControl: string, tessEval: string, geometry: string, fragment: string): void
+
++Activate(): void
+
++SetUniform(name: string, value: int): void
++SetUniform(name: string, value: float): void
++SetUniform(name: string, value: vec2): void
++SetUniform(name: string, value: vec3): void
++SetUniform(name: string, value: vec4): void
++SetUniform(name: string, value: ivec2): void
++SetUniform(name: string, value: ivec3): void
++SetUniform(name: string, value: ivec4): void
++SetUniform(name: string, value: mat4): void
+
++SetVec2Attribute(name: string, buffer: GLuint): void
++SetVec3Attribute(name: string, buffer: GLuint): void
++SetVec4Attribute(name: string, buffer: GLuint): void
++SetIVec2Attribute(name: string, buffer: GLuint): void
++SetIVec3Attribute(name: string, buffer: GLuint): void
++SetIVec4Attribute(name: string, buffer: GLuint): void
++SetDVec2Attribute(name: string, buffer: GLuint): void
++SetDVec3Attribute(name: string, buffer: GLuint): void
++SetDVec4Attribute(name: string, buffer: GLuint): void
+
++DisableAttribute(name: string): void
+--
+Responsibilities:
+  Building, managing, and handling communication to a shader program</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2040</x>
+      <y>1272</y>
+      <w>176</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>ScreenBuffer
+--
++SetAsTarget(): void
++Scale(delta: ivec2): void
+--
+Responsibilities:
+  Sets the render target to be the
+  screen back buffer</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2024</x>
+      <y>1208</y>
+      <w>120</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0;130.0;50.0;130.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1632</x>
+      <y>1272</y>
+      <w>176</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;abstract&gt;&gt;
+OffScreenBuffer
+--
+-FBO: GLuint
+--
++SetAsTarget(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1712</x>
+      <y>1240</y>
+      <w>336</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>400.0;10.0;10.0;10.0;10.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1848</x>
+      <y>1400</y>
+      <w>176</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>GBuffer
+Implements Scalable2DInt
+--
++Depth: Texture*
++Normal: Texture*
++BaseColor: Texture*
++MSR: Texture*
+--
++Scale(delta: ivec2): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1632</x>
+      <y>1400</y>
+      <w>176</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>ShadowBuffer
+Implements Scalable2DInt
+--
++Depth: Texture*
++DepthMap: Texture*
+--
++Scale(delta: ivec2): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1584</x>
+      <y>1032</y>
+      <w>136</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+BufferClearBehavior
+--
+/+Clear(): void/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1632</x>
+      <y>1544</y>
+      <w>176</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>ShadowCubemapBuffer
+--
++Depth: Texture*
++DepthMap: Texture*
+--
++Scale(delta: ivec2): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1848</x>
+      <y>1544</y>
+      <w>176</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>GCubeMapBuffer
+--
++Depth: Texture*
++Normal: Texture*
++BaseColor: Texture*
++MSR: Texture*
+--
++Scale(delta: ivec2): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1712</x>
+      <y>1336</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1728</x>
+      <y>1136</y>
+      <w>136</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>ClearDepth
+--
++Clear(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1440</x>
+      <y>1136</y>
+      <w>136</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>ClearToBlack
+--
++Clear(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1640</x>
+      <y>1080</y>
+      <w>168</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0;190.0;50.0;190.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1504</x>
+      <y>1080</y>
+      <w>160</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>180.0;10.0;180.0;50.0;10.0;50.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1768</x>
+      <y>472</y>
+      <w>232</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>{namespace}
+Renderers
+--
++ShadowMap: Renderer
++ShadowCubeMap: Renderer
++Geometry: Renderer
++GeometryToCubeMap: Renderer
++Light: Renderer
++Post: Renderer
++Gui: Renderer
+--
++Init(): void
+--
+Init requires a valid opengl context:
+    Call after first window has been opened, 
+    before first update</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1768</x>
+      <y>704</y>
+      <w>232</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>GeometryRenderer
+--
+// Geometry Rendering - 2D target
+-LightGeometry: Shader
+-Mesh: Shader
+-SkeletalMesh: Shader
+-Sphere: Shader
+-Cylinder: Shader
+-PointCloud: Shader
+--
++Draw(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2016</x>
+      <y>704</y>
+      <w>232</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>ShadowMapRenderer
+--
+// Geometry Rendering - ShadowMap target
+-ShadowMesh: Shader
+-ShadowSkeletalMesh: Shader
+-ShadowSphere: Shader
+-ShadowCylinder: Shader
+-ShadowPointCloud: Shader
+--
++Draw(): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2016</x>
+      <y>848</y>
+      <w>232</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>ShadowCubeMapRenderer
+--
+// Geometry Rendering - ShadowCubeMap target
+-ShadowMeshToCubeMap: Shader
+-ShadowSkeletalMeshToCubeMap: Shader
+-ShadowSphereToCubeMap: Shader
+-ShadowCylinderToCubeMap: Shader
+-ShadowPointCloudToCubeMap: Shader
+--
++Draw(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1768</x>
+      <y>840</y>
+      <w>232</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>GeometryToCubeMapRenderer
+--
+// Geometry Rendering - CubeMap target
+-LightGeometryToCubeMap: Shader
+-MeshToCubeMap: Shader
+-SkeletalMeshToCubeMap: Shader
+-SphereToCubeMap: Shader
+-CylinderToCubeMap: Shader
+-PointCloudToCubeMap: Shader
+--
++Draw(): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1520</x>
+      <y>704</y>
+      <w>232</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>LightRenderer
+--
+// Deffered Lighting
+-Light: Shader
+-LightWithShadow: Shader
+--
++Draw(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1520</x>
+      <y>784</y>
+      <w>232</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>PostProcessingRenderer
+--
+// Post Processing
+-CombineBuffers: Shader
+-Blur: Shader
+-NoAA: Shader
+-FXAA: Shader
+--
++Draw(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1520</x>
+      <y>888</y>
+      <w>232</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>GuiRenderer
+--
+// Gui
+-GuiTexture: Shader
+-Font: Shader
+--
++Draw(): void
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1512</x>
+      <y>672</y>
+      <w>744</w>
+      <h>296</h>
+    </coordinates>
+    <panel_attributes>Renderers</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1400</x>
+      <y>800</y>
+      <w>128</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>140.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1416</x>
+      <y>1400</y>
+      <w>176</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>SimpleBuffer
+Implements Scalable2DInt
+--
++Value: Texture*
+--
++Scale(delta: ivec2): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1416</x>
+      <y>1544</y>
+      <w>176</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>SimpleCubeMapBuffer
+--
++Value: Texture*
+--
++Scale(delta: ivec2): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1408</x>
+      <y>1392</y>
+      <w>624</w>
+      <h>296</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1584</x>
+      <y>1136</y>
+      <w>136</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>ClearDepthAndToBlack
+--
++Clear(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1640</x>
+      <y>1080</y>
+      <w>24</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1128</x>
+      <y>1040</y>
+      <w>176</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+Renderable
+--
+/+Draw(shader: Shader&amp;): void/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2288</x>
+      <y>40</y>
+      <w>160</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;namespace&gt;&gt;
+Input
+--
++GlobalInput: InputMap</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4272</x>
+      <y>1720</y>
+      <w>288</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>Entity
+--
+-Scene: Scene*
+-Components: vector&lt;Component*&gt;
+--
++Tag: string
++IsPersistant: bool
++Transform: Transform*
+
++ToString(): string
++Destroy(): void
+
++AddComponent(component: Component*): void
++RemoveComponent(component: Component*): void
++Update(): void
++GetComponent&lt;T&gt;(): T*</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3912</x>
+      <y>1720</y>
+      <w>200</w>
+      <h>168</h>
+    </coordinates>
+    <panel_attributes>Scene
+--
+-EntityFactory: EntityFactory*
+-Entities: vector&lt;Entity*&gt;
+--
++AddEntity(entity: Entity*): void
++RemoveEntity(entity: Entity*): void
++Update(): void
+
++Save(filename: string): void
++Load(filename: string): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4720</x>
+      <y>1720</y>
+      <w>200</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;abstract&gt;&gt;
+Component
+--
+-Scene: Scene*
+-Entity: Entity*
+--
+/+GetName(): string/
+/+Update(): void/
+/+ToString(): string/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4104</x>
+      <y>1776</y>
+      <w>184</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=n</panel_attributes>
+    <additional_attributes>10.0;10.0;210.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4552</x>
+      <y>1776</y>
+      <w>184</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=n</panel_attributes>
+    <additional_attributes>10.0;10.0;210.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4552</x>
+      <y>1816</y>
+      <w>184</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;210.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4104</x>
+      <y>1816</y>
+      <w>184</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;210.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4472</x>
+      <y>2240</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>Camera
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4440</x>
+      <y>1992</y>
+      <w>776</w>
+      <h>448</h>
+    </coordinates>
+    <panel_attributes>lt=.
+Components</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4560</x>
+      <y>2352</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>Character
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4816</x>
+      <y>1848</y>
+      <w>24</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;180.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4960</x>
+      <y>2072</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>FreeBody
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4888</x>
+      <y>2176</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>RigidBody
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>5032</x>
+      <y>2176</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>SoftBody
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>5016</x>
+      <y>2128</y>
+      <w>96</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0;100.0;40.0;100.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>4944</x>
+      <y>2128</y>
+      <w>96</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=.</panel_attributes>
+    <additional_attributes>100.0;10.0;100.0;40.0;10.0;40.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4472</x>
+      <y>2152</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>LightSource
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4472</x>
+      <y>2064</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>AudioSource
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>4816</x>
+      <y>2352</y>
+      <w>152</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>MeshRenderer
+implements Renderable
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>5016</x>
+      <y>2344</y>
+      <w>152</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>PointCloudRenderer
+implements Renderable
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1552</x>
+      <y>1768</y>
+      <w>648</w>
+      <h>312</h>
+    </coordinates>
+    <panel_attributes>lt=.
+Assets</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3872</x>
+      <y>1672</y>
+      <w>1088</w>
+      <h>264</h>
+    </coordinates>
+    <panel_attributes>lt=.
+Scene</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2152</x>
+      <y>0</y>
+      <w>840</w>
+      <h>608</h>
+    </coordinates>
+    <panel_attributes>lt=.
+Input</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1584</x>
+      <y>1824</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>AudioFile
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1736</x>
+      <y>1824</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>Texture
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1200</x>
+      <y>1520</y>
+      <w>120</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>Texture</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1312</x>
+      <y>1528</y>
+      <w>112</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=n</panel_attributes>
+    <additional_attributes>120.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1888</x>
+      <y>1824</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>Mesh
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2040</x>
+      <y>1824</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>PointCloud
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1960</x>
+      <y>1904</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>Animation?
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1736</x>
+      <y>1904</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>Material
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>904</x>
+      <y>1752</y>
+      <w>520</w>
+      <h>224</h>
+    </coordinates>
+    <panel_attributes>lt=.
+Audio</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>928</x>
+      <y>1800</y>
+      <w>192</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Singleton&gt;&gt;
+AudioListener
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1200</x>
+      <y>1800</y>
+      <w>192</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Track
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1112</x>
+      <y>1856</y>
+      <w>104</w>
+      <h>32</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+m1=1
+m2=n</panel_attributes>
+    <additional_attributes>10.0;10.0;110.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2704</x>
+      <y>48</y>
+      <w>144</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+Action
+--
+/+Perform(): void/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2768</x>
+      <y>112</y>
+      <w>24</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2264</x>
+      <y>192</y>
+      <w>256</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>ButtonActions
+--
+-OnPress: vector&lt;Action: weak_ptr&gt;
+-OnRelease: vector&lt;Action: weak_ptr&gt;
+-WhileDown: vector&lt;Action: weak_ptr&gt;
+--
++AddOnPressAction(Action: weak_ptr): void;
++AddOnReleaseAction(Action: weak_ptr): void;
++AddWhileDownAction(Action: weak_ptr): void;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2384</x>
+      <y>296</y>
+      <w>24</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2792</x>
+      <y>1728</y>
+      <w>960</w>
+      <h>552</h>
+    </coordinates>
+    <panel_attributes>lt=.
+&lt;&lt;namespace&gt;&gt;
+Components::Gui
+Composite Pattern
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3120</x>
+      <y>1776</y>
+      <w>304</w>
+      <h>184</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;abstract&gt;&gt;
+Item
+implements Translatable2D, Scalable2D
+--
+-Position: vec2
+-Size: vec2
+--
+/+Draw(Shader* texureShader, Shader* fontShader): void/
+/+Invalidate(): void/
+
++Translate(delta: vec2): void
++Scale(delta: vec2): void
+
++Add(item: shared_ptr&lt;Item&gt;): void
++Remove(item: shared_ptr&lt;Item&gt;): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3264</x>
+      <y>2128</y>
+      <w>296</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Panel
+--
+#Background: Texture*
+--
++Draw(): void
++Invalidate(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3408</x>
+      <y>2088</y>
+      <w>24</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3344</x>
+      <y>2008</y>
+      <w>144</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;abstract&gt;&gt;
+Container
+--
+#Base: unique_ptr&lt;Item&gt;
+--
++Draw()
++Invalidate()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3264</x>
+      <y>1952</y>
+      <w>168</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0;190.0;40.0;190.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2992</x>
+      <y>2008</y>
+      <w>152</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Label
+--
+#Text: unique_ptr&lt;Text&gt;
+--
++Draw()
++Invalidate()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1584</x>
+      <y>1928</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>Font
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1584</x>
+      <y>2000</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>Text
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>3152</x>
+      <y>2008</y>
+      <w>120</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Splitter
+--
+--
++Draw()
++Invalidate()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3064</x>
+      <y>1952</y>
+      <w>224</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>260.0;10.0;260.0;40.0;10.0;40.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>3208</x>
+      <y>1952</y>
+      <w>80</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>80.0;10.0;80.0;40.0;10.0;40.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>2832</x>
+      <y>2008</y>
+      <w>152</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Image
+--
+#Image: unique_ptr&lt;Texture&gt;
+--
++Draw()
++Invalidate()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2904</x>
+      <y>1952</y>
+      <w>384</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>460.0;10.0;460.0;40.0;10.0;40.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>104</x>
+      <y>384</y>
+      <w>760</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>Core</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>360</x>
+      <y>488</y>
+      <w>120</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Audio
+--
+Listener</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>488</x>
+      <y>488</y>
+      <w>120</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Rendering
+--
+Renderers
+RenderBuffers
+Shaders</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>616</x>
+      <y>488</y>
+      <w>120</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Physics
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>232</x>
+      <y>488</y>
+      <w>120</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>AssetCache
+--
+Fonts
+Textures
+AudioTracks
+Meshes
+Materials
+Coliders</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>104</x>
+      <y>488</y>
+      <w>120</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Database</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>248</x>
+      <y>416</y>
+      <w>88</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>Windows</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>504</x>
+      <y>416</y>
+      <w>88</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>Scene</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>376</x>
+      <y>416</y>
+      <w>88</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>Time</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>744</x>
+      <y>488</y>
+      <w>120</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>Networking</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>632</x>
+      <y>416</y>
+      <w>88</w>
+      <h>24</h>
+    </coordinates>
+    <panel_attributes>Input</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>104</x>
+      <y>296</y>
+      <w>368</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Game</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>496</x>
+      <y>296</y>
+      <w>368</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>Editor</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

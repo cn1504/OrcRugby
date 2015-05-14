@@ -1,56 +1,105 @@
 #include "Core.h"
-#include "Window.h"
-#include "AudioListener.h"
+#include "Time/Timer.h"
+#include "Window/Window.h"
+#include "Input/Input.h"
+#include "Assets/SQLiteDB.h"
+#include "Assets/AssetDB.h"
+#include "Components/Entity.h"
+#include "Debug/Log.h"
+#include "Audio/Listener.h"
 
-int main(int argc, char* argv[])
+namespace Core
 {
-	try {
-		Core::Debug::Init();
+	std::shared_ptr<Core::Logger> Debug;
+	std::shared_ptr<Core::Assets::Database> Database;
+	std::shared_ptr<Core::Assets::AssetDB> AssetDB;
+	std::shared_ptr<Core::Components::Entity> Scene;
+	std::shared_ptr<Core::Timer> Time;
+	std::shared_ptr<Core::Audio::AL> Listener;
 
-		// Initialize GLFW
-		glfwSetErrorCallback(Core::Debug::error_callback);
-		if (!glfwInit())
-			Core::Debug::Error("GLFW failed to initialize.");
+	void Init(int argc, char* argv[])
+	{
+		try {
+			Core::Debug = std::make_shared<Core::Logger>("Log.txt");
 
+			// Initialize GLFW
+			glfwSetErrorCallback(Core::error_callback);
+			if (!glfwInit())
+				Core::Debug->Error("GLFW failed to initialize.");
 
-		Core::Settings::Init(argc, argv);
-		Core::Time::Init();
-		Core::AudioListener.Init();
+			Database = std::make_shared<Core::Assets::SQLiteDB>("data.dat");
+			AssetDB = std::make_shared<Core::Assets::AssetDB>(Database);
+			Time = std::make_shared<Core::Timer>();
+			Core::Listener = std::make_shared<Core::Audio::AL>();
+			Core::Listener->Init();
+			Core::Input::Init();
 
+			{
+				// Log Global Information
+				std::stringstream msg;
 
-		if (Core::Settings::Misc::VerboseLogging) {
-			std::stringstream msg;
+				// Monitors
+				Core::Debug->Log("Available Monitors:");
+				int monitorCount;
+				GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
+				for (int i = 0; i < monitorCount; i++) {
+					msg << "\t" << (i + 1) << ". " << glfwGetMonitorName(monitors[i]);
+					const GLFWvidmode* mode = glfwGetVideoMode(monitors[i]);
+					msg << " - " << mode->width << "x" << mode->height << "x" << mode->redBits * 4 << " @ " << mode->refreshRate << "Hz" << std::endl;
+				}
+				Core::Debug->Log(msg.str());
 
-			// Log display information
-			Core::Debug::Log("Available Monitors:");
-			int monitorCount;
-			GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
-			for (int i = 0; i < monitorCount; i++) {
-				msg << "\t" << (i + 1) << ". " << glfwGetMonitorName(monitors[i]);
-				const GLFWvidmode* mode = glfwGetVideoMode(monitors[i]);
-				msg << " - " << mode->width << "x" << mode->height << "x" << mode->redBits * 4 << " @ " << mode->refreshRate << "Hz" << std::endl;
+				Core::Debug->Log("");
+				msg.str("");
+
+				// Input Devices
+				//Core::Debug::Log("Available Gamepads/Joysticks:");
 			}
-			Core::Debug::Log(msg.str());
 
-			Core::Debug::Log("");
-			msg.str("");
+			// Initalize Scene
+			Scene = std::make_shared<Core::Components::Entity>();
 		}
-
-		// Open the main window
-		Core::Window* mainWindow = new Core::Window();
-		delete mainWindow;
-
-		Core::Debug::Close();
+		catch (std::runtime_error &e) {
+			Core::Debug->Error(e.what());
+		}
 	}
-	catch (std::runtime_error &e) {
-		Core::Debug::Log(e.what());
-		Core::Debug::Close();
-		exit(EXIT_FAILURE);
+
+	void Run()
+	{
+		//Core::Assets::LoadStandardAssets();
+		//Core::Scene::Load();
+
+		while (Core::Window::Map.size() != 0)
+		{
+			// While a window is open, execute engine loop
+			Core::Time->NextUpdate(true);
+			glfwPollEvents();
+			Core::Input::Update();
+			Core::Scene->Update();
+
+			for (auto it = Core::Window::Map.begin(); it != Core::Window::Map.end();)
+			{
+				if ((*it).second->Update())
+				{
+					delete (*it).second;
+					it = Core::Window::Map.erase(it);
+				}
+				else
+					++it;
+			}
+		}
+		Core::Window::CurrentContext = nullptr;
+
+		Core::Close();
 	}
-	return 0;
+
+	void Close()
+	{
+		Core::Listener->Close();
+
+		glfwTerminate();
+	}
 }
-
-
 namespace std
 {
 	std::string to_string(const glm::ivec2& v)
@@ -335,39 +384,58 @@ namespace std
 
 		return result;
 	}
-}
 
 
-glm::quat RotationBetweenVectors(glm::vec3 start, glm::vec3 dest)
-{
-	start = glm::normalize(start);
-	dest = glm::normalize(dest);
-
-	float cosTheta = glm::dot(start, dest);
-	glm::vec3 rotationAxis;
-
-	if (cosTheta < -1 + 0.001f){
-		// special case when vectors in opposite directions:
-		// there is no "ideal" rotation axis
-		// So guess one; any will do as long as it's perpendicular to start
-		rotationAxis = glm::cross(glm::vec3(0.0f, 0.0f, 1.0f), start);
-		if (glm::length2(rotationAxis) < 0.01) // bad luck, they were parallel, try again!
-			rotationAxis = glm::cross(glm::vec3(1.0f, 0.0f, 0.0f), start);
-	
-		rotationAxis = glm::normalize(rotationAxis);
-		return glm::angleAxis(180.0f, rotationAxis);
+	std::vector<std::string>& split(const std::string &s, char delim, std::vector<std::string> &elems) {
+		std::stringstream ss(s);
+		std::string item;
+		while (std::getline(ss, item, delim)) {
+			elems.push_back(item);
+		}
+		return elems;
 	}
 
-	rotationAxis = glm::cross(start, dest);
 
-	float s = sqrt((1 + cosTheta) * 2);
-	float invs = 1 / s;
+	std::vector<std::string> split(const std::string &s, char delim) {
+		std::vector<std::string> elems;
+		split(s, delim, elems);
+		return elems;
+	}
+}
 
-	return glm::quat(
-		s * 0.5f,
-		rotationAxis.x * invs,
-		rotationAxis.y * invs,
-		rotationAxis.z * invs
-		);
+namespace glm
+{
+	glm::quat RotationBetweenVectors(glm::vec3 start, glm::vec3 dest)
+	{
+		start = glm::normalize(start);
+		dest = glm::normalize(dest);
 
+		float cosTheta = glm::dot(start, dest);
+		glm::vec3 rotationAxis;
+
+		if (cosTheta < -1 + 0.001f){
+			// special case when vectors in opposite directions:
+			// there is no "ideal" rotation axis
+			// So guess one; any will do as long as it's perpendicular to start
+			rotationAxis = glm::cross(glm::vec3(0.0f, 0.0f, 1.0f), start);
+			if (glm::length2(rotationAxis) < 0.01) // bad luck, they were parallel, try again!
+				rotationAxis = glm::cross(glm::vec3(1.0f, 0.0f, 0.0f), start);
+
+			rotationAxis = glm::normalize(rotationAxis);
+			return glm::angleAxis(180.0f, rotationAxis);
+		}
+
+		rotationAxis = glm::cross(start, dest);
+
+		float s = sqrt((1 + cosTheta) * 2);
+		float invs = 1 / s;
+
+		return glm::quat(
+			s * 0.5f,
+			rotationAxis.x * invs,
+			rotationAxis.y * invs,
+			rotationAxis.z * invs
+			);
+
+	}
 }

@@ -1,0 +1,3 @@
+Opening "E:\Programming\OrcRugby\x64\Resources\Textures\Consolas16.png"
+Name: Consolas16
+Resolution: 144x238

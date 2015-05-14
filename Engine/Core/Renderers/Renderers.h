@@ -1,0 +1,9 @@
+#pragma once
+#include <Core.h>
+#include "GeometryRenderer.h"
+#include "GeometryToCubeMapRenderer.h"
+#include "ShadowMapRenderer.h"
+#include "ShadowCubeMapRenderer.h"
+#include "LightRenderer.h"
+#include "PostProcessingRenderer.h"
+#include "GuiRenderer.h"

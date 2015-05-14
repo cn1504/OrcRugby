@@ -91,7 +91,7 @@ vec3 DecodeNormal (vec4 enc)
 }
 
 void main(void)
-{
+{	
 	// Extract buffered pixel position and normal from textures
 	vec3 pos 		= vec3((gl_FragCoord.x * PixelSize.x), 
 						   (gl_FragCoord.y * PixelSize.y), 0.0);
@@ -110,10 +110,11 @@ void main(void)
 	float atten = getDistanceAtt(sqrDist, LightInvSqrRadius);
 	atten *= getAngleAtt(incident, LightDirection, LightAngleScale, LightAngleOffset);
 	
-	if(atten <= 0.0) 
-	{
+	if(atten <= 0.0 || dot(incident, normal) < 0.0) 
+	{	
 		discard;
 	}
+	atten *= LightIntensity;
 		
 	vec3 viewDir    = normalize(- pos);
 	vec3 halfDir	= normalize(viewDir + incident);
@@ -134,7 +135,6 @@ void main(void)
 	
 	// Diffuse BRDF
 	float Fd = Fd_DisneyDiffuse(NdotV, LdotN, LdotH, MSR.z) / M_PI;	
-	
 	
 	outDiffuse = vec4(LightColor.xyz * atten * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd, 1.0);
 	outSpecular = vec4(LightColor.xyz * atten * Fr, 1.0);

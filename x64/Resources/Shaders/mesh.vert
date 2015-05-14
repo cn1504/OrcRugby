@@ -14,7 +14,7 @@ layout(location = 2) out vec2 uv;
 void main(void) 
 {
 	viewVertex	        = vec3((ModelViewMatrix) * vec4(Vertex, 1.0));
-	viewNormal			= vec3((ModelViewMatrix) * vec4(Normal, 0.0));
+	viewNormal			= normalize(vec3((ModelViewMatrix) * vec4(Normal, 0.0)));
 	uv = Uv;
 	gl_Position         = (ModelViewProjectionMatrix) * vec4(Vertex, 1.0);
 }
