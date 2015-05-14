@@ -1,4 +1,0 @@
-Opening "E:\Programming\OrcRugby\x64\Resources\Meshes\Watchtower\Watchtower_Stone_Walls.OBJ"
-Importing file: E:\Programming\OrcRugby\x64\Resources\Meshes\Watchtower\Watchtower_Stone_Walls.OBJ
-Meshes in file: 1
-Loading mesh: WatchTower_StoneWalls

@@ -5,5 +5,8 @@
 *.cfg
 *.opensdf
 x64/Log.txt
+x64/AudioImporter.txt
+x64/ImageImporter.txt
+x64/MeshImporter.txt
 x64/prefs.dat
 x64/save.dat
