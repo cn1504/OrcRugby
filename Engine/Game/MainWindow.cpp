@@ -13,40 +13,43 @@
 #include <Components/Grid.h>
 #include <Components/Hex.h>
 #include <Components/PrefsDB.h>
+#include <Components/GameStateController.h>
 
 using namespace Game;
 using namespace Core::Window;
+
+const int GUI_LAYERS = 5;
 
 MainWindow::MainWindow() 
 	: DefaultWindow("Game", 
 		glm::ivec2(Game::Prefs->GetInt("MainWindow_PosX"), Game::Prefs->GetInt("MainWindow_PosY")),
 		glm::ivec2(Game::Prefs->GetInt("MainWindow_Width"), Game::Prefs->GetInt("MainWindow_Height")))
 {
+	for (int i = 0; i < GUI_LAYERS; i++)
+	{
+		Layers.push_back(std::make_shared<Core::Components::Gui::Panel>());
+		Layers.back()->Scale(Gui->GetScale());
+		Gui->AddChild(Layers.back());
+	}
+
 	FPSLabel = std::make_shared<Core::Components::Gui::Label>("Consolas16", glm::vec4(1, 1, 1, 1), 1, "FPS: 0");
 	FPSLabel = std::make_shared<Core::Components::Gui::Anchored>(FPSLabel, std::make_unique<Core::Components::Gui::AlignBottomLeft>(glm::vec2(6,0)));
-	
+	AddGuiItemToLayer(static_cast<int>(Layers.size() - 1), FPSLabel);
+
 	Camera->Translate(glm::vec3(0, 20, -20));
 	Camera->Rotate(glm::vec3(45.0, 0, 0));
 
 	if (Core::Window::Map.size() < 2)
 	{
-		/*
-		auto dnc = std::make_shared<Core::Components::DayNightCycle>(1440.0f);
-		Core::Scene->AddChild(dnc);
-		
-		auto gb = std::make_shared<Game::Components::Grid>();
-		Core::Scene->AddChild(gb);
-		*/
-
-		GSC = std::make_shared<Game::Components::GameStateController>(this);
-
-		// Load Main Menu
-		auto res = Gui->GetScale();
-		MMBackground = std::make_shared<Core::Components::Gui::Panel>("Background");
-		MMBackground->Scale(Gui->GetScale());
-		Gui->AddChild(MMBackground);
 	}
-	Gui->AddChild(FPSLabel);
+
+	GSC = std::make_shared<Game::Components::GameStateController>(this);
+	GSC->MainMenu();
+
+	OnMouseLeftDown = std::make_shared<ClickDownAction>(this);
+	InputMap->AddPressAction("Mouse Left", OnMouseLeftDown);
+	OnMouseLeftRelease = std::make_shared<ClickAction>(this);
+	InputMap->AddReleaseAction("Mouse Left", OnMouseLeftRelease);
 
 	// Register camera controls
 	CameraUp = std::make_shared<CameraUpAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 2.0f, true);
@@ -72,6 +75,35 @@ int MainWindow::Update()
 	BeginUpdate();
 
 	FPSLabel->SetText("FPS: " + std::to_string((int)Core::Time->FPS));
+	
+	// Update Button States
+	auto mp = InputMap->MousePosition;
+	mp.y = Size.y - mp.y;
+	for (size_t i = 0; i < Buttons.size(); i++)
+	{
+		if (auto b = Buttons[i].lock())
+		{
+			auto p = glm::vec2(b->GetMatrix() * glm::vec3(0,0,1));
+			p = glm::vec2(p.x * Size.x / 2.0f + Size.x / 2.0f, p.y * Size.y / 2.0f + Size.y / 2.0f);
+			auto s = b->GetScale();
+			
+			if ((mp.x > p.x - s.x / 2.0f && mp.x < p.x + s.x / 2.0f)
+				&& (mp.y > p.y - s.y / 2.0f && mp.y < p.y + s.y / 2.0f))
+			{
+				b->OnMouseOver();
+			}
+			else
+			{
+				b->OnMouseOut();
+			}
+		}
+		else
+		{
+			std::swap(Buttons[i], Buttons.back());
+			Buttons.pop_back();
+			i--;
+		}
+	}
 
 	return DefaultWindow::Update();
 }
@@ -92,8 +124,22 @@ void MainWindow::Scale(const glm::ivec2& delta)
 		Game::Prefs->Set("MainWindow_Width", Size.x);
 		Game::Prefs->Set("MainWindow_Height", Size.y);
 
-		MMBackground->Scale(Gui->GetScale() / MMBackground->GetScale());
+		for (auto& l : Layers)
+		{
+			l->Scale(Gui->GetScale() / l->GetScale());
+		}
 	}
+}
+void MainWindow::AddGuiItemToLayer(int i, std::shared_ptr<Core::Components::Gui::Item> item)
+{
+	if (i < Layers.size())
+	{
+		Layers[i]->AddChild(item);
+	}
+}
+void MainWindow::AddButton(std::shared_ptr<Core::Components::Gui::Button> button)
+{
+	Buttons.push_back(button);
 }
 
 
@@ -101,4 +147,39 @@ NewGameWindowAction::~NewGameWindowAction() {}
 void NewGameWindowAction::Perform()
 {
 	new Game::MainWindow();
+}
+
+
+void ClickAction::Perform()
+{
+	for (size_t i = 0; i < Window->Buttons.size(); i++)
+	{
+		if (auto b = Window->Buttons[i].lock())
+		{
+			b->OnClick();
+		}
+		else
+		{
+			std::swap(Window->Buttons[i], Window->Buttons.back());
+			Window->Buttons.pop_back();
+			i--;
+		}
+	}
+}
+
+void ClickDownAction::Perform()
+{
+	for (size_t i = 0; i < Window->Buttons.size(); i++)
+	{
+		if (auto b = Window->Buttons[i].lock())
+		{
+			b->OnMouseDown();
+		}
+		else
+		{
+			std::swap(Window->Buttons[i], Window->Buttons.back());
+			Window->Buttons.pop_back();
+			i--;
+		}
+	}
 }

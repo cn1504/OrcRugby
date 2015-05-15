@@ -140,6 +140,7 @@
     <ClInclude Include="Components\Entity.h" />
     <ClInclude Include="Components\Gui\Alignment.h" />
     <ClInclude Include="Components\Gui\Anchored.h" />
+    <ClInclude Include="Components\Gui\Button.h" />
     <ClInclude Include="Components\Gui\Item.h" />
     <ClInclude Include="Components\Gui\Label.h" />
     <ClInclude Include="Components\Gui\Panel.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="Components\AudioSource.cpp" />
     <ClCompile Include="Components\Camera.cpp" />
     <ClCompile Include="Components\DayNightCycle.cpp" />
+    <ClCompile Include="Components\Gui\Button.cpp" />
     <ClCompile Include="Components\Gui\Label.cpp" />
     <ClCompile Include="Components\Gui\Panel.cpp" />
     <ClCompile Include="Components\LightSource.cpp" />

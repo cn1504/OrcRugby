@@ -16,19 +16,12 @@ void GuiRenderer::Draw(Core::Components::Gui::Item* items)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDisable(GL_DEPTH_TEST);
 
-	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
-	glDisable(GL_ALPHA_TEST);
-
-	//if (Settings::Video::ShowFPS)
-	//{
-	//	fpsText->UpdateText("TS: " + std::to_string(Time::Scale) + "\nDPF: " + std::to_string(Time::DrawCallsPerFrame) + "\nFPS : " + std::to_string((int)Time::FPS));
-	//}
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	items->Draw(this);
 	
 	glDisable(GL_BLEND);
-	glEnable(GL_ALPHA_TEST);
 	glEnable(GL_DEPTH_TEST);
 	Debug->GLError("ERROR: failed to render ui.");
 }

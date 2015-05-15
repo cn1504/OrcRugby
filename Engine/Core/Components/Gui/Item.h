@@ -18,7 +18,7 @@ namespace Core
 				Item() : Transform(std::make_shared<Core::Space::Transform2D>()) {}
 				Item(std::shared_ptr<Core::Space::Transform2DIF> transform) : Transform(transform) {}
 				virtual ~Item() {}
-
+				
 				virtual void Translate(const glm::vec2& delta) { Transform->Translate(delta); }
 				virtual void Rotate(float delta) { Transform->Rotate(delta); }
 				virtual void Scale(const glm::vec2& delta) { Transform->Scale(delta); }

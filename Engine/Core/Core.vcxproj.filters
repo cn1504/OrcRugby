@@ -221,6 +221,9 @@
     <ClInclude Include="Assets\AudioFile.h">
       <Filter>Assets</Filter>
     </ClInclude>
+    <ClInclude Include="Components\Gui\Button.h">
+      <Filter>Components\Gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\Texture.cpp">
@@ -373,6 +376,9 @@
     </ClCompile>
     <ClCompile Include="Assets\AudioFile.cpp">
       <Filter>Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Gui\Button.cpp">
+      <Filter>Components\Gui</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

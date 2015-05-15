@@ -19,7 +19,7 @@ Texture::Texture(int width, int height, const unsigned char* bytes)
 {
 	Id = 0;
 	
-	CreateTexture(bytes, width, height, GL_SRGB_ALPHA, GL_RGBA, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
+	CreateTexture(bytes, width, height, GL_RGBA, GL_RGBA, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
 }
 
 
