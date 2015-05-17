@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="Components\CameraControls.h" />
     <ClInclude Include="Components\GameStateController.h" />
+    <ClInclude Include="Components\Generator.h" />
     <ClInclude Include="Components\Grid.h" />
     <ClInclude Include="Components\Hex.h" />
     <ClInclude Include="Components\PrefsDB.h" />
@@ -31,6 +32,7 @@
   <ItemGroup>
     <ClCompile Include="Components\CameraControls.cpp" />
     <ClCompile Include="Components\GameStateController.cpp" />
+    <ClCompile Include="Components\Generator.cpp" />
     <ClCompile Include="Components\Grid.cpp" />
     <ClCompile Include="Components\Hex.cpp" />
     <ClCompile Include="Components\PrefsDB.cpp" />

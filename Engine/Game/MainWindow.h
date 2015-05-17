@@ -8,6 +8,7 @@
 #include <Components/Gui/Button.h>
 #include <Components/CameraControls.h>
 #include <Components/SaveDB.h>
+#include <Components/Generator.h>
 
 namespace Game
 {
@@ -36,7 +37,10 @@ namespace Game
 		std::shared_ptr<Core::Input::Action> OnMouseLeftRelease;
 		std::shared_ptr<Core::Input::Action> OnMouseLeftDown;
 		std::vector<std::weak_ptr<Core::Components::Gui::Button>> Buttons;
+		bool UpdateButtons(std::shared_ptr<Core::Space::Transform2DIF> parent, const glm::vec2& mp);
 				
+		std::unique_ptr<Game::Components::Generator> Generator;
+
 	public:
 		MainWindow();
 		virtual ~MainWindow();

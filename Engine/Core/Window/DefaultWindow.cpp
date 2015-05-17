@@ -85,8 +85,9 @@ void DefaultWindow::Scale(const glm::ivec2& delta)
 		const float MIN_DRAWDISTANCE = 0.1f;
 		const float MAX_DRAWDISTANCE = 100.0f;
 
-		Gui->Scale(glm::vec2(1.0f + (float)rd.x / (float)(Size.x), 1.0f + (float)rd.y / (float)(Size.y)));
-		Top->Scale(glm::vec2(1.0f / (1.0f + (float)rd.x / (float)(Size.x)), 1.0f / (1.0f + (float)rd.y / (float)(Size.y))));
+		glm::vec2 shift = glm::vec2(1.0f + (float)rd.x / (float)(Gui->GetScale().x), 1.0f + (float)rd.y / (float)(Gui->GetScale().y));
+		Gui->Scale(shift);
+		Top->Scale(1.0f / shift);
 
 		auto res = Gui->GetScale();
 

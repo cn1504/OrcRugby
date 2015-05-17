@@ -27,9 +27,10 @@ MainWindow::MainWindow()
 {
 	for (int i = 0; i < GUI_LAYERS; i++)
 	{
-		Layers.push_back(std::make_shared<Core::Components::Gui::Panel>());
-		Layers.back()->Scale(Gui->GetScale());
-		Gui->AddChild(Layers.back());
+		auto layer = std::make_shared<Core::Components::Gui::Panel>();
+		layer->Scale(Gui->GetScale());
+		Gui->AddChild(layer);
+		Layers.push_back(layer);
 	}
 
 	FPSLabel = std::make_shared<Core::Components::Gui::Label>("Consolas16", glm::vec4(1, 1, 1, 1), 1, "FPS: 0");
@@ -68,6 +69,14 @@ MainWindow::MainWindow()
 	InputMap->AddWhileDownAction(Game::Prefs->GetString("CameraRotateLeft"), std::weak_ptr<Core::Input::Action>(CameraRotateLeft));
 	CameraRotateRight = std::make_shared<CameraRotationAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 0.5f);
 	InputMap->AddWhileDownAction(Game::Prefs->GetString("CameraRotateRight"), std::weak_ptr<Core::Input::Action>(CameraRotateRight));
+
+	Generator = std::make_unique<Game::Components::Generator>(Core::Database);
+	Core::Debug->Log("Name Generator Test:");
+	for (int i = 0; i < 10; i++)
+		Core::Debug->Log(Generator->PickName("Human", "Female"));
+
+	for (int i = 0; i < 10; i++)
+		Core::Debug->Log(Generator->PickName("Human", "Male"));
 }
 MainWindow::~MainWindow() {}
 int MainWindow::Update()
@@ -79,33 +88,59 @@ int MainWindow::Update()
 	// Update Button States
 	auto mp = InputMap->MousePosition;
 	mp.y = Size.y - mp.y;
-	for (size_t i = 0; i < Buttons.size(); i++)
+	for (size_t i = Layers.size(); i > 0; i--)
 	{
-		if (auto b = Buttons[i].lock())
+		bool result = false;
+		for (size_t j = 0; j < Layers[i - 1]->GetChildCount(); j--)
 		{
-			auto p = glm::vec2(b->GetMatrix() * glm::vec3(0,0,1));
-			p = glm::vec2(p.x * Size.x / 2.0f + Size.x / 2.0f, p.y * Size.y / 2.0f + Size.y / 2.0f);
-			auto s = b->GetScale();
-			
-			if ((mp.x > p.x - s.x / 2.0f && mp.x < p.x + s.x / 2.0f)
-				&& (mp.y > p.y - s.y / 2.0f && mp.y < p.y + s.y / 2.0f))
+			bool r = UpdateButtons(Layers[i - 1]->GetChild(j), mp);
+			if (r == true)
 			{
-				b->OnMouseOver();
-			}
-			else
-			{
-				b->OnMouseOut();
+				result = true;
 			}
 		}
-		else
+
+		if (result == true)
 		{
-			std::swap(Buttons[i], Buttons.back());
-			Buttons.pop_back();
-			i--;
+			break;
 		}
 	}
 
 	return DefaultWindow::Update();
+}
+
+bool MainWindow::UpdateButtons(std::shared_ptr<Core::Space::Transform2DIF> parent, const glm::vec2& mp)
+{
+	bool r = false;
+
+	auto p = glm::vec2(parent->GetMatrix() * glm::vec3(0, 0, 1));
+	p = glm::vec2(p.x * Size.x / 2.0f + Size.x / 2.0f, p.y * Size.y / 2.0f + Size.y / 2.0f);
+	auto s = parent->GetScale();
+
+	if ((mp.x > p.x - s.x / 2.0f && mp.x < p.x + s.x / 2.0f)
+		&& (mp.y > p.y - s.y / 2.0f && mp.y < p.y + s.y / 2.0f))
+	{
+		auto b = std::dynamic_pointer_cast<Core::Components::Gui::Button>(parent);
+		if(b)
+			b->OnMouseOver();
+		r = true;
+	}
+	else
+	{
+		auto b = std::dynamic_pointer_cast<Core::Components::Gui::Button>(parent);
+		if (b)
+			b->OnMouseOut();		
+	}
+
+	for (size_t i = 0; i < parent->GetChildCount(); i++)
+	{
+		auto c = parent->GetChild(i);
+		auto r2 = UpdateButtons(c, mp);
+		if (r2)
+			r = true;
+	}
+
+	return r;
 }
 
 void MainWindow::Translate(const glm::ivec2& delta)

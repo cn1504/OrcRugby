@@ -11,6 +11,27 @@ void load(std::string filename)
 {
 	out->Log("Opening \"" + filename + "\"");
 
+	/*	Names
+	std::ifstream in(filename);
+
+	std::string Race = "Human";
+	std::string Gender = "Female";
+	
+	std::string input;
+	while (in >> input)
+	{
+		if (input.length() > 0)
+		{
+			Core::Database->Sql("INSERT OR REPLACE INTO Names (Name, Gender, Race) VALUES (?, ?, ?)");
+			Core::Database->Bind(1, input);
+			Core::Database->Bind(2, Gender);
+			Core::Database->Bind(3, Race);
+			Core::Database->ExecuteAndFree();
+		}
+		else
+			break;
+	}
+	*/
 	/*
 	unsigned int width;
 	unsigned int height;

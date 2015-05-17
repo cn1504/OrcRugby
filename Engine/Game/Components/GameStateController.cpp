@@ -2,6 +2,7 @@
 #include <MainWindow.h>
 #include <Components/Gui/Panel.h>
 #include <Components/Gui/Anchored.h>
+#include <Components/Gui/Label.h>
 #include <Input/Map.h>
 #include <Components/DayNightCycle.h>
 #include <Components/Grid.h>
@@ -38,32 +39,36 @@ void GameStateController::LoadMainMenu()
 	Window->AddButton(exitButton);
 	buttonPanel->AddChild(exitButton);
 	
-	auto optionsClickAction = std::make_shared<CloseAction>(this);
+	auto optionsClickAction = std::make_shared<Core::Input::NullAction>();
 	auto optionsButton = std::make_shared<Core::Components::Gui::Button>("Btn_Options", optionsClickAction);
 	optionsButton->Scale(glm::vec2(865.0, 150) * guiScaleOffset);
 	optionsButton->Translate(glm::vec2(0, -optionsButton->GetScale().y * 2.0f));
 	Window->AddButton(optionsButton);
 	buttonPanel->AddChild(optionsButton);
 	
-	auto statisticsClickAction = std::make_shared<CloseAction>(this);
+	auto statisticsClickAction = std::make_shared<Core::Input::NullAction>();
 	auto statisticsButton = std::make_shared<Core::Components::Gui::Button>("Btn_Statistics", statisticsClickAction);
 	statisticsButton->Scale(glm::vec2(865.0, 150) * guiScaleOffset);
 	Window->AddButton(statisticsButton);
 	buttonPanel->AddChild(statisticsButton);
 	
-	auto newGameClickAction = std::make_shared<CloseAction>(this);
+	auto newGameClickAction = std::make_shared<Core::Input::NullAction>();
 	auto newGameButton = std::make_shared<Core::Components::Gui::Button>("Btn_NewGame", newGameClickAction);
 	newGameButton->Scale(glm::vec2(865.0, 150) * guiScaleOffset);
 	newGameButton->Translate(glm::vec2(0, newGameButton->GetScale().y * 2.0f));
 	Window->AddButton(newGameButton);
 	buttonPanel->AddChild(newGameButton);
 
-	auto continueGameClickAction = std::make_shared<CloseAction>(this);
+	auto continueGameClickAction = std::make_shared<Core::Input::NullAction>();
 	auto continueGameButton = std::make_shared<Core::Components::Gui::Button>("Btn_ContinueGame", continueGameClickAction);
 	continueGameButton->Scale(glm::vec2(865.0, 150) * guiScaleOffset);
 	continueGameButton->Translate(glm::vec2(0, continueGameButton->GetScale().y * 4.0f));
 	Window->AddButton(continueGameButton);
 	buttonPanel->AddChild(continueGameButton);
+
+	std::shared_ptr<Core::Components::Gui::Item> BuildText = std::make_shared<Core::Components::Gui::Label>("Consolas16", glm::vec4(1, 1, 1, 1), 1, "0.1.14");
+	BuildText = std::make_shared<Core::Components::Gui::Anchored>(BuildText, std::make_unique<Core::Components::Gui::AlignBottomRight>(glm::vec2(6, 0)));
+	Window->AddGuiItemToLayer(2, BuildText);
 
 	State = std::make_unique<MainMenuState>(this);
 }

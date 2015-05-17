@@ -21,6 +21,9 @@
     <ClInclude Include="Components\GameStateController.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="Components\Generator.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -41,6 +44,9 @@
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="Components\GameStateController.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Generator.cpp">
       <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>

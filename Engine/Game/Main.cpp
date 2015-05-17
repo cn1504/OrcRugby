@@ -23,6 +23,8 @@ int main(int argc, char* argv[])
 		auto savedb = std::make_shared<Core::Assets::SQLiteDB>("save.dat");
 		Game::Save = std::make_shared<Game::Components::SaveDB>(savedb);
 
+		Core::Debug->Log("");
+
 		// Open the main window
 		auto createWindowAction = std::make_shared<Game::NewGameWindowAction>();
 		Core::Input::GlobalMap.AddReleaseAction("Ctrl + Alt + N", std::weak_ptr<Core::Input::Action>(createWindowAction));
