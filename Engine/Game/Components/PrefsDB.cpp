@@ -47,7 +47,7 @@ void PrefsDB::Set(std::string key, bool value)
 int PrefsDB::GetInt(std::string key)
 {
 	int value = 0;
-	db->Sql("SELECT value FROM Prefs_INT WHERE key='" + key + "'");
+	db->Sql("SELECT value FROM Prefs_INT WHERE key='" + key + "' LIMIT 1");
 	if (db->FetchRow())
 	{
 		value = db->GetColumnInt(0);
@@ -69,7 +69,7 @@ double PrefsDB::GetDouble(std::string key)
 float PrefsDB::GetFloat(std::string key)
 {
 	float value = NAN;
-	db->Sql("SELECT value FROM Prefs_REAL WHERE key='" + key + "'");
+	db->Sql("SELECT value FROM Prefs_REAL WHERE key='" + key + "' LIMIT 1");
 	if (db->FetchRow())
 	{
 		value = static_cast<float>(db->GetColumnDouble(0));
@@ -80,7 +80,7 @@ float PrefsDB::GetFloat(std::string key)
 std::string PrefsDB::GetString(std::string key)
 {
 	std::string value = "Invalid String";
-	db->Sql("SELECT value FROM Prefs_TEXT WHERE key='" + key + "'");
+	db->Sql("SELECT value FROM Prefs_TEXT WHERE key='" + key + "' LIMIT 1");
 	if (db->FetchRow())
 	{
 		value = db->GetColumnString(0);
@@ -91,7 +91,7 @@ std::string PrefsDB::GetString(std::string key)
 bool PrefsDB::GetBool(std::string key)
 {
 	bool value = 0;
-	db->Sql("SELECT value FROM Prefs_INT WHERE key='" + key + "'");
+	db->Sql("SELECT value FROM Prefs_INT WHERE key='" + key + "' LIMIT 1");
 	if (db->FetchRow())
 	{
 		value = (db->GetColumnInt(0) != 0);
@@ -111,6 +111,7 @@ void PrefsDB::InitializeDB()
 
 	// Initialize default values
 	db->SqlStatement("INSERT INTO Prefs_INT (key, value) VALUES ('NewFile', 0)");
+	db->SqlStatement("INSERT INTO Prefs_TEXT (key, value) VALUES ('Version', '0.1.15')");
 
 	// Window Settings
 	auto pm = glfwGetPrimaryMonitor();

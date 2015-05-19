@@ -34,10 +34,16 @@ namespace Game
 			friend class InGameState;
 
 		private:
+			const glm::vec2 GUI_SIZE = glm::vec2(3840.0, 2160.0);
+
 			Game::MainWindow* Window;
 			std::unique_ptr<GameState> State;
 			std::vector<std::shared_ptr<Core::Components::Gui::Item>> LoadedGuiComponents;
+			std::vector<std::shared_ptr<Core::Space::TransformIF>> LoadedEntities;
 			std::vector<std::shared_ptr<Core::Input::Action>> ActiveInputBindings;
+			std::shared_ptr<Core::Input::Action> EscAction;
+
+			std::vector<std::shared_ptr<Core::Components::Gui::Item>> GameMenuComponents;
 
 			// Actions done by GameStates
 			void LoadMainMenu();
@@ -46,7 +52,6 @@ namespace Game
 
 			void CloseMainMenu();
 			void CloseGame();
-
 
 		public:
 			GameStateController(Game::MainWindow* wh);
@@ -58,12 +63,12 @@ namespace Game
 			void NewGame() { State->NewGame(); }
 			void Close() { State->Close(); }
 
-			void OpenGameMenu() {}
+			void OpenGameMenu();
 			void OpenOptionsMenu() {}
 			void OpenInventory() {}
 			void OpenEvent() {}
 
-			void CloseGameMenu() {}
+			void CloseGameMenu();
 			void CloseOptionsMenu() {}
 			void CloseInventory() {}
 			void CloseEvent() {}
@@ -104,12 +109,39 @@ namespace Game
 		public:
 			GSCAction(GameStateController* GSC) : GSC(GSC) {}
 		};
+
+		// Main Menu Actions
 		class CloseAction : public GSCAction
 		{
 		public:
 			CloseAction(GameStateController* GSC) : GSCAction(GSC) {}
-			
 			virtual void Perform() { GSC->Close(); }
 		};
+		class NewGameAction : public GSCAction
+		{
+		public:
+			NewGameAction(GameStateController* GSC) : GSCAction(GSC) {}
+			virtual void Perform() { GSC->NewGame(); }
+		};
+		class ContinueGameAction : public GSCAction
+		{
+		public:
+			ContinueGameAction(GameStateController* GSC) : GSCAction(GSC) {}
+			virtual void Perform() { GSC->ContinueGame(); }
+		};
+
+		// InGame UI Actions
+		class OpenGameMenuAction : public GSCAction
+		{
+		public:
+			OpenGameMenuAction(GameStateController* GSC) : GSCAction(GSC) {}
+			virtual void Perform() { GSC->OpenGameMenu(); }
+		};
+		class CloseGameMenuAction : public GSCAction
+		{
+		public:
+			CloseGameMenuAction(GameStateController* GSC) : GSCAction(GSC) {}
+			virtual void Perform() { GSC->CloseGameMenu(); }
+		}; 
 	}
 }

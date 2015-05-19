@@ -33,6 +33,8 @@ namespace Core
 				Button(std::string ButtonImage, std::shared_ptr<Core::Input::Action> ClickAction);
 				virtual ~Button();
 
+				void SetState(std::unique_ptr<ButtonState> state);
+
 				// Button State Transitions
 				void OnMouseOver();
 				void OnMouseOut();
@@ -53,6 +55,7 @@ namespace Core
 				virtual void OnMouseDown() {}
 				virtual void OnClick() {}
 			};
+
 
 			class Idle : public ButtonState
 			{

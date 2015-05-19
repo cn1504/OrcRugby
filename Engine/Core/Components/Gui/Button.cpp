@@ -8,6 +8,7 @@ Button::Button(std::string ButtonImage, std::shared_ptr<Core::Input::Action> Cli
 {
 }
 Button::~Button() {}
+void Button::SetState(std::unique_ptr<ButtonState> state) { State = std::move(state); }
 void Button::OnMouseOver() { State->OnMouseOver(); }
 void Button::OnMouseOut() { State->OnMouseOut(); }
 void Button::OnMouseDown() { State->OnMouseDown(); }

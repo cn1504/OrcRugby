@@ -16,6 +16,11 @@ namespace Game
 		public:
 			SaveDB(std::shared_ptr<Core::Assets::Database> db);
 			virtual ~SaveDB();
+
+			int GetInt(std::string key);
+			double GetDouble(std::string key);
+			float GetFloat(std::string key);
+			std::string GetString(std::string key);
 		};
 	}
 }

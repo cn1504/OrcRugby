@@ -6,12 +6,26 @@ namespace Core
 {
 	namespace Input
 	{
+		class AddActionCommand : public Action
+		{
+		private:
+			std::unordered_map<std::string, std::vector<std::weak_ptr<Action>>>* target;
+			std::string key;
+			std::weak_ptr<Action> action;
+		public:
+			AddActionCommand(std::unordered_map<std::string, std::vector<std::weak_ptr<Action>>>* target, std::string key, std::weak_ptr<Action> action)
+				: target(target), key(key), action(action) {}
+			virtual void Perform();
+		};
+
 		class Map
 		{
 		private:
 			std::unordered_map<std::string, std::vector<std::weak_ptr<Action>>> OnPress;
 			std::unordered_map<std::string, std::vector<std::weak_ptr<Action>>> OnRelease;
 			std::unordered_map<std::string, std::vector<std::weak_ptr<Action>>> WhileDown;
+
+			std::vector<std::unique_ptr<Action>> ActionUpdateQueue;
 
 			std::string MapKey(int key);
 			void ProcessInputString(std::string value, int action);

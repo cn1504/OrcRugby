@@ -3,22 +3,29 @@
 
 using namespace Core::Input;
 
+
+void AddActionCommand::Perform()
+{
+	(*target)[key].push_back(action);
+}
+
+
 Map::Map() : MousePosition(mousePosition), MouseDelta(mouseDelta) {}
 Map::~Map() {}
 
 void Map::AddPressAction(std::string key, std::weak_ptr<Action> action)
 {
-	OnPress[key].push_back(action);
+	ActionUpdateQueue.push_back(std::make_unique<AddActionCommand>(&OnPress, key, action));
 }
 
 void Map::AddReleaseAction(std::string key, std::weak_ptr<Action> action)
 {
-	OnRelease[key].push_back(action);
+	ActionUpdateQueue.push_back(std::make_unique<AddActionCommand>(&OnRelease, key, action));
 }
 
 void Map::AddWhileDownAction(std::string key, std::weak_ptr<Action> action)
 {
-	WhileDown[key].push_back(action);
+	ActionUpdateQueue.push_back(std::make_unique<AddActionCommand>(&WhileDown, key, action));
 }
 
 void Map::KeyEvent(int key, int scancode, int action, int mods)
@@ -101,6 +108,12 @@ void Map::ScrollEvent(double x, double y)
 
 void Map::Update()
 {
+	for (auto& c : ActionUpdateQueue)
+	{
+		c->Perform();
+	}
+	ActionUpdateQueue.clear();
+
 	for (int v = 0; v < Down.size(); v++)
 	{
 		auto i = WhileDown.count(Down[v]);
