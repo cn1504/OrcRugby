@@ -22,7 +22,7 @@ namespace Core
 		int drawCallsPerFrame;
 
 	public:
-		const float& Scale;
+		float& Scale;
 		const float& Delta;
 		const float& Elapsed;
 		const float& RealtimeDelta;

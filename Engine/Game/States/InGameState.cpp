@@ -21,7 +21,10 @@ InGameState::InGameState(GameStateController* GSC) : GameState(GSC)
 	// Reset Camera Position
 	auto camera = GSC->Window->GetCamera();
 	camera->Translate(glm::vec3(0, 20, -20) - camera->GetPosition());
-	camera->Rotate(glm::RotationBetweenVectors(camera->Forward(), glm::vec3(0, glm::sqrt(2.0f) / 2.0f, glm::sqrt(2.0f) / 2.0f)));
+	camera->Rotate(glm::RotationBetweenVectors(camera->Forward(), glm::vec3(0, -glm::sqrt(2.0f) / 2.0f, glm::sqrt(2.0f) / 2.0f)));
+
+	TogglePauseKeybind = std::make_shared<TogglePauseAction>(this);
+	GSC->Window->InputMap->AddReleaseAction("Space", TogglePauseKeybind);
 
 	LoadGUI();
 }
@@ -81,14 +84,14 @@ void InGameState::LoadGUI()
 	LoadedGuiComponents.push_back(centerPanel2);
 	GSC->Window->AddGuiItemToLayer(2, LoadedGuiComponents.back());
 
-	auto speedIncreaseAction = std::make_shared<Core::Input::NullAction>();
+	auto speedIncreaseAction = std::make_shared<IncreaseSpeedAction>(this);
 	auto speedIncreaseButton = std::make_shared<Core::Components::Gui::Button>("InGame_Centre_SpeedIncreaseButton", speedIncreaseAction);
 	speedIncreaseButton->Scale(glm::vec2(188.0, 84.0) * guiScaleOffset);
 	GSC->Window->AddButton(speedIncreaseButton);
 	centerPanel2->AddChild(speedIncreaseButton);
 	speedIncreaseButton->Translate(glm::vec2(268.0, 0.0) * guiScaleOffset);
 
-	auto speedDecreaseAction = std::make_shared<Core::Input::NullAction>();
+	auto speedDecreaseAction = std::make_shared<DecreaseSpeedAction>(this);
 	auto speedDecreaseButton = std::make_shared<Core::Components::Gui::Button>("InGame_Centre_SpeedDecreaseButton", speedDecreaseAction);
 	speedDecreaseButton->Scale(glm::vec2(188.0, 84.0) * guiScaleOffset);
 	GSC->Window->AddButton(speedDecreaseButton);
@@ -100,7 +103,11 @@ void InGameState::LoadGUI()
 	centerPanel2->AddChild(speedSetting);
 	speedSetting->Translate(glm::vec2(8.0, 20.0) * guiScaleOffset * 2.0f);
 
-	
+	SpeedPanel = std::make_shared<Core::Components::Gui::Panel>();
+	SpeedPanel->Scale(glm::vec2(61.0, 38.0) * guiScaleOffset);
+	centerPanel2->AddChild(SpeedPanel);
+	SetSpeedState(std::make_unique<NormalSpeedState>(this));
+	SpeedPanel->Translate(glm::vec2(8.0, 0.0) * guiScaleOffset * 2.0f);
 
 	auto MoneyBox = std::make_shared<Core::Components::Gui::Panel>("InGame_Centre_MoneyBox");
 	MoneyBox->Scale(glm::vec2(512, 164) * guiScaleOffset);
@@ -110,11 +117,15 @@ void InGameState::LoadGUI()
 }
 void InGameState::ReloadGUI()
 {
+	auto currentSpeedState = std::move(SpeedState);
 	CloseGUI();
 	LoadGUI();
+	SetSpeedState(std::move(currentSpeedState));
 }
 void InGameState::CloseGUI()
 {
+	SpeedState = nullptr;
+	SpeedPanel = nullptr;
 	for (auto& i : LoadedGuiComponents)
 	{
 		i->GetParent()->RemoveChild(i);
@@ -189,3 +200,37 @@ void InGameState::SaveGame()
 {
 
 }
+
+
+void InGameState::SetSpeedState(std::unique_ptr<GameSpeedState> s)
+{
+	SpeedState = std::move(s);
+	SpeedPanel->SetImage(SpeedState->GetPanelImage());
+	Core::Time->Scale = SpeedState->GetTimeMultiplier();
+}
+void InGameState::TogglePause() { SpeedState->TogglePause(); }
+void InGameState::IncreaseSpeed() { SpeedState->Increase(); }
+void InGameState::DecreaseSpeed() { SpeedState->Decrease(); }
+void TogglePauseAction::Perform() { state->TogglePause(); }
+void IncreaseSpeedAction::Perform() { state->IncreaseSpeed(); }
+void DecreaseSpeedAction::Perform() { state->DecreaseSpeed(); }
+void GameSpeedState::TogglePause() { GS->SetSpeedState(std::make_unique<PausedState>(GS)); }
+
+void PausedState::Increase() { GS->SetSpeedState(std::make_unique<NormalSpeedState>(GS)); }
+void PausedState::TogglePause() { GS->SetSpeedState(std::move(PreviousState)); }
+std::string PausedState::GetPanelImage() { return "InGame_Centre_Pause"; }
+float PausedState::GetTimeMultiplier() { return 0.0f; }
+
+void NormalSpeedState::Increase() { GS->SetSpeedState(std::make_unique<DoubleSpeedState>(GS)); }
+void NormalSpeedState::Decrease() { GS->SetSpeedState(std::make_unique<PausedState>(GS)); }
+std::string NormalSpeedState::GetPanelImage() { return "InGame_Centre_x1"; }
+float NormalSpeedState::GetTimeMultiplier() { return 1.0f; }
+
+void DoubleSpeedState::Increase() { GS->SetSpeedState(std::make_unique<QuadSpeedState>(GS)); }
+void DoubleSpeedState::Decrease() { GS->SetSpeedState(std::make_unique<NormalSpeedState>(GS)); }
+std::string DoubleSpeedState::GetPanelImage() { return "InGame_Centre_x2"; }
+float DoubleSpeedState::GetTimeMultiplier() { return 2.0f; }
+
+void QuadSpeedState::Decrease() { GS->SetSpeedState(std::make_unique<DoubleSpeedState>(GS)); }
+std::string QuadSpeedState::GetPanelImage() { return "InGame_Centre_x4"; }
+float QuadSpeedState::GetTimeMultiplier() { return 4.0f; }
