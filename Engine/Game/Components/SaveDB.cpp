@@ -20,9 +20,9 @@ SaveDB::SaveDB(std::shared_ptr<Core::Assets::Database> db)
 		db->SqlStatement("CREATE TABLE Stats_TEXT([key] TEXT PRIMARY KEY NOT NULL UNIQUE, value TEXT)");
 
 		// Initialize default values
-		db->SqlStatement("INSERT INTO Stats_INT (key, value) VALUES ('NewSave', 0)");
-		db->SqlStatement("INSERT INTO Stats_INT (key, value) VALUES ('GameInProgress', 0)");
-		db->SqlStatement("INSERT INTO Stats_REAL (key, value) VALUES ('TimeRatio', " + std::to_string(1.0 / (300.0 / 86400.0)) + ")");
+		Set("NewSave", false);
+		Set("GameInProgress", false);
+		Set("TimeRatio", 1.0 / (300.0 / 86400.0));
 	}
 	else
 	{
@@ -33,6 +33,28 @@ SaveDB::SaveDB(std::shared_ptr<Core::Assets::Database> db)
 
 SaveDB::~SaveDB() {}
 
+
+void SaveDB::Set(std::string key, int value)
+{
+	db->SqlStatement("INSERT OR REPLACE INTO Stats_INT (key, value) VALUES ('" + key + "', " + std::to_string(value) + ")");
+}
+void SaveDB::Set(std::string key, double value)
+{
+	db->SqlStatement("INSERT OR REPLACE INTO Stats_REAL (key, value) VALUES ('" + key + "', " + std::to_string(value) + ")");
+}
+void SaveDB::Set(std::string key, float value)
+{
+	db->SqlStatement("INSERT OR REPLACE INTO Stats_REAL (key, value) VALUES ('" + key + "', " + std::to_string(value) + ")");
+}
+void SaveDB::Set(std::string key, std::string value)
+{
+	db->SqlStatement("INSERT OR REPLACE INTO Stats_TEXT (key, value) VALUES ('" + key + "', '" + value + "')");
+}
+void SaveDB::Set(std::string key, bool value)
+{
+	db->SqlStatement("INSERT OR REPLACE INTO Stats_INT (key, value) VALUES ('" + key + "', " + std::to_string((value ? 1 : 0)) + ")");
+}
+
 int SaveDB::GetInt(std::string key)
 {
 	int value = 0;
@@ -41,6 +63,7 @@ int SaveDB::GetInt(std::string key)
 	{
 		value = db->GetColumnInt(0);
 	}
+	db->FreeQuery();
 	return value;
 }
 double SaveDB::GetDouble(std::string key)
@@ -51,6 +74,7 @@ double SaveDB::GetDouble(std::string key)
 	{
 		value = db->GetColumnDouble(0);
 	}
+	db->FreeQuery();
 	return value;
 }
 float SaveDB::GetFloat(std::string key)
@@ -61,15 +85,28 @@ float SaveDB::GetFloat(std::string key)
 	{
 		value = static_cast<float>(db->GetColumnDouble(0));
 	}
+	db->FreeQuery();
 	return value;
 }
 std::string SaveDB::GetString(std::string key)
 {
-	std::string value = "";
-	db->Sql("SELECT value FROM Stats_REAL WHERE key='" + key + "' LIMIT 1");
+	std::string value = "Invalid String";
+	db->Sql("SELECT value FROM Stats_TEXT WHERE key='" + key + "' LIMIT 1");
 	if (db->FetchRow())
 	{
 		value = db->GetColumnString(0);
 	}
+	db->FreeQuery();
+	return value;
+}
+bool SaveDB::GetBool(std::string key)
+{
+	bool value = 0;
+	db->Sql("SELECT value FROM Stats_INT WHERE key='" + key + "' LIMIT 1");
+	if (db->FetchRow())
+	{
+		value = (db->GetColumnInt(0) != 0);
+	}
+	db->FreeQuery();
 	return value;
 }

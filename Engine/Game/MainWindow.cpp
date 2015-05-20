@@ -13,7 +13,7 @@
 #include <Components/Grid.h>
 #include <Components/Hex.h>
 #include <Components/PrefsDB.h>
-#include <Components/GameStateController.h>
+#include <States/GameStateController.h>
 
 using namespace Game;
 using namespace Core::Window;
@@ -44,7 +44,7 @@ MainWindow::MainWindow()
 	{
 	}
 
-	GSC = std::make_shared<Game::Components::GameStateController>(this);
+	GSC = std::make_shared<Game::States::GameStateController>(this);
 	GSC->MainMenu();
 
 	OnMouseLeftDown = std::make_shared<ClickDownAction>(this);
@@ -163,6 +163,8 @@ void MainWindow::Scale(const glm::ivec2& delta)
 		{
 			l->Scale(Gui->GetScale() / l->GetScale());
 		}
+
+		GSC->Reload();
 	}
 }
 void MainWindow::AddGuiItemToLayer(int i, std::shared_ptr<Core::Components::Gui::Item> item)

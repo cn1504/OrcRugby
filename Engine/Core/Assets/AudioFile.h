@@ -14,15 +14,15 @@ namespace Core
 		public:
 			enum class Type { SOUND_EFFECT, AMBIENT, VOICE, MUSIC };
 
-			ALuint format;
+			ALuint buffer;
 
-			short* dataBuffer;
+			ALuint format;
 			DWORD dataSize;
 			DWORD sampleRate;
 			float duration;
 			Type type;
 
-			AudioFile(std::string filename, Type t = Type::SOUND_EFFECT);
+			AudioFile(void* dataBuffer, size_t bufferSize, ALuint format, DWORD dataSize, DWORD sampleRate, float duration, Type type);
 			~AudioFile();
 		};
 

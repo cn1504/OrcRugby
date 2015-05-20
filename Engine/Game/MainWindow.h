@@ -33,7 +33,7 @@ namespace Game
 		std::shared_ptr<CameraRotationAction> CameraRotateLeft;
 		std::shared_ptr<CameraRotationAction> CameraRotateRight;
 
-		std::shared_ptr<Game::Components::GameStateController> GSC;
+		std::shared_ptr<Game::States::GameStateController> GSC;
 		std::shared_ptr<Core::Input::Action> OnMouseLeftRelease;
 		std::shared_ptr<Core::Input::Action> OnMouseLeftDown;
 		std::vector<std::weak_ptr<Core::Components::Gui::Button>> Buttons;

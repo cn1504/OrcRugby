@@ -15,11 +15,13 @@ namespace Core
 			std::unordered_map<std::string, std::shared_ptr<Core::Assets::Font>> FontCache;
 			std::unordered_map<std::string, std::shared_ptr<Core::Renderers::VertexBuffer>> VBCache;
 			std::unordered_map<std::string, std::shared_ptr<Core::Assets::Light>> LightCache;
+			std::unordered_map<std::string, std::shared_ptr<Core::Assets::AudioFile>> AudioCache;
 			
 		public:
 			AssetDB(std::shared_ptr<Database> db);
 			virtual ~AssetDB() {}
 
+			virtual std::shared_ptr<Core::Assets::AudioFile> GetAudioFile(std::string key);
 			virtual std::shared_ptr<Core::Assets::Texture> GetTexture(std::string key);
 			virtual std::shared_ptr<Core::Assets::Font> GetFont(std::string key);
 			virtual std::shared_ptr<Core::Renderers::VertexBuffer> GetVertexBuffer(std::string key);

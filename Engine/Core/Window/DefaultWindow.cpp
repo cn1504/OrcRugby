@@ -2,6 +2,7 @@
 #include <Renderers/Renderers.h>
 #include <Components/Gui/Panel.h>
 #include <Input/Map.h>
+#include <Audio/Listener.h>
 
 using namespace Core::Window;
 
@@ -46,6 +47,7 @@ DefaultWindow::DefaultWindow(std::string name, const glm::ivec2& position, const
 	Camera = std::make_shared<Core::Components::Camera>();
 	Camera->UpdateProjection(FOVY, ((float)size.x) / ((float)size.y), MIN_DRAWDISTANCE, MAX_DRAWDISTANCE);
 	Core::Scene->AddChild(Camera);
+	Core::Listener->SetCurrentListener(Camera);
 
 	GeometryRenderer = std::make_unique<Core::Renderers::GeometryRenderer>();
 	GeometryRenderer->SetCamera(Camera);

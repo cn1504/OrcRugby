@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\CameraControls.h" />
-    <ClInclude Include="Components\GameStateController.h" />
     <ClInclude Include="Components\Generator.h" />
     <ClInclude Include="Components\Grid.h" />
     <ClInclude Include="Components\Hex.h" />
@@ -28,10 +27,13 @@
     <ClInclude Include="Components\SaveDB.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="States\GameStateController.h" />
+    <ClInclude Include="States\InGameState.h" />
+    <ClInclude Include="States\MainMenuState.h" />
+    <ClInclude Include="States\NewGameCreationState.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Components\CameraControls.cpp" />
-    <ClCompile Include="Components\GameStateController.cpp" />
     <ClCompile Include="Components\Generator.cpp" />
     <ClCompile Include="Components\Grid.cpp" />
     <ClCompile Include="Components\Hex.cpp" />
@@ -39,6 +41,10 @@
     <ClCompile Include="Components\SaveDB.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="States\GameStateController.cpp" />
+    <ClCompile Include="States\InGameState.cpp" />
+    <ClCompile Include="States\MainMenuState.cpp" />
+    <ClCompile Include="States\NewGameCreationState.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D92779CA-22B9-46E4-BDBF-E72BAAABBC54}</ProjectGuid>

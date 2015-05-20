@@ -3,6 +3,7 @@
 #include "Texture.h"
 #include "Font.h"
 #include "Light.h"
+#include "AudioFile.h"
 #include <Renderers/VertexBuffer.h>
 
 #include <Space/TransformIF.h>
@@ -22,7 +23,7 @@ std::shared_ptr<Core::Assets::Texture> AssetDB::GetTexture(std::string key)
 	auto& ptr = TextureCache[key];
 	if (ptr == nullptr)
 	{		
-		db->Sql("SELECT width, height, data FROM Textures WHERE key='" + key + "'");
+		db->Sql("SELECT width, height, data FROM Textures WHERE key='" + key + "' LIMIT 1");
 		if (db->FetchRow())
 		{
 			int width = db->GetColumnInt(0);
@@ -38,7 +39,7 @@ std::shared_ptr<Core::Assets::Font> AssetDB::GetFont(std::string key)
 	auto& ptr = FontCache[key];
 	if (ptr == nullptr)
 	{
-		db->Sql("SELECT Texture, CharWidth, CharHeight, CharsPerRow, CharsPerColumn FROM Fonts WHERE key='" + key + "'");
+		db->Sql("SELECT Texture, CharWidth, CharHeight, CharsPerRow, CharsPerColumn FROM Fonts WHERE key='" + key + "' LIMIT 1");
 		if (db->FetchRow())
 		{
 			std::string Texture = db->GetColumnString(0);
@@ -57,7 +58,7 @@ std::shared_ptr<Core::Renderers::VertexBuffer> AssetDB::GetVertexBuffer(std::str
 	auto& ptr = VBCache[key];
 	if (ptr == nullptr)
 	{
-		db->Sql("SELECT Data FROM VertexBuffers WHERE Key='" + key + "'");
+		db->Sql("SELECT Data FROM VertexBuffers WHERE Key='" + key + "' LIMIT 1");
 		if (db->FetchRow())
 		{
 			auto data = db->GetColumnBlob(0);
@@ -75,7 +76,7 @@ std::shared_ptr<Core::Assets::Light> AssetDB::GetLight(std::string key)
 	auto& ptr = LightCache[key];
 	if (ptr == nullptr)
 	{
-		db->Sql("SELECT color_r, color_g, color_b, radius, intensity, cosInner, cosOuter, castsShadow FROM Lights WHERE key='" + key + "'");
+		db->Sql("SELECT color_r, color_g, color_b, radius, intensity, cosInner, cosOuter, castsShadow FROM Lights WHERE key='" + key + "' LIMIT 1");
 		if (db->FetchRow())
 		{
 			auto color = glm::vec3(db->GetColumnDouble(0), db->GetColumnDouble(1), db->GetColumnDouble(2));
@@ -149,14 +150,14 @@ void AssetDB::AddTileContents(std::shared_ptr<Core::Space::TransformIF> tile, st
 	{
 		if (r.type == "StaticMesh")
 		{
-			db->Sql("SELECT Mesh, Material FROM StaticMeshes WHERE tag='" + r.reference + "'");
+			db->Sql("SELECT Mesh, Material FROM StaticMeshes WHERE tag='" + r.reference + "' LIMIT 1");
 			if (db->FetchRow())
 			{
 				auto mesh = db->GetColumnString(0);
 				auto mat = db->GetColumnString(1);
 				db->FreeQuery();
 
-				db->Sql("SELECT Base_R, Base_G, Base_B, Metallic, Specular, Roughness FROM Materials WHERE Tag='" + mat + "'");
+				db->Sql("SELECT Base_R, Base_G, Base_B, Metallic, Specular, Roughness FROM Materials WHERE Tag='" + mat + "' LIMIT 1");
 				if (db->FetchRow())
 				{
 					auto base = glm::vec4(db->GetColumnDouble(0), db->GetColumnDouble(1), db->GetColumnDouble(2), 1.0);
@@ -190,4 +191,30 @@ void AssetDB::AddTileContents(std::shared_ptr<Core::Space::TransformIF> tile, st
 			Core::Debug->Log("Invalid TileContent Type: " + r.type + " for reference: " + r.reference);
 		}
 	}
+}
+
+
+
+std::shared_ptr<Core::Assets::AudioFile> AssetDB::GetAudioFile(std::string key)
+{
+	auto& ptr = AudioCache[key];
+	if (ptr == nullptr)
+	{
+		db->Sql("SELECT Type, Format, Size, SampleRate, Duration, Data FROM Audio WHERE Key='" + key + "' LIMIT 1");
+		if (db->FetchRow())
+		{
+			auto type = db->GetColumnInt(0);
+			auto format = db->GetColumnInt(1);
+			auto size = db->GetColumnInt(2);
+			auto samplerate = db->GetColumnInt(3);
+			auto duration = static_cast<float>(db->GetColumnDouble(4));
+			auto data = db->GetColumnBlob(5);
+			ptr = std::make_shared<Core::Assets::AudioFile>(data->GetData(), data->GetSize(), (ALuint)format, (DWORD)size, (DWORD)samplerate, duration, (Core::Assets::AudioFile::Type)type);
+		}
+		else
+		{
+			Debug->Error("Database miss: GetAudioFile(" + key + ")");
+		}
+	}
+	return ptr;
 }

@@ -11,6 +11,44 @@ void load(std::string filename)
 {
 	out->Log("Opening \"" + filename + "\"");
 
+	auto first = filename.find_last_of("\\/") + 1;
+	auto size = filename.find_last_of(".") - first;
+	std::string name = filename.substr(first, size);
+
+	// Load file
+	SF_INFO sfinfo;
+	sfinfo.format = 0;
+	SNDFILE* soundfile = sf_open(filename.c_str(), SFM_READ, &sfinfo);
+
+	auto framecount = sfinfo.frames * sfinfo.channels;
+	short* dataBuffer = new short[framecount];
+	auto readcount = sf_read_short(soundfile, dataBuffer, framecount);
+
+	if (readcount != framecount)
+	{
+		Core::Debug->Error("Could not read all audio file frames");
+	}
+
+	// Read the sound format
+	DWORD dataSize = (DWORD)(framecount * 2);  // 2 Bytes Per Frame
+	DWORD sampleRate = sfinfo.samplerate;
+	float duration = (float)sfinfo.frames / (float)sfinfo.samplerate;
+	ALuint format = (sfinfo.channels == 1) ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+
+	sf_close(soundfile);
+
+	// Insert file into database
+	auto b = new Core::Assets::Blob((unsigned char*)dataBuffer, dataSize);
+
+	Core::Database->Sql("INSERT OR REPLACE INTO Audio (key, format, size, samplerate, duration, data) VALUES (?, ?, ?, ?, ?, ?)");
+	Core::Database->Bind(1, name);
+	Core::Database->Bind(2, static_cast<int>(format));
+	Core::Database->Bind(3, static_cast<int>(dataSize));
+	Core::Database->Bind(4, static_cast<int>(sampleRate));
+	Core::Database->Bind(5, duration);
+	Core::Database->Bind(6, *b);
+	Core::Database->ExecuteAndFree();
+
 	/*	Names
 	std::ifstream in(filename);
 

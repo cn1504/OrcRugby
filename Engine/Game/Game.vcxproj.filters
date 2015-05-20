@@ -18,11 +18,20 @@
     <ClInclude Include="Components\PrefsDB.h">
       <Filter>Components</Filter>
     </ClInclude>
-    <ClInclude Include="Components\GameStateController.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="Components\Generator.h">
       <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="States\GameStateController.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="States\MainMenuState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="States\InGameState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="States\NewGameCreationState.h">
+      <Filter>States</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -43,16 +52,28 @@
     <ClCompile Include="Components\PrefsDB.cpp">
       <Filter>Components</Filter>
     </ClCompile>
-    <ClCompile Include="Components\GameStateController.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="Components\Generator.cpp">
       <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="States\GameStateController.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="States\MainMenuState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="States\InGameState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="States\NewGameCreationState.cpp">
+      <Filter>States</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Components">
       <UniqueIdentifier>{58affa36-fec0-41f5-a9f8-ae8674d1cc7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="States">
+      <UniqueIdentifier>{1478957e-799f-479a-aa0a-f05e402d84fb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

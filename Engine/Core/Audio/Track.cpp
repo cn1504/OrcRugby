@@ -1,9 +1,10 @@
 #include "Track.h"
 #include "Listener.h"
+#include <Assets/AssetDB.h>
 
 using namespace Core::Audio;
 
-Track::Track(Core::Assets::AudioFile* file, Core::Components::Entity* bond, float volume, bool loop)
+Track::Track(std::string file, Core::Components::Entity* bond, float volume, bool loop)
 {
 	this->file = file;
 	this->bond = bond;
@@ -11,30 +12,26 @@ Track::Track(Core::Assets::AudioFile* file, Core::Components::Entity* bond, floa
 	this->loop = loop;
 
 	// Load file
-	alGenBuffers(1, &buffer);
 	alGenSources(1, &source);
-
-	alBufferData(buffer, file->format, file->dataBuffer, file->dataSize, file->sampleRate);
-
+	
 	elapsedTime = 0.0f;
+	duration = 0.0f;
 
 	Play();
 }
 
 
-Track::Track(Core::Assets::AudioFile* file, glm::vec3 position, glm::vec3 velocity, float volume, bool loop)
+Track::Track(std::string file, glm::vec3 position, glm::vec3 velocity, float volume, bool loop)
 {
 	this->file = file;
 	this->bond = nullptr;
 	this->volume = volume;
 	this->loop = loop;
 
-	alGenBuffers(1, &buffer);
 	alGenSources(1, &source);
-
-	alBufferData(buffer, file->format, file->dataBuffer, file->dataSize, file->sampleRate);
-
+	
 	elapsedTime = 0.0f;
+	duration = 0.0f;
 	this->position = position;
 	this->velocity = velocity;
 
@@ -48,20 +45,21 @@ Track::~Track()
 	alSourceStop(source);
 
 	alDeleteSources(1, &source);
-	alDeleteBuffers(1, &buffer);
 }
 
 
 void Track::Update()
 {
+	auto af = Core::AssetDB->GetAudioFile(file);
+
 	float volume = 1.0f;
-	if (file->type == Core::Assets::AudioFile::Type::SOUND_EFFECT)
+	if (af->type == Core::Assets::AudioFile::Type::SOUND_EFFECT)
 		volume = Core::Listener->GetSFXVolume();
-	else if (file->type == Core::Assets::AudioFile::Type::AMBIENT)
+	else if (af->type == Core::Assets::AudioFile::Type::AMBIENT)
 		volume = Core::Listener->GetAmbientVolume();
-	else if (file->type == Core::Assets::AudioFile::Type::VOICE)
+	else if (af->type == Core::Assets::AudioFile::Type::VOICE)
 		volume = Core::Listener->GetVoiceVolume();
-	else if (file->type == Core::Assets::AudioFile::Type::MUSIC)
+	else if (af->type == Core::Assets::AudioFile::Type::MUSIC)
 		volume = Core::Listener->GetMusicVolume();
 
 	alSourcef(source, AL_GAIN, this->volume * volume);
@@ -80,11 +78,12 @@ void Track::Update()
 
 void Track::Play()
 {
-	Update();
-
-	alSourcei(source, AL_BUFFER, buffer);
+	auto af = Core::AssetDB->GetAudioFile(file);
+	duration = af->duration;
+	alSourcei(source, AL_BUFFER, af->buffer);
 	alSourcef(source, AL_PITCH, 1.0f);
 	alSourcei(source, AL_LOOPING, loop);
+	Update();
 
 	alSourcePlay(source);
 }
@@ -92,5 +91,5 @@ void Track::Play()
 
 bool Track::HasFinished()
 {
-	return elapsedTime > file->duration;
+	return elapsedTime > duration;
 }

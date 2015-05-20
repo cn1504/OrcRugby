@@ -10,7 +10,7 @@ namespace Core
 		class Track
 		{
 		private:
-			Core::Assets::AudioFile* file;
+			std::string file;
 			Core::Components::Entity* bond;
 			glm::vec3 position;
 			glm::vec3 velocity;
@@ -18,15 +18,15 @@ namespace Core
 			bool loop;
 
 			float elapsedTime;
+			float duration;
 
-			ALuint buffer;
 			ALuint source;
 
 			void Play();
 
 		public:
-			Track(Core::Assets::AudioFile* file, Core::Components::Entity* bond, float volume, bool loop);
-			Track(Core::Assets::AudioFile* file, glm::vec3 position, glm::vec3 velocity, float volume, bool loop);
+			Track(std::string file, Core::Components::Entity* bond, float volume, bool loop);
+			Track(std::string file, glm::vec3 position, glm::vec3 velocity, float volume, bool loop);
 			~Track();
 
 			void Update();
