@@ -50,10 +50,6 @@ void SaveDB::Set(std::string key, std::string value)
 {
 	db->SqlStatement("INSERT OR REPLACE INTO Stats_TEXT (key, value) VALUES ('" + key + "', '" + value + "')");
 }
-void SaveDB::Set(std::string key, bool value)
-{
-	db->SqlStatement("INSERT OR REPLACE INTO Stats_INT (key, value) VALUES ('" + key + "', " + std::to_string((value ? 1 : 0)) + ")");
-}
 
 int SaveDB::GetInt(std::string key)
 {
@@ -99,14 +95,4 @@ std::string SaveDB::GetString(std::string key)
 	db->FreeQuery();
 	return value;
 }
-bool SaveDB::GetBool(std::string key)
-{
-	bool value = 0;
-	db->Sql("SELECT value FROM Stats_INT WHERE key='" + key + "' LIMIT 1");
-	if (db->FetchRow())
-	{
-		value = (db->GetColumnInt(0) != 0);
-	}
-	db->FreeQuery();
-	return value;
-}
+

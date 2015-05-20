@@ -21,6 +21,12 @@ namespace Game
 			void CloseGameMenu();
 			void CloseGame();
 
+			void LoadGUI();
+			void ReloadGUI();
+			void CloseGUI();
+
+			void SaveGame();
+
 		public:
 			InGameState(GameStateController* GSC);
 			~InGameState();
@@ -30,6 +36,7 @@ namespace Game
 			virtual void OpenOptionsMenu();
 			virtual void OpenInventory();
 			virtual void OpenEvent(std::string Event);
+			virtual void Reload();
 		};
 
 

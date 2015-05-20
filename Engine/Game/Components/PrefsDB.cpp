@@ -39,10 +39,6 @@ void PrefsDB::Set(std::string key, std::string value)
 {
 	db->SqlStatement("INSERT OR REPLACE INTO Prefs_TEXT (key, value) VALUES ('" + key + "', '" + value + "')");
 }
-void PrefsDB::Set(std::string key, bool value)
-{
-	db->SqlStatement("INSERT OR REPLACE INTO Prefs_INT (key, value) VALUES ('" + key + "', " + std::to_string((value ? 1 : 0)) + ")");
-}
 
 int PrefsDB::GetInt(std::string key)
 {
@@ -88,17 +84,6 @@ std::string PrefsDB::GetString(std::string key)
 	db->FreeQuery();
 	return value;
 }
-bool PrefsDB::GetBool(std::string key)
-{
-	bool value = 0;
-	db->Sql("SELECT value FROM Prefs_INT WHERE key='" + key + "' LIMIT 1");
-	if (db->FetchRow())
-	{
-		value = (db->GetColumnInt(0) != 0);
-	}
-	db->FreeQuery();
-	return value;
-}
 
 void PrefsDB::InitializeDB()
 {
@@ -133,4 +118,13 @@ void PrefsDB::InitializeDB()
 	Set("CameraOut", "Scroll Up");
 	Set("CameraRotateLeft", "Q");
 	Set("CameraRotateRight", "E");
+
+	// Sound Settings
+	Set("AudioEnabled", true);
+	Set("MusicEnabled", true);
+	Set("MainVolume", 1.0);
+	Set("MusicVolume", 1.0);
+	Set("AmbientVolume", 1.0);
+	Set("SFXVolume", 1.0);
+	Set("VoiceVolume", 1.0);
 }

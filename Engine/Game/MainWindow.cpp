@@ -86,6 +86,7 @@ int MainWindow::Update()
 	FPSLabel->SetText("FPS: " + std::to_string((int)Core::Time->FPS));
 	
 	// Update Button States
+	bool deactivate = false;
 	auto mp = InputMap->MousePosition;
 	mp.y = Size.y - mp.y;
 	for (size_t i = Layers.size(); i > 0; i--)
@@ -93,7 +94,7 @@ int MainWindow::Update()
 		bool result = false;
 		for (size_t j = 0; j < Layers[i - 1]->GetChildCount(); j--)
 		{
-			bool r = UpdateButtons(Layers[i - 1]->GetChild(j), mp);
+			bool r = UpdateButtons(Layers[i - 1]->GetChild(j), mp, deactivate);
 			if (r == true)
 			{
 				result = true;
@@ -102,14 +103,14 @@ int MainWindow::Update()
 
 		if (result == true)
 		{
-			break;
+			deactivate = true;
 		}
 	}
 
 	return DefaultWindow::Update();
 }
 
-bool MainWindow::UpdateButtons(std::shared_ptr<Core::Space::Transform2DIF> parent, const glm::vec2& mp)
+bool MainWindow::UpdateButtons(std::shared_ptr<Core::Space::Transform2DIF> parent, const glm::vec2& mp, bool deactivate)
 {
 	bool r = false;
 
@@ -121,8 +122,13 @@ bool MainWindow::UpdateButtons(std::shared_ptr<Core::Space::Transform2DIF> paren
 		&& (mp.y > p.y - s.y / 2.0f && mp.y < p.y + s.y / 2.0f))
 	{
 		auto b = std::dynamic_pointer_cast<Core::Components::Gui::Button>(parent);
-		if(b)
-			b->OnMouseOver();
+		if (b)
+		{
+			if (deactivate)
+				b->OnMouseOut();
+			else
+				b->OnMouseOver();
+		}
 		r = true;
 	}
 	else
@@ -135,7 +141,7 @@ bool MainWindow::UpdateButtons(std::shared_ptr<Core::Space::Transform2DIF> paren
 	for (size_t i = 0; i < parent->GetChildCount(); i++)
 	{
 		auto c = parent->GetChild(i);
-		auto r2 = UpdateButtons(c, mp);
+		auto r2 = UpdateButtons(c, mp, deactivate);
 		if (r2)
 			r = true;
 	}

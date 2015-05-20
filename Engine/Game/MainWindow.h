@@ -37,7 +37,7 @@ namespace Game
 		std::shared_ptr<Core::Input::Action> OnMouseLeftRelease;
 		std::shared_ptr<Core::Input::Action> OnMouseLeftDown;
 		std::vector<std::weak_ptr<Core::Components::Gui::Button>> Buttons;
-		bool UpdateButtons(std::shared_ptr<Core::Space::Transform2DIF> parent, const glm::vec2& mp);
+		bool UpdateButtons(std::shared_ptr<Core::Space::Transform2DIF> parent, const glm::vec2& mp, bool deactivate);
 				
 		std::unique_ptr<Game::Components::Generator> Generator;
 

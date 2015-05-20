@@ -47,6 +47,8 @@ namespace Core
 			
 			virtual void Scale(const glm::ivec2& delta);
 			virtual int Update();
+
+			std::shared_ptr<Core::Components::Camera> GetCamera() { return Camera; }
 		};
 
 

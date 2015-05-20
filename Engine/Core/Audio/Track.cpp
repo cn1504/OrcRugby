@@ -52,15 +52,15 @@ void Track::Update()
 {
 	auto af = Core::AssetDB->GetAudioFile(file);
 
-	float volume = 1.0f;
+	float volume = Core::Listener->GetVolume();
 	if (af->type == Core::Assets::AudioFile::Type::SOUND_EFFECT)
-		volume = Core::Listener->GetSFXVolume();
+		volume *= Core::Listener->GetSFXVolume();
 	else if (af->type == Core::Assets::AudioFile::Type::AMBIENT)
-		volume = Core::Listener->GetAmbientVolume();
+		volume *= Core::Listener->GetAmbientVolume();
 	else if (af->type == Core::Assets::AudioFile::Type::VOICE)
-		volume = Core::Listener->GetVoiceVolume();
+		volume *= Core::Listener->GetVoiceVolume();
 	else if (af->type == Core::Assets::AudioFile::Type::MUSIC)
-		volume = Core::Listener->GetMusicVolume();
+		volume *= Core::Listener->GetMusicVolume();
 
 	alSourcef(source, AL_GAIN, this->volume * volume);
 
