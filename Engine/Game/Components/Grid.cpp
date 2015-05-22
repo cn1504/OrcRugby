@@ -13,7 +13,7 @@ const float HEIGHT = glm::sqrt(SIDE_LENGTH*SIDE_LENGTH - SIDE_LENGTH_HALF*SIDE_L
 
 Grid::Grid()
 {
-	auto center = std::make_shared<Hex>();
+	auto center = std::make_shared<Hex>(glm::ivec2());
 	AddChild(center);
 	center->Build();
 

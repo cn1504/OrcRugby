@@ -114,8 +114,8 @@ void PrefsDB::InitializeDB()
 	Set("CameraLeft", "A");
 	Set("CameraRight", "D");
 	Set("CameraOut", "Scroll Up");
-	Set("CameraIn", "Scroll Down");
-	Set("CameraOut", "Scroll Up");
+	Set("CameraIn", "Scroll Up");
+	Set("CameraOut", "Scroll Down");
 	Set("CameraRotateLeft", "Q");
 	Set("CameraRotateRight", "E");
 

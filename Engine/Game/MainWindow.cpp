@@ -37,8 +37,8 @@ MainWindow::MainWindow()
 	FPSLabel = std::make_shared<Core::Components::Gui::Anchored>(FPSLabel, std::make_unique<Core::Components::Gui::AlignBottomLeft>(glm::vec2(6,0)));
 	AddGuiItemToLayer(static_cast<int>(Layers.size() - 1), FPSLabel);
 
-	Camera->Translate(glm::vec3(0, 20, -20));
-	Camera->Rotate(glm::vec3(45.0, 0, 0));
+	//Camera->Translate(glm::vec3(0, 10, -17.32));
+	//Camera->Rotate(glm::vec3(30.0, 0, 0));
 
 	if (Core::Window::Map.size() < 2)
 	{

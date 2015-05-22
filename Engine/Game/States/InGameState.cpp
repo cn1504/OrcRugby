@@ -15,16 +15,20 @@ InGameState::InGameState(GameStateController* GSC) : GameState(GSC)
 	LoadedEntities.push_back(std::make_shared<Core::Components::DayNightCycle>(DayDuration));
 	Core::Scene->AddChild(LoadedEntities.back());
 
-	LoadedEntities.push_back(std::make_shared<Game::Components::Grid>());
-	Core::Scene->AddChild(LoadedEntities.back());
+	auto Grid = std::make_shared<Game::Components::Grid>();
+	LoadedEntities.push_back(Grid);
+	Core::Scene->AddChild(Grid);
 
 	// Reset Camera Position
 	auto camera = GSC->Window->GetCamera();
-	camera->Translate(glm::vec3(0, 20, -20) - camera->GetPosition());
-	camera->Rotate(glm::RotationBetweenVectors(camera->Forward(), glm::vec3(0, -glm::sqrt(2.0f) / 2.0f, glm::sqrt(2.0f) / 2.0f)));
+	camera->Translate(glm::vec3(0, 12.313, -15.76) - camera->GetPosition());
+	camera->Rotate(glm::RotationBetweenVectors(camera->Forward(), glm::normalize(glm::vec3(0, -0.615661f, 0.788011f))));
 
 	TogglePauseKeybind = std::make_shared<TogglePauseAction>(this);
 	GSC->Window->InputMap->AddReleaseAction("Space", TogglePauseKeybind);
+
+	ExpandGrid = std::make_shared<ExpandGridAction>(Grid, camera);
+	GSC->Window->InputMap->AddReleaseAction("F", std::weak_ptr<Core::Input::Action>(ExpandGrid));
 
 	LoadGUI();
 }
@@ -234,3 +238,23 @@ float DoubleSpeedState::GetTimeMultiplier() { return 2.0f; }
 void QuadSpeedState::Decrease() { GS->SetSpeedState(std::make_unique<DoubleSpeedState>(GS)); }
 std::string QuadSpeedState::GetPanelImage() { return "InGame_Centre_x4"; }
 float QuadSpeedState::GetTimeMultiplier() { return 4.0f; }
+
+
+ExpandGridAction::ExpandGridAction(std::weak_ptr<Game::Components::Grid> grid, std::weak_ptr<Core::Space::TransformIF> target)
+{
+	Grid = grid;
+	Target = target;
+}
+ExpandGridAction::~ExpandGridAction() {}
+void ExpandGridAction::Perform()
+{
+	if (auto t = Target.lock())
+	{
+		if (auto g = Grid.lock())
+		{
+			auto pos = glm::vec3(t->GetMatrix() * glm::vec4(0, 0, 0, 1));
+			auto cHex = g->FindClosestHex(pos);
+			cHex->Expand();
+		}
+	}
+}

@@ -3,6 +3,7 @@
 #include <Game.h>
 #include "GameStateController.h"
 #include <Time/Timer.h>
+#include <Components/Grid.h>
 
 namespace Game
 {
@@ -37,6 +38,7 @@ namespace Game
 			
 			// Keybind actions
 			std::shared_ptr<Core::Input::Action> TogglePauseKeybind;
+			std::shared_ptr<Core::Input::Action> ExpandGrid;
 
 			void CloseGameMenu();
 			void CloseGame();
@@ -154,6 +156,19 @@ namespace Game
 
 			virtual std::string GetPanelImage();
 			virtual float GetTimeMultiplier();
+		};
+
+
+		class ExpandGridAction : public Core::Input::Action
+		{
+		protected:
+			std::weak_ptr<Game::Components::Grid> Grid;
+			std::weak_ptr<Core::Space::TransformIF> Target;
+
+		public:
+			ExpandGridAction(std::weak_ptr<Game::Components::Grid> grid, std::weak_ptr<Core::Space::TransformIF> target);
+			virtual ~ExpandGridAction();
+			virtual void Perform();
 		};
 	}
 }

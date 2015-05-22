@@ -26,6 +26,12 @@ namespace Game
 			double GetDouble(std::string key);
 			float GetFloat(std::string key);
 			std::string GetString(std::string key);
+
+			void NewGame();
+
+			std::string GetTileTag(const glm::ivec2& position);
+			int GetTileOrientation(const glm::ivec2& position);
+			void SetTile(const glm::ivec2& position, std::string tag, int orientation);
 		};
 	}
 }

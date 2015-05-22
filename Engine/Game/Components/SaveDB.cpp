@@ -18,6 +18,7 @@ SaveDB::SaveDB(std::shared_ptr<Core::Assets::Database> db)
 		db->SqlStatement("CREATE TABLE Stats_INT([key] TEXT PRIMARY KEY NOT NULL UNIQUE, value INT)");
 		db->SqlStatement("CREATE TABLE Stats_REAL([key] TEXT PRIMARY KEY NOT NULL UNIQUE, value REAL)");
 		db->SqlStatement("CREATE TABLE Stats_TEXT([key] TEXT PRIMARY KEY NOT NULL UNIQUE, value TEXT)");
+		db->SqlStatement("CREATE TABLE Tiles([Column] INTEGER, [Row] INTEGER, Tag TEXT, Orientation INTEGER DEFAULT(0), PRIMARY KEY([Row], [Column]))");
 
 		// Initialize default values
 		Set("NewSave", false);
@@ -94,5 +95,54 @@ std::string SaveDB::GetString(std::string key)
 	}
 	db->FreeQuery();
 	return value;
+}
+
+
+void SaveDB::NewGame()
+{
+	// Reload City Tiles
+	db->SqlStatement("DROP TABLE Tiles");
+	db->SqlStatement("CREATE TABLE Tiles([Column] INTEGER, [Row] INTEGER, Tag TEXT, Orientation INTEGER DEFAULT(0), PRIMARY KEY([Row], [Column]))");
+
+	db->SqlStatement("INSERT INTO Tiles(Column, Row, Tag) VALUES(0, 0, 'City_01')");
+	db->SqlStatement("INSERT INTO Tiles(Column, Row, Tag) VALUES(0, 1, 'City_02')");
+	db->SqlStatement("INSERT INTO Tiles(Column, Row, Tag) VALUES(1, 0, 'City_04')");
+	db->SqlStatement("INSERT INTO Tiles(Column, Row, Tag) VALUES(1, 1, 'City_03')");
+	db->SqlStatement("INSERT INTO Tiles(Column, Row, Tag) VALUES(1, 2, 'City_05')");
+	db->SqlStatement("INSERT INTO Tiles(Column, Row, Tag) VALUES(2, 0, 'City_07')");
+	db->SqlStatement("INSERT INTO Tiles(Column, Row, Tag) VALUES(2, 1, 'City_06')");
+
+	// Reset Gold
+	Set("Gold", 0);
+
+	Set("GameInProgress", true);
+}
+
+
+std::string SaveDB::GetTileTag(const glm::ivec2& position)
+{
+	std::string value = "";
+	db->Sql("SELECT Tag FROM Tiles WHERE Column=" + std::to_string(position.x) + " AND Row=" + std::to_string(position.y) + " LIMIT 1");
+	if (db->FetchRow())
+	{
+		value = db->GetColumnString(0);
+	}
+	db->FreeQuery();
+	return value;
+}
+int SaveDB::GetTileOrientation(const glm::ivec2& position)
+{
+	int value = 0;
+	db->Sql("SELECT Orientation FROM Tiles WHERE Column=" + std::to_string(position.x) + " AND Row=" + std::to_string(position.y) + " LIMIT 1");
+	if (db->FetchRow())
+	{
+		value = db->GetColumnInt(0);
+	}
+	db->FreeQuery();
+	return value;
+}
+void SaveDB::SetTile(const glm::ivec2& position, std::string tag, int orientation)
+{
+	db->SqlStatement("INSERT OR REPLACE INTO Tiles (Column, Row, Tag, Orientation) VALUES (" + std::to_string(position.x) + ", " + std::to_string(position.y) + ", '" + tag + "', " + std::to_string(orientation) + ")");
 }
 
