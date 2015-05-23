@@ -5,6 +5,7 @@
 #include <Components/Gui/Label.h>
 #include <Components/DayNightCycle.h>
 #include <Components/Grid.h>
+#include <Components/Hex.h>
 
 using namespace Game::States;
 

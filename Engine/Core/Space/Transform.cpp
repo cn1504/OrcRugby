@@ -32,7 +32,7 @@ void Transform::Scale(const glm::vec3& delta)
 }
 
 const glm::vec3& Transform::GetPosition()
-{
+{	
 	return Position;
 }
 

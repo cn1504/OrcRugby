@@ -121,6 +121,11 @@ void SaveDB::NewGame()
 
 std::string SaveDB::GetTileTag(const glm::ivec2& position)
 {
+	if ((position.y <= -6) || (position.x == 0 && position.y < 0))
+	{
+		return "Ocean_01";
+	}
+
 	std::string value = "";
 	db->Sql("SELECT Tag FROM Tiles WHERE Column=" + std::to_string(position.x) + " AND Row=" + std::to_string(position.y) + " LIMIT 1");
 	if (db->FetchRow())

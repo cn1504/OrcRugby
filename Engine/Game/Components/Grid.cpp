@@ -1,21 +1,23 @@
 #include "Grid.h"
 #include "Hex.h"
+#include <Components/SaveDB.h>
 
 using namespace Game::Components;
 
-/*
-#include <Assets/AssetDB.h>
-#include <Assets/Database.h>
+
 const float SIDE_LENGTH = 25.0f;
 const float SIDE_LENGTH_HALF = SIDE_LENGTH * 0.5f;
 const float HEIGHT = glm::sqrt(SIDE_LENGTH*SIDE_LENGTH - SIDE_LENGTH_HALF*SIDE_LENGTH_HALF);
-*/
+
 
 Grid::Grid()
 {
-	auto center = std::make_shared<Hex>(glm::ivec2());
+	auto center = std::make_shared<Hex>(this, glm::ivec2());
 	AddChild(center);
+	Map[center->GetCoords()] = center;
+
 	center->Build();
+	center->Expand();
 
 	/*
 	std::vector<glm::vec3> Vertices;
@@ -92,9 +94,22 @@ Grid::Grid()
 
 Grid::~Grid() {}
 
-std::shared_ptr<Hex> Grid::FindClosestHex(const glm::vec3& position)
+std::shared_ptr<HexIF> Grid::FindClosestHex(const glm::vec3& position)
 {
 	auto c = GetChild(0);
-	auto chex = std::dynamic_pointer_cast<Hex>(c);
+	auto chex = std::dynamic_pointer_cast<HexIF>(c);
 	return chex->FindClosestHex(position, FLT_MAX);
+}
+	
+std::shared_ptr<HexIF> Grid::GetHex(glm::ivec2 coords)
+{
+	if (Map.count(coords) == 1)
+	{
+		return Map[coords];
+	}
+
+	auto nh = std::make_shared<Hex>(this, coords);
+	nh->Translate(glm::vec3(-coords.x * 1.5f * SIDE_LENGTH, 0.0f, coords.y * 2.0f * HEIGHT - ((abs(coords.x) % 2 == 1) ? HEIGHT : 0)));
+	AddChild(nh);
+	return Map[coords] = nh;
 }

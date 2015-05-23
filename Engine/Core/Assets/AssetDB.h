@@ -31,6 +31,7 @@ namespace Core
 			virtual void SetLight(std::string key, const Light& light);
 
 			virtual void AddTileContents(std::shared_ptr<Core::Space::TransformIF> tile, std::string tag);
+			virtual int GetTileEdgeType(std::string tag, int edge);
 		};
 	}
 }

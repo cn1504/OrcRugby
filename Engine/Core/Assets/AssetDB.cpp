@@ -192,7 +192,18 @@ void AssetDB::AddTileContents(std::shared_ptr<Core::Space::TransformIF> tile, st
 		}
 	}
 }
-
+int AssetDB::GetTileEdgeType(std::string tag, int edge)
+{
+	int value = 0;
+	std::string en = (edge == 0) ? "Edge_N" : (edge == 1) ? "Edge_NE" : (edge == 2) ? "Edge_SE" : (edge == 3) ? "Edge_S" : (edge == 4) ? "Edge_SW" : "Edge_NW";
+	db->Sql("SELECT " + en + " FROM Tiles WHERE tag='" + tag + "' LIMIT 1");
+	if (db->FetchRow())
+	{
+		value = db->GetColumnInt(0);
+	}
+	db->FreeQuery();
+	return value;
+}
 
 
 std::shared_ptr<Core::Assets::AudioFile> AssetDB::GetAudioFile(std::string key)
