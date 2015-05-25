@@ -19,13 +19,13 @@ const float EPSILON	= 1e-3;
 
 // sea
 const int ITER_GEOMETRY = 3;
-const int ITER_FRAGMENT = 5;
+const int ITER_FRAGMENT = 7;
 const float SEA_HEIGHT = 0.3;
 const float SEA_CHOPPY = 4.0;
 const float SEA_SPEED = 0.4;
 const float SEA_FREQ = 0.16;
 const vec3 SEA_BASE = vec3(0.1,0.19,0.22);
-const vec3 SEA_WATER_COLOR = vec3(0.8,0.9,0.6);
+const vec3 SEA_WATER_COLOR = vec3(0.2,0.35,0.3);
 float SEA_TIME = iGlobalTime * SEA_SPEED;
 mat2 octave_m = mat2(1.6,1.2,-1.2,1.6);
 
@@ -81,7 +81,7 @@ vec3 getNormal(vec3 p, float eps) {
 
 /*
 const vec3 SEA_BASE = vec3(0.1,0.19,0.22);
-const vec3 SEA_WATER_COLOR = vec3(0.8,0.9,0.6);
+const vec3 SEA_WATER_COLOR = vec3(0.2,0.5,0.4);
 
 const int WAVE_COUNT = 5;
 const float WAVE_LENGTH = 20.0;
@@ -160,10 +160,10 @@ void main() {
     float fresnel = 1.0 - max(dot(viewNormal,-eye),0.0);
     fresnel = pow(fresnel,3.0) * 0.65;
     vec3 reflected = getSkyColor(reflect(eye,viewNormal));
-    vec3 refracted = SEA_BASE + (1.0 - fresnel) * SEA_WATER_COLOR * 0.12; 
+    vec3 refracted = SEA_BASE + (1.0 - fresnel) * SEA_WATER_COLOR * 0.015; 
 	vec3 color = mix(refracted,reflected,fresnel);
     float atten = max(1.0 - dot(viewVertex,viewVertex) * 0.001, 0.0);
-    color += SEA_WATER_COLOR * (wsVertex.y - (-2.0 - SEA_HEIGHT)) * 0.18 * atten;
+    color += SEA_WATER_COLOR * (wsVertex.y - (-2.0 - SEA_HEIGHT)) * 0.09 * atten;
 		
 	outBase = vec4(pow(color,vec3(0.75)), 1.0);
 	//outBase = vec4(vec3(0.1,0.19,0.22) + vec3(0.8,0.9,0.6) * 0.2, 1.0);
