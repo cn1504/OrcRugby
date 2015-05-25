@@ -145,6 +145,7 @@
     <ClInclude Include="Components\Gui\Label.h" />
     <ClInclude Include="Components\Gui\Panel.h" />
     <ClInclude Include="Components\LightSource.h" />
+    <ClInclude Include="Components\Sea.h" />
     <ClInclude Include="Components\StaticMesh.h" />
     <ClInclude Include="Core.h" />
     <ClInclude Include="Debug\Debug.h" />
@@ -204,6 +205,7 @@
     <ClCompile Include="Components\Gui\Label.cpp" />
     <ClCompile Include="Components\Gui\Panel.cpp" />
     <ClCompile Include="Components\LightSource.cpp" />
+    <ClCompile Include="Components\Sea.cpp" />
     <ClCompile Include="Components\StaticMesh.cpp" />
     <ClCompile Include="Debug\Debug.cpp" />
     <ClCompile Include="Debug\Log.cpp" />

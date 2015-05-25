@@ -1,5 +1,6 @@
 #include "GeometryRenderer.h"
 #include <Components/Entity.h>
+#include <Window/Window.h>
 
 using namespace Core::Renderers;
 
@@ -12,6 +13,8 @@ GeometryRenderer::GeometryRenderer()
 	Cylinder = std::make_unique<Shader>("mesh.vert", "cylinder.frag");
 	PointCloud = std::make_unique<Shader>("pc.vert", "pc.geom", "material.frag");
 	StaticMesh = std::make_unique<Shader>("mesh.vert", "color.frag");
+
+	Sea = std::make_unique<Shader>("sea.vert", "sea.frag");
 }
 
 GeometryRenderer::~GeometryRenderer() {}
@@ -180,4 +183,35 @@ void GeometryRenderer::DrawMesh(const VertexBuffer& indices, const VertexBuffer&
 	StaticMesh->DisableAttribute("Uv");
 
 	Debug->GLError("ERROR: Failed to render static mesh.");
+}
+
+void GeometryRenderer::DrawSea(const VertexBuffer& indices, const VertexBuffer& vertices,
+	const VertexBuffer& uvs, const VertexBuffer& normals,
+	const glm::mat4& transform)
+{
+	Sea->Activate();
+	
+	glm::mat4 VP = Camera->GetProjectionMatrix() * Camera->GetViewMatrix();
+	Sea->SetUniform("ViewProjectionMatrix", VP);
+	Sea->SetUniform("ViewMatrix", Camera->GetViewMatrix());
+	Sea->SetUniform("ModelMatrix", transform);	
+	Sea->SetUniform("iGlobalTime", Core::Time->Elapsed);
+
+	Sea->SetVec3Attribute("Vertex", vertices.GetID());
+
+	Sea->SetElementBuffer(indices.GetID());
+	Core::Debug->GLError("ERROR: Could not bind the sea mesh buffers.");
+
+	// Draw the triangles !
+	glDrawElements(
+		GL_TRIANGLES,               // mode
+		(GLsizei)(indices.GetSize() / sizeof(unsigned short)),                  // count
+		GL_UNSIGNED_SHORT,          // type
+		(void*)0                    // element array buffer offset
+		);
+	Core::Debug->GLError("ERROR: Could not draw the sea mesh elements.");
+
+	Sea->DisableAttribute("Vertex");
+
+	Debug->GLError("ERROR: Failed to render sea mesh.");
 }

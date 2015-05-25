@@ -9,6 +9,7 @@
 #include <Space/TransformIF.h>
 #include <Components/StaticMesh.h>
 #include <Components/LightSource.h>
+#include <Components/Sea.h>
 
 using namespace Core::Assets;
 
@@ -181,6 +182,14 @@ void AssetDB::AddTileContents(std::shared_ptr<Core::Space::TransformIF> tile, st
 		else if (r.type == "Light")
 		{
 			auto e = std::make_shared<Core::Components::LightSource>(r.reference);
+			e->Translate(r.position);
+			e->Rotate(r.rotation);
+			e->Scale(r.scale);
+			tile->AddChild(e);
+		}
+		else if (r.type == "Sea")
+		{
+			auto e = std::make_shared<Core::Components::Sea>(r.reference);
 			e->Translate(r.position);
 			e->Rotate(r.rotation);
 			e->Scale(r.scale);

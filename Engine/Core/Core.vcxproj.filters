@@ -224,6 +224,9 @@
     <ClInclude Include="Components\Gui\Button.h">
       <Filter>Components\Gui</Filter>
     </ClInclude>
+    <ClInclude Include="Components\Sea.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\Texture.cpp">
@@ -379,6 +382,9 @@
     </ClCompile>
     <ClCompile Include="Components\Gui\Button.cpp">
       <Filter>Components\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Sea.cpp">
+      <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

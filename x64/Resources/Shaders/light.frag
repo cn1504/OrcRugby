@@ -87,7 +87,7 @@ float getAngleAtt(vec3 normalizedLightVector, vec3 lightDirection, float lightAn
 
 vec3 DecodeNormal (vec4 enc)
 {
-	return enc.xyz * 2 - 1;
+	return enc.xyz * 2.0 - 1.0;
 }
 
 void main(void)
