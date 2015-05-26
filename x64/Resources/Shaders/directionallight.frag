@@ -60,6 +60,15 @@ vec3 DecodeNormal (vec4 enc)
 	return enc.xyz * 2 - 1;
 }
 
+vec3 getSkyColor(vec3 e) {
+    e.y = max(e.y,0.0);
+    vec3 ret;
+    ret.x = pow(1.0-e.y,2.0);
+    ret.y = 1.0-e.y;
+    ret.z = 0.6+(1.0-e.y)*0.4;
+    return ret;
+}
+
 void main(void)
 {	
 	// Extract buffered pixel position and normal from textures
@@ -100,6 +109,9 @@ void main(void)
 	// Diffuse BRDF
 	float Fd = Fd_DisneyDiffuse(NdotV, LdotN, LdotH, MSR.z) / M_PI;	
 	
-	outDiffuse = vec4(LightColor.xyz * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd * LightIntensity * LightColor.w, 1.0);
-	outSpecular = vec4(LightColor.xyz * Fr * LightIntensity * LightColor.w, 1.0);	
+	outDiffuse = vec4(LightColor.xyz * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd * LightIntensity, LightColor.w);
+	outSpecular = vec4(LightColor.xyz * Fr * LightIntensity, LightColor.w);
+
+	// Distant Light Probe Approx for ambient light
+	//outSpecular.xyz += getSkyColor(reflect(viewDir, normal)) * 0.2;
 }
