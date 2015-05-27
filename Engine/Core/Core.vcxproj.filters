@@ -227,6 +227,9 @@
     <ClInclude Include="Components\Sea.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="Assets\Material.h">
+      <Filter>Assets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\Texture.cpp">
@@ -385,6 +388,9 @@
     </ClCompile>
     <ClCompile Include="Components\Sea.cpp">
       <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Assets\Material.cpp">
+      <Filter>Assets</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

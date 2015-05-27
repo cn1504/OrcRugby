@@ -3,11 +3,10 @@
 
 using namespace Core::Components;
 
-StaticMesh::StaticMesh(std::string name, const glm::vec4& color, const glm::vec4& msr)
+StaticMesh::StaticMesh(std::string name, std::string material)
 {
 	Name = name;
-	Color = color;
-	MSR = msr;
+	Material = material;
 }
 
 StaticMesh::~StaticMesh()
@@ -20,7 +19,8 @@ void StaticMesh::Draw(Core::Renderers::GeometryRenderer* renderer)
 	auto vertices = Core::AssetDB->GetVertexBuffer(Name + "_Vertices");
 	auto uvs = Core::AssetDB->GetVertexBuffer(Name + "_Uvs");
 	auto normals = Core::AssetDB->GetVertexBuffer(Name + "_Normals");
-	renderer->DrawMesh(*indices, *vertices, *uvs, *normals, Color, MSR, GetMatrix());
+	auto material = Core::AssetDB->GetMaterial(Material);
+	renderer->DrawMesh(*indices, *vertices, *uvs, *normals, *material, GetMatrix());
 	
 	Entity::Draw(renderer);
 }

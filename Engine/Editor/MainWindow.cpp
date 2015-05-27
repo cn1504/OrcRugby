@@ -36,7 +36,7 @@ MainWindow::MainWindow() : DefaultWindow("Editor", glm::ivec2((1920-1280)/2, (10
 
 	if (Core::Window::Map.size() < 2)
 	{
-		auto cube = std::make_shared<Core::Components::StaticMesh>("Cube", glm::vec4(1, 1, 1, 1), glm::vec4(1.0, 0.2, 0.2, 1.0));
+		auto cube = std::make_shared<Core::Components::StaticMesh>("Cube", "Plastic_White");
 		cube->Translate(glm::vec3(5, 0.5, 0));
 		Core::Scene->AddChild(cube);
 		

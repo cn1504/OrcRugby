@@ -16,6 +16,7 @@ namespace Core
 			std::unordered_map<std::string, std::shared_ptr<Core::Renderers::VertexBuffer>> VBCache;
 			std::unordered_map<std::string, std::shared_ptr<Core::Assets::Light>> LightCache;
 			std::unordered_map<std::string, std::shared_ptr<Core::Assets::AudioFile>> AudioCache;
+			std::unordered_map<std::string, std::shared_ptr<Core::Assets::Material>> MaterialCache;
 			
 		public:
 			AssetDB(std::shared_ptr<Database> db);
@@ -26,6 +27,7 @@ namespace Core
 			virtual std::shared_ptr<Core::Assets::Font> GetFont(std::string key);
 			virtual std::shared_ptr<Core::Renderers::VertexBuffer> GetVertexBuffer(std::string key);
 			virtual std::shared_ptr<Core::Assets::Light> GetLight(std::string key);
+			virtual std::shared_ptr<Core::Assets::Material> GetMaterial(std::string key);
 
 			virtual void SetFont(std::string key, const Font& font);
 			virtual void SetLight(std::string key, const Light& light);

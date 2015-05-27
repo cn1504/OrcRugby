@@ -72,6 +72,7 @@ namespace Core
 		class Texture;
 		class Light;
 		class AudioFile;
+		class Material;
 	}
 
 	namespace Audio

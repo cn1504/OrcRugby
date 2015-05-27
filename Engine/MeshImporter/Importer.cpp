@@ -21,7 +21,7 @@ namespace MeshImporter
 			aiProcess_Triangulate |
 			aiProcess_CalcTangentSpace |
 			aiProcess_JoinIdenticalVertices |
-			aiProcess_GenNormals | //aiProcess_GenSmoothNormals
+			aiProcess_GenSmoothNormals | // aiProcess_GenNormals |
 			aiProcess_LimitBoneWeights |
 			aiProcess_OptimizeMeshes |
 			aiProcess_SortByPType |

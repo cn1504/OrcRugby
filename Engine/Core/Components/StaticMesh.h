@@ -12,11 +12,10 @@ namespace Core
 		{
 		private:
 			std::string Name;
-			glm::vec4 Color;
-			glm::vec4 MSR;
+			std::string Material;
 
 		public:
-			StaticMesh(std::string name, const glm::vec4& color, const glm::vec4& msr);
+			StaticMesh(std::string name, std::string material);
 			virtual ~StaticMesh();
 			
 			virtual void Draw(Core::Renderers::GeometryRenderer* renderer);

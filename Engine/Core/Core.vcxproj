@@ -130,6 +130,7 @@
     <ClInclude Include="Assets\Database.h" />
     <ClInclude Include="Assets\Font.h" />
     <ClInclude Include="Assets\Light.h" />
+    <ClInclude Include="Assets\Material.h" />
     <ClInclude Include="Assets\SQLiteDB.h" />
     <ClInclude Include="Assets\Texture.h" />
     <ClInclude Include="Audio\Listener.h" />
@@ -194,6 +195,7 @@
   <ItemGroup>
     <ClCompile Include="Assets\AssetDB.cpp" />
     <ClCompile Include="Assets\AudioFile.cpp" />
+    <ClCompile Include="Assets\Material.cpp" />
     <ClCompile Include="Assets\SQLiteDB.cpp" />
     <ClCompile Include="Assets\Texture.cpp" />
     <ClCompile Include="Audio\Listener.cpp" />

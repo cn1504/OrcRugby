@@ -1,6 +1,7 @@
 #include "GeometryRenderer.h"
 #include <Components/Entity.h>
 #include <Window/Window.h>
+#include <Assets/Material.h>
 
 using namespace Core::Renderers;
 
@@ -12,7 +13,7 @@ GeometryRenderer::GeometryRenderer()
 	Sphere = std::make_unique<Shader>("mesh.vert", "sphere.frag");
 	Cylinder = std::make_unique<Shader>("mesh.vert", "cylinder.frag");
 	PointCloud = std::make_unique<Shader>("pc.vert", "pc.geom", "material.frag");
-	StaticMesh = std::make_unique<Shader>("mesh.vert", "color.frag");
+	StaticMesh = std::make_unique<Shader>("mesh.vert", "material.frag");
 
 	Sea = std::make_unique<Shader>("sea.vert", "sea.frag");
 }
@@ -151,7 +152,7 @@ void GeometryRenderer::DrawScene()
 
 void GeometryRenderer::DrawMesh(const VertexBuffer& indices, const VertexBuffer& vertices, 
 	const VertexBuffer& uvs, const VertexBuffer& normals,
-	const glm::vec4& color, const glm::vec4& msr, const glm::mat4& transform)
+	const Core::Assets::Material& material, const glm::mat4& transform)
 {
 	StaticMesh->Activate();
 
@@ -159,8 +160,8 @@ void GeometryRenderer::DrawMesh(const VertexBuffer& indices, const VertexBuffer&
 	glm::mat4 MVP = Camera->GetProjectionMatrix() * MV;
 	StaticMesh->SetUniform("ModelViewProjectionMatrix", MVP);
 	StaticMesh->SetUniform("ModelViewMatrix", MV);
-	StaticMesh->SetUniform("Color", color);
-	StaticMesh->SetUniform("MSR", msr);
+
+	material.SetShaderUniforms(StaticMesh.get());
 
 	StaticMesh->SetVec3Attribute("Vertex", vertices.GetID());
 	StaticMesh->SetVec3Attribute("Normal", normals.GetID());

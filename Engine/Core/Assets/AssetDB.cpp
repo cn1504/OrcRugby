@@ -4,6 +4,7 @@
 #include "Font.h"
 #include "Light.h"
 #include "AudioFile.h"
+#include "Material.h"
 #include <Renderers/VertexBuffer.h>
 
 #include <Space/TransformIF.h>
@@ -92,6 +93,56 @@ std::shared_ptr<Core::Assets::Light> AssetDB::GetLight(std::string key)
 	}
 	return ptr;
 }
+std::shared_ptr<Core::Assets::Material> AssetDB::GetMaterial(std::string key)
+{
+	auto& ptr = MaterialCache[key];
+	if (ptr == nullptr)
+	{
+		/*
+		db->Sql("SELECT Base_R, Base_G, Base_B, Metallic, Specular, Roughness FROM Materials WHERE Tag='" + mat + "' LIMIT 1");
+		if (db->FetchRow())
+		{
+			auto base = glm::vec4(db->GetColumnDouble(0), db->GetColumnDouble(1), db->GetColumnDouble(2), 1.0);
+			auto msr = glm::vec4(db->GetColumnDouble(3), db->GetColumnDouble(4), db->GetColumnDouble(5), 1.0);
+
+		}
+		else
+		{
+			Core::Debug->Log("Invalid Material: " + mat);
+		}
+		*/
+		ptr = std::make_shared<Core::Assets::Material>();
+		MaterialTexture tex;
+		tex.Base = "Background";
+		tex.MSR = "Background";
+		ptr->AddInput(tex);
+
+		/*
+		MaterialValue val;
+		val.Base = glm::vec4(1.0, 1.0, 1.0, 1.0);
+		val.MSR = glm::vec4(0.0, 0.5, 0.6, 1.0);
+		ptr->AddInput(val);
+
+		val.Base = glm::vec4(0.0, 0.0, 0.0, 1.0);
+		val.MSR = glm::vec4(0.0, 0.02, 0.6, 1.0);
+		ptr->AddInput(val);
+		*/
+
+		MaterialCommand com;
+		com.Op = glm::ivec4(0, 0, 0, 4);
+		com.Params[0] = glm::vec4(0.0, 0.3, 0.5, 1.0);
+		ptr->AddCommand(com);
+
+		/*
+		com.Op = glm::ivec4(0, 1, 0, 11);
+		com.Params[0] = glm::vec4(1.0, 10.0, 4.0, 2.0);
+		com.Params[1] = glm::vec4(0.0, 0.0, 0.0, 0.0);
+		com.Params[2] = glm::vec4(5.0, 5.0, 0.0, 0.0);
+		ptr->AddCommand(com);
+		*/
+	}
+	return ptr;
+}
 
 void AssetDB::SetFont(std::string key, const Font& font)
 {
@@ -156,28 +207,18 @@ void AssetDB::AddTileContents(std::shared_ptr<Core::Space::TransformIF> tile, st
 			{
 				auto mesh = db->GetColumnString(0);
 				auto mat = db->GetColumnString(1);
-				db->FreeQuery();
 
-				db->Sql("SELECT Base_R, Base_G, Base_B, Metallic, Specular, Roughness FROM Materials WHERE Tag='" + mat + "' LIMIT 1");
-				if (db->FetchRow())
-				{
-					auto base = glm::vec4(db->GetColumnDouble(0), db->GetColumnDouble(1), db->GetColumnDouble(2), 1.0);
-					auto msr = glm::vec4(db->GetColumnDouble(3), db->GetColumnDouble(4), db->GetColumnDouble(5), 1.0);
-					auto e = std::make_shared<Core::Components::StaticMesh>(mesh, base, msr);
-					e->Translate(r.position);
-					e->Rotate(r.rotation);
-					e->Scale(r.scale);
-					tile->AddChild(e);
-				}
-				else
-				{
-					Core::Debug->Log("Invalid Material: " + mat);
-				}
+				auto e = std::make_shared<Core::Components::StaticMesh>(mesh, mat);
+				e->Translate(r.position);
+				e->Rotate(r.rotation);
+				e->Scale(r.scale);
+				tile->AddChild(e);			
 			}
 			else
 			{
 				Core::Debug->Log("Invalid StaticMesh: " + r.reference);
 			}
+			db->FreeQuery();
 		}
 		else if (r.type == "Light")
 		{
