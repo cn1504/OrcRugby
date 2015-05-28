@@ -117,7 +117,7 @@ float Noise_Cellular2D( vec2 P )
 
 // Constant function with noise
 Value NoiseOnly(Value input1, Value input2, float noiseFunction, float frequency, float octaves, float lacunarity, 
-	float octaveBlendFunction, float threshold, float inflection, float ridged, vec2 noiseStride, vec2 noiseOffset)
+	float octaveBlendFunction, float threshold, float thresholdOffset, float post, vec2 noiseStride, vec2 noiseOffset)
 {
 	float t = 0.0;
 	
@@ -166,15 +166,15 @@ Value NoiseOnly(Value input1, Value input2, float noiseFunction, float frequency
 	// Apply Threshold
 	if (octaveBlendFunction < 3.5 && octaveBlendFunction > 2.5)
 	{
-		t = clamp((t - 0.5) / (threshold / 2.0), -0.5, 0.5) + 0.5;
+		t = clamp((t - 0.5 + thresholdOffset) / (threshold / 2.0), -0.5, 0.5) + 0.5;
 	}
 	
-	// Apply inflector or ridged if applicable
-	if (inflection > 0.5)
+	// Apply inflection or ridged if applicable
+	if (post < 1.5)
 	{
 		t = abs((t - 0.5) * 2.0);
 	}
-	else if (ridged > 0.5)
+	else if (post < 2.5)
 	{
 		t = 1.0 - abs((t - 0.5) * 2.0);
 	}
@@ -188,7 +188,7 @@ Value NoiseOnly(Value input1, Value input2, float noiseFunction, float frequency
 
 // One dimensional sin function with noise
 Value SinX(Value input1, Value input2, float noiseFunction, float frequency, float octaves, float lacunarity, 
-	float octaveBlendFunction, float threshold, float inflection, float ridged, vec2 noiseStride, vec2 noiseOffset)
+	float octaveBlendFunction, float threshold, float thresholdOffset, float post, vec2 noiseStride, vec2 noiseOffset)
 {
 	float t = 0.0;
 	
@@ -237,15 +237,15 @@ Value SinX(Value input1, Value input2, float noiseFunction, float frequency, flo
 	// Apply Threshold
 	if (octaveBlendFunction < 3.5 && octaveBlendFunction > 2.5)
 	{
-		t = clamp((t - 0.5) / (threshold / 2.0), -0.5, 0.5) + 0.5;
+		t = clamp((t - 0.5 + thresholdOffset) / (threshold / 2.0), -0.5, 0.5) + 0.5;
 	}
 	
-	// Apply inflector or ridged if applicable
-	if (inflection > 0.5)
+	// Apply inflection or ridged if applicable
+	if (post < 1.5)
 	{
 		t = abs((t - 0.5) * 2.0);
 	}
-	else if (ridged > 0.5)
+	else if (post < 2.5)
 	{
 		t = 1.0 - abs((t - 0.5) * 2.0);
 	}
@@ -303,6 +303,15 @@ void main(void)
 		{
 			values[Commands[i].Op.z].MSR = Commands[i].Params[0];
 		}
+		else if (Commands[i].Op.w == 5)	// Discard Black
+		{
+			if (values[Commands[i].Op.x].Base.r < 0.002 &&
+				values[Commands[i].Op.x].Base.g < 0.002 &&
+				values[Commands[i].Op.x].Base.b < 0.002)
+			{
+				discard;
+			}
+		}
 		else if (Commands[i].Op.w == 10)	// Sto = Blend(Op1, Op2) w/ constant function (noise only)
 											// Param[0].x = Noise Function (0: none, 1: Perlin2D, 2: Voronoi)
 											// Param[0].y = Base Frequency
@@ -310,8 +319,8 @@ void main(void)
 											// Param[0].w = Lacunarity (Octave Frequency Scale Multiple)
 											// Param[1].x = Octave Blend Function (0: Average, 1: Difference, 2: Weighted Sum, 3: Threshold)
 											// Param[1].y = Threshold
-											// Param[1].z = Post Inflection
-											// Param[1].w = Post Ridged
+											// Param[1].z = Threshold Offset
+											// Param[1].w = Post: (0: None, 1: Inflection, 2: Ridged)
 											// Param[2].x = Noise Stride X
 											// Param[2].y = Noise Stride Y
 											// Param[2].z = Noise Offset X
@@ -339,8 +348,8 @@ void main(void)
 											// Param[0].w = Lacunarity (Octave Frequency Scale Multiple)
 											// Param[1].x = Octave Blend Function (0: Average, 1: Difference, 2: Weighted Sum, 3: Threshold)
 											// Param[1].y = Threshold
-											// Param[1].z = Post Inflection
-											// Param[1].w = Post Ridged
+											// Param[1].z = Threshold Offset
+											// Param[1].w = Post: (0: None, 1: Inflection, 2: Ridged)
 											// Param[2].x = Noise Stride X
 											// Param[2].y = Noise Stride Y
 											// Param[2].z = Noise Offset X
