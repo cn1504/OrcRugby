@@ -73,7 +73,8 @@ double SQLiteDB::GetColumnDouble(int column)
 }
 std::string SQLiteDB::GetColumnString(int column)
 {
-	return std::string(reinterpret_cast<const char*>(sqlite3_column_text(stmt, column)));
+	auto result = sqlite3_column_text(stmt, column);
+	return result != nullptr ? std::string(reinterpret_cast<const char*>(result)) : "";
 }
 std::unique_ptr<Blob> SQLiteDB::GetColumnBlob(int column)
 {

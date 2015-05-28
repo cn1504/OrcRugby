@@ -98,26 +98,61 @@ std::shared_ptr<Core::Assets::Material> AssetDB::GetMaterial(std::string key)
 	auto& ptr = MaterialCache[key];
 	if (ptr == nullptr)
 	{
-		/*
-		db->Sql("SELECT Base_R, Base_G, Base_B, Metallic, Specular, Roughness FROM Materials WHERE Tag='" + mat + "' LIMIT 1");
-		if (db->FetchRow())
-		{
-			auto base = glm::vec4(db->GetColumnDouble(0), db->GetColumnDouble(1), db->GetColumnDouble(2), 1.0);
-			auto msr = glm::vec4(db->GetColumnDouble(3), db->GetColumnDouble(4), db->GetColumnDouble(5), 1.0);
-
-		}
-		else
-		{
-			Core::Debug->Log("Invalid Material: " + mat);
-		}
-		*/
 		ptr = std::make_shared<Core::Assets::Material>();
+
+		// Get Material Inputs
+		std::string query = 
+			"SELECT Channel, Base, MSR, Null AS Base_R, Null AS Base_G, Null AS Base_B, Null AS Metallic, Null AS Specular, Null AS Roughness FROM MaterialTextures WHERE Key='" + key + "' " +
+			"UNION " +
+			"SELECT Channel, Null AS Base, Null AS MSR, Base_R, Base_G, Base_B, Metallic, Specular, Roughness FROM MaterialInputs WHERE Key='" + key + "' " +
+			"ORDER BY Channel";
+		
+		MaterialTexture tex;
+		MaterialValue val;
+		db->Sql(query);
+		while (db->FetchRow())
+		{
+			auto channel = db->GetColumnInt(0);
+			tex.Base = db->GetColumnString(1);
+			if (tex.Base == "")
+			{
+				val.Base = glm::vec4(db->GetColumnDouble(3), db->GetColumnDouble(4), db->GetColumnDouble(5), 1.0);
+				val.MSR = glm::vec4(db->GetColumnDouble(6), db->GetColumnDouble(7), db->GetColumnDouble(8), 1.0);
+				ptr->AddInput(val);
+			}
+			else
+			{
+				tex.MSR = db->GetColumnString(2);
+				ptr->AddInput(tex);
+			}
+		}
+		db->FreeQuery();
+
+		// Get Material Commands
+		query = std::string("SELECT Command, Operand1, Operand2, Store, OpCode, ") +
+			"Parameter1, Parameter2, Parameter3, Parameter4, " +
+			"Parameter5, Parameter6, Parameter7, Parameter8, " +
+			"Parameter9, Parameter10, Parameter11, Parameter12 " +
+			"FROM MaterialCommands WHERE Key='" + key + "' ORDER BY Command";
+
+		MaterialCommand com;
+		db->Sql(query);
+		while (db->FetchRow())
+		{
+			com.Op = glm::ivec4(db->GetColumnInt(1), db->GetColumnInt(2), db->GetColumnInt(3), db->GetColumnInt(4));
+			com.Params[0] = glm::vec4(db->GetColumnDouble(5), db->GetColumnDouble(6), db->GetColumnDouble(7), db->GetColumnDouble(8));
+			com.Params[1] = glm::vec4(db->GetColumnDouble(9), db->GetColumnDouble(10), db->GetColumnDouble(11), db->GetColumnDouble(12));
+			com.Params[2] = glm::vec4(db->GetColumnDouble(13), db->GetColumnDouble(14), db->GetColumnDouble(15), db->GetColumnDouble(16));
+			ptr->AddCommand(com);
+		}
+		db->FreeQuery();
+
+		/*
 		MaterialTexture tex;
 		tex.Base = "Background";
 		tex.MSR = "Background";
 		ptr->AddInput(tex);
 
-		/*
 		MaterialValue val;
 		val.Base = glm::vec4(1.0, 1.0, 1.0, 1.0);
 		val.MSR = glm::vec4(0.0, 0.5, 0.6, 1.0);
@@ -126,18 +161,10 @@ std::shared_ptr<Core::Assets::Material> AssetDB::GetMaterial(std::string key)
 		val.Base = glm::vec4(0.0, 0.0, 0.0, 1.0);
 		val.MSR = glm::vec4(0.0, 0.02, 0.6, 1.0);
 		ptr->AddInput(val);
-		*/
 
-		MaterialCommand com;
 		com.Op = glm::ivec4(0, 0, 0, 4);
 		com.Params[0] = glm::vec4(0.0, 0.3, 0.5, 1.0);
-		ptr->AddCommand(com);
 
-		/*
-		com.Op = glm::ivec4(0, 1, 0, 11);
-		com.Params[0] = glm::vec4(1.0, 10.0, 4.0, 2.0);
-		com.Params[1] = glm::vec4(0.0, 0.0, 0.0, 0.0);
-		com.Params[2] = glm::vec4(5.0, 5.0, 0.0, 0.0);
 		ptr->AddCommand(com);
 		*/
 	}
