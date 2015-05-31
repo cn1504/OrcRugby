@@ -33,6 +33,15 @@
     <ClInclude Include="States\NewGameCreationState.h">
       <Filter>States</Filter>
     </ClInclude>
+    <ClInclude Include="Components\Log.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Gui\LogPanel.h">
+      <Filter>Components\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Tests\GameLogSpammer.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -67,6 +76,15 @@
     <ClCompile Include="States\NewGameCreationState.cpp">
       <Filter>States</Filter>
     </ClCompile>
+    <ClCompile Include="Components\Log.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Gui\LogPanel.cpp">
+      <Filter>Components\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\GameLogSpammer.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Components">
@@ -74,6 +92,12 @@
     </Filter>
     <Filter Include="States">
       <UniqueIdentifier>{1478957e-799f-479a-aa0a-f05e402d84fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Gui">
+      <UniqueIdentifier>{a3ad1e3f-e98a-4bc8-969e-95af8f22ce1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tests">
+      <UniqueIdentifier>{8f571a57-7c24-40ef-bb29-46ea395dc22a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

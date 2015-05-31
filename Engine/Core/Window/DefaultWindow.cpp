@@ -35,7 +35,7 @@ DefaultWindow::DefaultWindow(std::string name, const glm::ivec2& position, const
 	: Window(name, position, size, std::move(state))
 {
 	const float FOVY = 60.0f;
-	const float MIN_DRAWDISTANCE = 0.1f;
+	const float MIN_DRAWDISTANCE = 0.01f;
 	const float MAX_DRAWDISTANCE = 100.0f;
 
 	Gui = std::make_shared<Core::Components::Gui::Panel>();

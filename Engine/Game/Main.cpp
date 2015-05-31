@@ -6,12 +6,14 @@
 
 #include <Components/PrefsDB.h>
 #include <Components/SaveDB.h>
+#include <Components/Log.h>
 
 #include <Audio/Listener.h>
 
 // Global Game Objects
 std::shared_ptr<Game::Components::PrefsDB> Game::Prefs;
 std::shared_ptr<Game::Components::SaveDB> Game::Save;
+std::shared_ptr<Game::Components::Log> Game::Log;
 
 
 int main(int argc, char* argv[])
@@ -24,6 +26,9 @@ int main(int argc, char* argv[])
 
 		auto savedb = std::make_shared<Core::Assets::SQLiteDB>("save.dat");
 		Game::Save = std::make_shared<Game::Components::SaveDB>(savedb);
+
+		auto gameLog = std::make_shared<Game::Components::Log>();
+		Game::Log = gameLog;
 
 		// Load Settings and Preferences
 		if (Game::Prefs->GetInt("AudioEnabled"))

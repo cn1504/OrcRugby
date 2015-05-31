@@ -34,6 +34,9 @@
     <Filter Include="Renderers">
       <UniqueIdentifier>{3f71acc7-0c07-4c01-a517-5c6f46538e10}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Patterns">
+      <UniqueIdentifier>{5db3e7d2-b0ac-47dc-a3e6-a00309f892ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Assets\Texture.h">
@@ -229,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="Assets\Material.h">
       <Filter>Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Patterns\Observer.h">
+      <Filter>Patterns</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

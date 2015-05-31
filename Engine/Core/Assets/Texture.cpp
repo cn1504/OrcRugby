@@ -15,11 +15,11 @@ Texture::Texture(const Texture& t)
 }
 
 
-Texture::Texture(int width, int height, const unsigned char* bytes)
+Texture::Texture(int width, int height, GLfloat filter, const unsigned char* bytes)
 {
 	Id = 0;
 	
-	CreateTexture(bytes, width, height, GL_RGBA, GL_RGBA, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR);
+	CreateTexture(bytes, width, height, GL_RGBA, GL_RGBA, GL_CLAMP_TO_EDGE, filter, filter);
 }
 
 

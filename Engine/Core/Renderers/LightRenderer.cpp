@@ -50,6 +50,7 @@ void LightRenderer::DrawScene(const glm::vec2& bufferSize)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE);
 	glEnable(GL_CULL_FACE);
+	glDisable(GL_DEPTH_TEST);
 	glCullFace(GL_FRONT);
 
 	VP = Camera->GetProjectionMatrix() * Camera->GetViewMatrix();
@@ -72,6 +73,7 @@ void LightRenderer::DrawScene(const glm::vec2& bufferSize)
 	Core::Scene->DrawLights(this);
 
 	glCullFace(GL_BACK);
+	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	/*
 	glEnable(GL_BLEND);

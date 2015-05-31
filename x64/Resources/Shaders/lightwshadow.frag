@@ -162,7 +162,7 @@ void main(void)
 		
 	vec3 viewDir    = normalize(- pos);
 	vec3 halfDir	= normalize(viewDir + incident);
-	float NdotV		= abs(dot(viewDir, normal)) + 1e-5f;	// avoids artifacts
+	float NdotV		= abs(dot(viewDir, normal));// + 1e-5f;	// avoids artifacts
 	float NdotH		= clamp(dot(normal, halfDir), 0.0, 1.0);
 	float LdotN		= clamp(dot(incident, normal), 0.0, 1.0);
 	float LdotH		= clamp(dot(halfDir, incident), 0.0, 1.0);

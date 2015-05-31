@@ -20,19 +20,32 @@ AssetDB::AssetDB(std::shared_ptr<Database> db)
 	// Can not preload assets here since AssetDB is created before any opengl contexts
 }
 
+void AssetDB::ClearAllCaches()
+{
+	TextureCache.clear();
+	FontCache.clear();
+	VBCache.clear();
+	LightCache.clear();
+	AudioCache.clear();
+	MaterialCache.clear();
+}
+
 std::shared_ptr<Core::Assets::Texture> AssetDB::GetTexture(std::string key)
 {
 	auto& ptr = TextureCache[key];
 	if (ptr == nullptr)
 	{		
-		db->Sql("SELECT width, height, data FROM Textures WHERE key='" + key + "' LIMIT 1");
+		db->Sql("SELECT width, height, filter, data FROM Textures WHERE key='" + key + "' LIMIT 1");
 		if (db->FetchRow())
 		{
 			int width = db->GetColumnInt(0);
 			int height = db->GetColumnInt(1);
-			auto data = db->GetColumnBlob(2);
-			ptr = std::make_shared<Core::Assets::Texture>(width, height, data->GetData());
+			int filter = db->GetColumnInt(2);
+			filter = (filter == 0) ? GL_LINEAR : GL_NEAREST;
+			auto data = db->GetColumnBlob(3);
+			ptr = std::make_shared<Core::Assets::Texture>(width, height, (float)filter, data->GetData());
 		}
+		db->FreeQuery();
 	}
 	return ptr;
 }
@@ -52,6 +65,7 @@ std::shared_ptr<Core::Assets::Font> AssetDB::GetFont(std::string key)
 
 			ptr = std::make_shared<Core::Assets::Font>(Texture, CharWidth, CharHeight, CharsPerRow, CharsPerColumn);
 		}
+		db->FreeQuery();
 	}
 	return ptr;
 }
@@ -70,6 +84,7 @@ std::shared_ptr<Core::Renderers::VertexBuffer> AssetDB::GetVertexBuffer(std::str
 		{
 			Debug->Error("Database miss: GetVertexBuffer(" + key + ")");
 		}
+		db->FreeQuery();
 	}
 	return ptr;
 }
@@ -90,6 +105,7 @@ std::shared_ptr<Core::Assets::Light> AssetDB::GetLight(std::string key)
 
 			ptr = std::make_shared<Core::Assets::Light>(color, radius, intensity, cosInner, cosOuter, castsShadow);
 		}
+		db->FreeQuery();
 	}
 	return ptr;
 }
@@ -146,27 +162,6 @@ std::shared_ptr<Core::Assets::Material> AssetDB::GetMaterial(std::string key)
 			ptr->AddCommand(com);
 		}
 		db->FreeQuery();
-
-		/*
-		MaterialTexture tex;
-		tex.Base = "Background";
-		tex.MSR = "Background";
-		ptr->AddInput(tex);
-
-		MaterialValue val;
-		val.Base = glm::vec4(1.0, 1.0, 1.0, 1.0);
-		val.MSR = glm::vec4(0.0, 0.5, 0.6, 1.0);
-		ptr->AddInput(val);
-
-		val.Base = glm::vec4(0.0, 0.0, 0.0, 1.0);
-		val.MSR = glm::vec4(0.0, 0.02, 0.6, 1.0);
-		ptr->AddInput(val);
-
-		com.Op = glm::ivec4(0, 0, 0, 4);
-		com.Params[0] = glm::vec4(0.0, 0.3, 0.5, 1.0);
-
-		ptr->AddCommand(com);
-		*/
 	}
 	return ptr;
 }
@@ -303,6 +298,7 @@ std::shared_ptr<Core::Assets::AudioFile> AssetDB::GetAudioFile(std::string key)
 		{
 			Debug->Error("Database miss: GetAudioFile(" + key + ")");
 		}
+		db->FreeQuery();
 	}
 	return ptr;
 }

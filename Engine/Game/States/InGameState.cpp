@@ -7,6 +7,10 @@
 #include <Components/Grid.h>
 #include <Components/Hex.h>
 
+#include <Components/Gui/LogPanel.h>
+
+#include <Tests/GameLogSpammer.h>
+
 using namespace Game::States;
 
 
@@ -20,16 +24,33 @@ InGameState::InGameState(GameStateController* GSC) : GameState(GSC)
 	LoadedEntities.push_back(Grid);
 	Core::Scene->AddChild(Grid);
 
-	// Reset Camera Position
+	// Reset Camera
 	auto camera = GSC->Window->GetCamera();
 	camera->Translate(glm::vec3(0, 12.313, -15.76) - camera->GetPosition());
-	camera->Rotate(glm::RotationBetweenVectors(camera->Forward(), glm::normalize(glm::vec3(0, -0.615661f, 0.788011f))));
+
+	glm::vec3 direction = glm::normalize(glm::vec3(0, -0.615661f, 0.788011f));
+	auto rot1 = glm::RotationBetweenVectors(camera->Forward(), direction);
+	camera->Rotate(rot1);
+
+	// Recompute desiredUp so that it's perpendicular to the direction
+	// You can skip that part if you really want to force desiredUp
+	glm::vec3 desiredUp(0.0, 1.0, 0.0);
+	glm::vec3 right = glm::cross(camera->Forward(), desiredUp);
+	desiredUp = glm::cross(right, camera->Forward());
+
+	// Because of the 1st rotation, the up is probably completely screwed up. 
+	// Find the rotation between the "up" of the rotated object, and the desired up
+	camera->Rotate(glm::RotationBetweenVectors(camera->Up(), desiredUp));
 
 	TogglePauseKeybind = std::make_shared<TogglePauseAction>(this);
 	GSC->Window->InputMap->AddReleaseAction("Space", TogglePauseKeybind);
 
 	ExpandGrid = std::make_shared<ExpandGridAction>(Grid, camera);
 	GSC->Window->InputMap->AddReleaseAction("F", std::weak_ptr<Core::Input::Action>(ExpandGrid));
+
+	// Testing tools
+	auto gls = std::make_shared<Game::Tests::GameLogSpammer>();
+	Core::Scene->AddChild(gls);
 
 	LoadGUI();
 }
@@ -119,6 +140,12 @@ void InGameState::LoadGUI()
 	centerPanel->AddChild(MoneyBox);
 	MoneyBox->Translate(glm::vec2(12.0, -84.0) * guiScaleOffset * 2.0f);
 
+	// Game / Combat Log
+	std::shared_ptr<Core::Components::Gui::Item> logPanel = std::make_shared<Game::Components::Gui::LogPanel>();
+	logPanel->Scale(glm::vec2(1200.0f, 200.0f) * guiScaleOffset);
+	logPanel = std::make_shared<Core::Components::Gui::Anchored>(logPanel, std::make_unique<Core::Components::Gui::AlignBottomRight>(glm::vec2(20, 10)));
+	LoadedGuiComponents.push_back(logPanel);
+	GSC->Window->AddGuiItemToLayer(1, LoadedGuiComponents.back());
 }
 void InGameState::ReloadGUI()
 {

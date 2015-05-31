@@ -14,7 +14,7 @@ namespace Core
 		public:
 			Texture();
 			Texture(const Texture& t);
-			Texture(int width, int height, const unsigned char* bytes);
+			Texture(int width, int height, GLfloat filter, const unsigned char* bytes);
 			~Texture();
 
 			GLuint GetID() const;

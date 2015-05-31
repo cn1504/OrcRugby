@@ -49,6 +49,8 @@ void Label::Draw(Core::Renderers::GuiRenderer* renderer)
 void Label::SetText(std::string text)
 {
 	Text = text;
+	if (Text == "")
+		return;
 	auto f = Core::AssetDB->GetFont(Font);
 		
 	size_t longestLength = 0;

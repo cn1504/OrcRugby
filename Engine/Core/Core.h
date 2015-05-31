@@ -53,6 +53,8 @@
 #include <zlib.h>
 #pragma comment(lib, "zlibstat.lib")
 
+#include <Patterns/Observer.h>
+
 #include "Exceptions.h"
 #include "Debug/Debug.h"
 #include "Debug/Log.h"

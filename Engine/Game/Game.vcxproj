@@ -22,7 +22,9 @@
     <ClInclude Include="Components\CameraControls.h" />
     <ClInclude Include="Components\Generator.h" />
     <ClInclude Include="Components\Grid.h" />
+    <ClInclude Include="Components\Gui\LogPanel.h" />
     <ClInclude Include="Components\Hex.h" />
+    <ClInclude Include="Components\Log.h" />
     <ClInclude Include="Components\PrefsDB.h" />
     <ClInclude Include="Components\SaveDB.h" />
     <ClInclude Include="Game.h" />
@@ -31,12 +33,15 @@
     <ClInclude Include="States\InGameState.h" />
     <ClInclude Include="States\MainMenuState.h" />
     <ClInclude Include="States\NewGameCreationState.h" />
+    <ClInclude Include="Tests\GameLogSpammer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Components\CameraControls.cpp" />
     <ClCompile Include="Components\Generator.cpp" />
     <ClCompile Include="Components\Grid.cpp" />
+    <ClCompile Include="Components\Gui\LogPanel.cpp" />
     <ClCompile Include="Components\Hex.cpp" />
+    <ClCompile Include="Components\Log.cpp" />
     <ClCompile Include="Components\PrefsDB.cpp" />
     <ClCompile Include="Components\SaveDB.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -45,6 +50,7 @@
     <ClCompile Include="States\InGameState.cpp" />
     <ClCompile Include="States\MainMenuState.cpp" />
     <ClCompile Include="States\NewGameCreationState.cpp" />
+    <ClCompile Include="Tests\GameLogSpammer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D92779CA-22B9-46E4-BDBF-E72BAAABBC54}</ProjectGuid>

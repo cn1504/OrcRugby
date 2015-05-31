@@ -92,7 +92,7 @@ int MainWindow::Update()
 	for (size_t i = Layers.size(); i > 0; i--)
 	{
 		bool result = false;
-		for (size_t j = 0; j < Layers[i - 1]->GetChildCount(); j--)
+		for (size_t j = 0; j < Layers[i - 1]->GetChildCount(); j++)
 		{
 			bool r = UpdateButtons(Layers[i - 1]->GetChild(j), mp, deactivate);
 			if (r == true)
