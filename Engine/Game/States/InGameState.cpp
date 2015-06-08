@@ -27,20 +27,7 @@ InGameState::InGameState(GameStateController* GSC) : GameState(GSC)
 	// Reset Camera
 	auto camera = GSC->Window->GetCamera();
 	camera->Translate(glm::vec3(0, 12.313, -15.76) - camera->GetPosition());
-
-	glm::vec3 direction = glm::normalize(glm::vec3(0, -0.615661f, 0.788011f));
-	auto rot1 = glm::RotationBetweenVectors(camera->Forward(), direction);
-	camera->Rotate(rot1);
-
-	// Recompute desiredUp so that it's perpendicular to the direction
-	// You can skip that part if you really want to force desiredUp
-	glm::vec3 desiredUp(0.0, 1.0, 0.0);
-	glm::vec3 right = glm::cross(camera->Forward(), desiredUp);
-	desiredUp = glm::cross(right, camera->Forward());
-
-	// Because of the 1st rotation, the up is probably completely screwed up. 
-	// Find the rotation between the "up" of the rotated object, and the desired up
-	camera->Rotate(glm::RotationBetweenVectors(camera->Up(), desiredUp));
+	camera->Rotate(glm::quat(glm::vec3(glm::radians(38.0f), 0.0f, 0.0f)) * glm::conjugate(camera->GetRotation()));
 
 	TogglePauseKeybind = std::make_shared<TogglePauseAction>(this);
 	GSC->Window->InputMap->AddReleaseAction("Space", TogglePauseKeybind);

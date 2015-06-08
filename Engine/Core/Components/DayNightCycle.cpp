@@ -27,7 +27,7 @@ DayNightCycle::DayNightCycle(float timeRatio)
 	SunLightColor = glm::vec4(1, 1, 1, 1);
 	MoonLightColor = glm::vec4(1, 1, 1, 1);
 
-	SunLightIntensity = 5.0f;
+	SunLightIntensity = 3.0f;
 	MoonLightIntensity = 1.25f;
 }
 

@@ -12,7 +12,7 @@ namespace Game
 		{
 		private:
 			std::shared_ptr<Core::Assets::Database> db;
-
+			
 		public:
 			SaveDB(std::shared_ptr<Core::Assets::Database> db);
 			virtual ~SaveDB();
@@ -32,6 +32,14 @@ namespace Game
 			std::string GetTileTag(const glm::ivec2& position);
 			int GetTileOrientation(const glm::ivec2& position);
 			void SetTile(const glm::ivec2& position, std::string tag, int orientation);
+
+			std::shared_ptr<Characters::Character> GetCharacter(int id);
+			void SaveCharacter(int& id, const std::string& name, const std::string& race, const std::string& gender);
+			void LoadCharacter(const int& id, std::string& name, std::string& race, std::string& gender);
+			void SaveStats(const Characters::StatBlock& sb);
+			void LoadStats(Characters::StatBlock& sb);
+			void SaveInventory(const Characters::Inventory& inv);
+			void LoadInventory(Characters::Inventory& inv);
 		};
 	}
 }

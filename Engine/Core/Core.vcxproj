@@ -155,6 +155,7 @@
     <ClInclude Include="Input\Action.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\Map.h" />
+    <ClInclude Include="Patterns\Command.h" />
     <ClInclude Include="Patterns\Observer.h" />
     <ClInclude Include="Renderers\BufferClearBehavior.h" />
     <ClInclude Include="Renderers\GBuffer.h" />

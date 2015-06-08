@@ -16,7 +16,7 @@ LogPanel::LogPanel(std::string background)
 	LinePosition = 0;
 	LinesDisplayed = 0;
 
-	Text = std::make_shared<Core::Components::Gui::Label>("Consolas16", glm::vec4(1, 1, 1, 1), 1, "Log:");
+	Text = std::make_shared<Core::Components::Gui::Label>("Consolas13", glm::vec4(1, 1, 1, 1), 1, "Log:");
 	Text = std::make_shared<Core::Components::Gui::Anchored>(Text, std::make_unique<Core::Components::Gui::AlignTopLeft>(glm::vec2(6, 0)));
 	AddChild(Text);
 
@@ -75,8 +75,8 @@ void LogPanel::Scale(const glm::vec2& delta)
 {
 	Panel::Scale(delta);
 
-	const float LINE_HEIGHT = 16.0f;
-	const float LINE_WIDTH = 9.0f;
+	const float LINE_HEIGHT = 14.0f;
+	const float LINE_WIDTH = 7.0f;
 
 	auto s = GetScale();
 	LinesDisplayed = static_cast<size_t>(s.y / LINE_HEIGHT);

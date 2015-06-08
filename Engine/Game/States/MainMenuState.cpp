@@ -77,7 +77,7 @@ void MainMenuState::Load()
 	}
 
 	auto ver = Game::Prefs->GetString("Version");
-	std::shared_ptr<Core::Components::Gui::Item> BuildText = std::make_shared<Core::Components::Gui::Label>("Consolas16", glm::vec4(1, 1, 1, 1), 1, ver);
+	std::shared_ptr<Core::Components::Gui::Item> BuildText = std::make_shared<Core::Components::Gui::Label>("Consolas13", glm::vec4(1, 1, 1, 1), 1, ver);
 	BuildText = std::make_shared<Core::Components::Gui::Anchored>(BuildText, std::make_unique<Core::Components::Gui::AlignBottomRight>(glm::vec2(6, 0)));
 	GSC->Window->AddGuiItemToLayer(2, BuildText);
 	LoadedGuiComponents.push_back(BuildText);

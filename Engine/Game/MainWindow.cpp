@@ -15,6 +15,8 @@
 #include <Components/PrefsDB.h>
 #include <States/GameStateController.h>
 
+#include <Components/Characters/Character.h>
+
 using namespace Game;
 using namespace Core::Window;
 
@@ -42,6 +44,16 @@ MainWindow::MainWindow()
 
 	if (Core::Window::Map.size() < 2)
 	{
+		// Character Test
+		Core::Debug->Log("");
+		auto chara = Game::Generator->GenerateCharacter();
+		Core::Debug->Log(std::to_string(*chara));
+		Core::Debug->Log("");
+		chara = Game::Generator->GenerateCharacter();
+		Core::Debug->Log(std::to_string(*chara));
+		Core::Debug->Log("");
+		chara = Game::Generator->GenerateCharacter();
+		Core::Debug->Log(std::to_string(*chara));
 	}
 
 	GSC = std::make_shared<Game::States::GameStateController>(this);
@@ -70,13 +82,6 @@ MainWindow::MainWindow()
 	CameraRotateRight = std::make_shared<CameraRotationAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 0.5f);
 	InputMap->AddWhileDownAction(Game::Prefs->GetString("CameraRotateRight"), std::weak_ptr<Core::Input::Action>(CameraRotateRight));
 
-	Generator = std::make_unique<Game::Components::Generator>(Core::Database);
-	Core::Debug->Log("Name Generator Test:");
-	for (int i = 0; i < 10; i++)
-		Core::Debug->Log(Generator->PickName("Human", "Female"));
-
-	for (int i = 0; i < 10; i++)
-		Core::Debug->Log(Generator->PickName("Human", "Male"));
 }
 MainWindow::~MainWindow() {}
 int MainWindow::Update()

@@ -20,6 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Components\CameraControls.h" />
+    <ClInclude Include="Components\Characters\Character.h" />
+    <ClInclude Include="Components\Characters\CharacterAI.h" />
+    <ClInclude Include="Components\Characters\Class.h" />
+    <ClInclude Include="Components\Characters\Inventory.h" />
+    <ClInclude Include="Components\Characters\Item.h" />
+    <ClInclude Include="Components\Characters\Power.h" />
+    <ClInclude Include="Components\Characters\StatBlock.h" />
     <ClInclude Include="Components\Generator.h" />
     <ClInclude Include="Components\Grid.h" />
     <ClInclude Include="Components\Gui\LogPanel.h" />
@@ -37,6 +44,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Components\CameraControls.cpp" />
+    <ClCompile Include="Components\Characters\Character.cpp" />
+    <ClCompile Include="Components\Characters\CharacterAI.cpp" />
+    <ClCompile Include="Components\Characters\Class.cpp" />
+    <ClCompile Include="Components\Characters\Inventory.cpp" />
+    <ClCompile Include="Components\Characters\Item.cpp" />
+    <ClCompile Include="Components\Characters\Power.cpp" />
+    <ClCompile Include="Components\Characters\StatBlock.cpp" />
     <ClCompile Include="Components\Generator.cpp" />
     <ClCompile Include="Components\Grid.cpp" />
     <ClCompile Include="Components\Gui\LogPanel.cpp" />

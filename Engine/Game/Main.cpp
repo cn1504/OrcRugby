@@ -7,6 +7,7 @@
 #include <Components/PrefsDB.h>
 #include <Components/SaveDB.h>
 #include <Components/Log.h>
+#include <Components/Generator.h>
 
 #include <Audio/Listener.h>
 
@@ -14,6 +15,7 @@
 std::shared_ptr<Game::Components::PrefsDB> Game::Prefs;
 std::shared_ptr<Game::Components::SaveDB> Game::Save;
 std::shared_ptr<Game::Components::Log> Game::Log;
+std::shared_ptr<Game::Components::Generator> Game::Generator;
 
 
 int main(int argc, char* argv[])
@@ -29,6 +31,8 @@ int main(int argc, char* argv[])
 
 		auto gameLog = std::make_shared<Game::Components::Log>();
 		Game::Log = gameLog;
+
+		Game::Generator = std::make_unique<Game::Components::Generator>(Core::Database);
 
 		// Load Settings and Preferences
 		if (Game::Prefs->GetInt("AudioEnabled"))

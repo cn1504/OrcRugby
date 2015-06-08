@@ -42,6 +42,27 @@
     <ClInclude Include="Tests\GameLogSpammer.h">
       <Filter>Tests</Filter>
     </ClInclude>
+    <ClInclude Include="Components\Characters\Character.h">
+      <Filter>Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Characters\StatBlock.h">
+      <Filter>Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Characters\Class.h">
+      <Filter>Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Characters\Inventory.h">
+      <Filter>Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Characters\Item.h">
+      <Filter>Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Characters\Power.h">
+      <Filter>Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Components\Characters\CharacterAI.h">
+      <Filter>Components\Characters</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -85,6 +106,27 @@
     <ClCompile Include="Tests\GameLogSpammer.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="Components\Characters\Character.cpp">
+      <Filter>Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Characters\StatBlock.cpp">
+      <Filter>Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Characters\Class.cpp">
+      <Filter>Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Characters\Inventory.cpp">
+      <Filter>Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Characters\Item.cpp">
+      <Filter>Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Characters\Power.cpp">
+      <Filter>Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Characters\CharacterAI.cpp">
+      <Filter>Components\Characters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Components">
@@ -98,6 +140,9 @@
     </Filter>
     <Filter Include="Tests">
       <UniqueIdentifier>{8f571a57-7c24-40ef-bb29-46ea395dc22a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Characters">
+      <UniqueIdentifier>{01f2c7da-9b7e-435a-8661-18764c6b5481}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
