@@ -40,6 +40,7 @@
     <ClInclude Include="States\InGameState.h" />
     <ClInclude Include="States\MainMenuState.h" />
     <ClInclude Include="States\NewGameCreationState.h" />
+    <ClInclude Include="Tests\CharacterSpawner.h" />
     <ClInclude Include="Tests\GameLogSpammer.h" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +65,7 @@
     <ClCompile Include="States\InGameState.cpp" />
     <ClCompile Include="States\MainMenuState.cpp" />
     <ClCompile Include="States\NewGameCreationState.cpp" />
+    <ClCompile Include="Tests\CharacterSpawner.cpp" />
     <ClCompile Include="Tests\GameLogSpammer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

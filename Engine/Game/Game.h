@@ -3,7 +3,7 @@
 #include <Core.h>
 #pragma comment(lib, "Core.lib")
 
-#define GAME_VERSION "0.1.26"
+#define GAME_VERSION "0.1.27"
 
 namespace Game
 {
@@ -35,4 +35,6 @@ namespace Game
 	extern std::shared_ptr<Game::Components::PrefsDB> Prefs;
 	extern std::shared_ptr<Game::Components::Log> Log;
 	extern std::shared_ptr<Game::Components::Generator> Generator;
+
+	extern std::unordered_map<std::string, std::vector<std::shared_ptr<Game::Components::Characters::Character>>> Factions;
 }

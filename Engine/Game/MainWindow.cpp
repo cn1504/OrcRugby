@@ -44,16 +44,6 @@ MainWindow::MainWindow()
 
 	if (Core::Window::Map.size() < 2)
 	{
-		// Character Test
-		Core::Debug->Log("");
-		auto chara = Game::Generator->GenerateCharacter();
-		Core::Debug->Log(std::to_string(*chara));
-		Core::Debug->Log("");
-		chara = Game::Generator->GenerateCharacter();
-		Core::Debug->Log(std::to_string(*chara));
-		Core::Debug->Log("");
-		chara = Game::Generator->GenerateCharacter();
-		Core::Debug->Log(std::to_string(*chara));
 	}
 
 	GSC = std::make_shared<Game::States::GameStateController>(this);

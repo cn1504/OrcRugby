@@ -19,12 +19,14 @@ using namespace Game::Components::Characters;
 Character::Character()	// Generate random character
 	: Id(-1), CClass(Game::Generator->PickClass()), 
 	Stats(this, CClass->GetStatPriorities()), Inv(this), 
+	AI(this),
 	Primary(Game::Generator->PickPower(*CClass, Stats.Level.Get(), "Primary"))
 {
 	// Pick Race and Gender
 	Race = "Human";
 	Gender = (rand() % 2 == 0) ? "Male" : "Female";
 	Name = Game::Generator->PickName(Race, Gender);
+	Faction = "Player";
 }
 
 /*
@@ -57,6 +59,21 @@ void Character::Save() {
 void Character::Die()
 {
 	Core::Debug->Log(Name + " has died.");
+
+	GetParent()->RemoveChild(shared_from_this());
+
+	for (auto& f : Game::Factions)
+	{
+		for (int j = 0; j < (int)f.second.size(); j++)
+		{
+			if (f.second[j] == shared_from_this())
+			{
+				std::swap(f.second[j], f.second.back());
+				f.second.resize(f.second.size() - 1);
+				j--;
+			}
+		}
+	}
 }
 
 

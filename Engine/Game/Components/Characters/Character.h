@@ -31,6 +31,7 @@ namespace Game
 				std::string Name;
 				std::string Race;
 				std::string Gender;
+				std::string Faction;
 				StatBlock Stats;
 				Inventory Inv;
 				CharacterAI AI;
@@ -55,6 +56,11 @@ namespace Game
 				const Inventory& GetInventory() const { return Inv; }
 				CharacterAI& GetAI() { return AI; }
 				const CharacterAI& GetAI() const { return AI; }	
+
+				const std::string& GetFaction() const { return Faction; }
+				void SetFaction(std::string faction) { Faction = faction; }
+				const std::string& GetName() const { return Name; }
+				void SetName(std::string name) { Name = name; }
 			};
 		}
 	}

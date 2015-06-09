@@ -17,13 +17,14 @@ namespace Game
 			{
 			public:
 				virtual ~Effect() {}
-				virtual void Apply(Character* evoker, Power* power, Character* target) = 0;
+				virtual void Apply(Character* evoker, Power* power, Character* target, bool critical) = 0;
 			};
 
 			class Attack
 			{
 				friend class Game::Components::Generator;
 				friend class Power;
+				friend class AttackEffect;
 
 			private:
 				std::string Name;
@@ -36,8 +37,9 @@ namespace Game
 				std::vector<std::unique_ptr<Effect>> OnMiss;
 
 			public:
-
 				void Execute(Character* evoker, Power* power, Character* target);
+				const std::string& GetTarget() { return Target; }
+				const std::string& GetType() { return Type; }
 			};
 			
 			class Power
@@ -52,6 +54,7 @@ namespace Game
 			public:
 				std::string GetName() { return Name; }
 				void Use(Character* evoker, Character* target);
+				Attack* GetAttack(std::string name);
 			};
 
 
@@ -63,7 +66,7 @@ namespace Game
 
 			public:
 				AttackEffect(int count, std::string attack) : Count(count), Param(attack) {}
-				virtual void Apply(Character* evoker, Power* power, Character* target);
+				virtual void Apply(Character* evoker, Power* power, Character* target, bool critical);
 			};
 
 			class DamageEffect : public Effect
@@ -76,7 +79,7 @@ namespace Game
 			public:
 				DamageEffect(std::string type, int bonus, float multiplier) 
 					: Type(type), Bonus(bonus), Multiplier(multiplier) {}
-				virtual void Apply(Character* evoker, Power* power, Character* target);
+				virtual void Apply(Character* evoker, Power* power, Character* target, bool critical);
 			};
 
 			class HealEffect : public Effect
@@ -89,7 +92,7 @@ namespace Game
 			public:
 				HealEffect(std::string type, int bonus, float multiplier)
 					: Type(type), Bonus(bonus), Multiplier(multiplier) {}
-				virtual void Apply(Character* evoker, Power* power, Character* target);
+				virtual void Apply(Character* evoker, Power* power, Character* target, bool critical);
 			};
 
 			class BuffEffect : public Effect
@@ -102,7 +105,7 @@ namespace Game
 			public:
 				BuffEffect(std::string type, int bonus, float duration)
 					: Type(type), Bonus(bonus), Duration(duration) {}
-				virtual void Apply(Character* evoker, Power* power, Character* target);
+				virtual void Apply(Character* evoker, Power* power, Character* target, bool critical);
 			};
 
 			class DebuffEffect : public Effect
@@ -115,7 +118,7 @@ namespace Game
 			public:
 				DebuffEffect(std::string type, int bonus, float duration)
 					: Type(type), Bonus(bonus), Duration(duration) {}
-				virtual void Apply(Character* evoker, Power* power, Character* target);
+				virtual void Apply(Character* evoker, Power* power, Character* target, bool critical);
 			};
 
 		}

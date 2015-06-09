@@ -49,7 +49,6 @@ void LogPanel::UpdateText()
 		}
 		lines += line + "\n";
 	}
-	Core::Debug->Log(lines);
 	if (lines.length() > 0)
 	{
 		size_t p = lines.length();
@@ -62,12 +61,10 @@ void LogPanel::UpdateText()
 			output += "\n";
 		if (p != std::string::npos)
 		{
-			Core::Debug->Log(std::to_string(p));
 			output += lines.substr(p + 1);
 		}
 		lines = output;
 	}
-	Core::Debug->Log(lines);
 	Text->SetText(lines);
 }
 

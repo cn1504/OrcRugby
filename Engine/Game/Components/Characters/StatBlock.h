@@ -89,10 +89,12 @@ namespace Game
 				friend std::string std::to_string(const Game::Components::Characters::StatBlock& sb);
 				
 				friend class Character;
+				friend class CharacterAI;
 
 				friend class HitPoints;
 				friend class ItemStatBonus;
 				
+				friend class Attack;
 				friend class DamageEffect;
 				friend class HealEffect;
 				friend class BuffEffect;

@@ -63,6 +63,9 @@
     <ClInclude Include="Components\Characters\CharacterAI.h">
       <Filter>Components\Characters</Filter>
     </ClInclude>
+    <ClInclude Include="Tests\CharacterSpawner.h">
+      <Filter>Tests</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
@@ -126,6 +129,9 @@
     </ClCompile>
     <ClCompile Include="Components\Characters\CharacterAI.cpp">
       <Filter>Components\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\CharacterSpawner.cpp">
+      <Filter>Tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

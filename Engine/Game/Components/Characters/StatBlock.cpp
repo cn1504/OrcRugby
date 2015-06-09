@@ -44,7 +44,7 @@ void HitPoints::SetBasis(Stat* baseStat) { BaseStat = baseStat; }
 int HitPoints::GetCurrent() const { return Current.Get(); }
 int HitPoints::GetTotal() const { return Total.Get() + BaseStat->GetMod() * SB->Level.Get(); }
 float HitPoints::GetPercent() const { return (float)Current.Get() / (float)GetTotal(); }
-void HitPoints::Damage(int v) { Current.Add(glm::clamp(-v, 0, GetTotal() - GetCurrent())); }
+void HitPoints::Damage(int v) { Current.Add(glm::clamp(-v, -GetCurrent(), 0)); }
 void HitPoints::Heal(int v) { Current.Add(glm::clamp(v, 0, GetTotal() - GetCurrent())); }
 void HitPoints::IncreaseTotal(int v) { Total.Add(v); if (v > 0) Heal(v); else Damage(v); }
 Stat& HitPoints::GetCurrentStat() { return Current; }

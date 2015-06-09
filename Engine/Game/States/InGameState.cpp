@@ -10,12 +10,17 @@
 #include <Components/Gui/LogPanel.h>
 
 #include <Tests/GameLogSpammer.h>
+#include <Tests/CharacterSpawner.h>
 
 using namespace Game::States;
 
 
 InGameState::InGameState(GameStateController* GSC) : GameState(GSC)
 {
+	const float FOVY = 45.0f;
+	const float MIN_DRAWDISTANCE = 0.01f;
+	const float MAX_DRAWDISTANCE = 100.0f;
+
 	auto DayDuration = Game::Save->GetFloat("TimeRatio");
 	LoadedEntities.push_back(std::make_shared<Core::Components::DayNightCycle>(DayDuration));
 	Core::Scene->AddChild(LoadedEntities.back());
@@ -28,6 +33,7 @@ InGameState::InGameState(GameStateController* GSC) : GameState(GSC)
 	auto camera = GSC->Window->GetCamera();
 	camera->Translate(glm::vec3(0, 12.313, -15.76) - camera->GetPosition());
 	camera->Rotate(glm::quat(glm::vec3(glm::radians(38.0f), 0.0f, 0.0f)) * glm::conjugate(camera->GetRotation()));
+	camera->UpdateProjection(FOVY, ((float)GSC->Window->GetSize().x) / ((float)GSC->Window->GetSize().y), MIN_DRAWDISTANCE, MAX_DRAWDISTANCE);
 
 	TogglePauseKeybind = std::make_shared<TogglePauseAction>(this);
 	GSC->Window->InputMap->AddReleaseAction("Space", TogglePauseKeybind);
@@ -36,8 +42,10 @@ InGameState::InGameState(GameStateController* GSC) : GameState(GSC)
 	GSC->Window->InputMap->AddReleaseAction("F", std::weak_ptr<Core::Input::Action>(ExpandGrid));
 
 	// Testing tools
-	auto gls = std::make_shared<Game::Tests::GameLogSpammer>();
-	Core::Scene->AddChild(gls);
+	//auto gls = std::make_shared<Game::Tests::GameLogSpammer>();
+	//Core::Scene->AddChild(gls);
+	auto cs = std::make_shared<Game::Tests::CharacterSpawner>();
+	Core::Scene->AddChild(cs);
 
 	LoadGUI();
 }

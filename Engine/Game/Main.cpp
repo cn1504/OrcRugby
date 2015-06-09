@@ -11,12 +11,15 @@
 
 #include <Audio/Listener.h>
 
+#include <Components/Characters/Character.h>
+
 // Global Game Objects
 std::shared_ptr<Game::Components::PrefsDB> Game::Prefs;
 std::shared_ptr<Game::Components::SaveDB> Game::Save;
 std::shared_ptr<Game::Components::Log> Game::Log;
 std::shared_ptr<Game::Components::Generator> Game::Generator;
 
+std::unordered_map<std::string, std::vector<std::shared_ptr<Game::Components::Characters::Character>>> Game::Factions;
 
 int main(int argc, char* argv[])
 {

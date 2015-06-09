@@ -7,6 +7,7 @@ Log::~Log() {}
 
 void Log::Post(std::string line)
 {
+	Core::Debug->Log(line);
 	Lines.push_back(line);
 	NotifyObservers();
 }
