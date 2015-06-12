@@ -20,6 +20,13 @@ void ClearDepthAndToBlack::Clear()
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 }
 
+ClearDepthAndToWhite::~ClearDepthAndToWhite() {}
+void ClearDepthAndToWhite::Clear()
+{
+	glClearColor(1, 1, 1, 1);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+}
+
 ClearDepth::~ClearDepth() {}
 void ClearDepth::Clear()
 {

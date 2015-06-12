@@ -239,6 +239,9 @@
     <ClInclude Include="Patterns\Command.h">
       <Filter>Patterns</Filter>
     </ClInclude>
+    <ClInclude Include="Components\Gui\TextureDebugPanel.h">
+      <Filter>Components\Gui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Assets\Texture.cpp">
@@ -400,6 +403,9 @@
     </ClCompile>
     <ClCompile Include="Assets\Material.cpp">
       <Filter>Assets</Filter>
+    </ClCompile>
+    <ClCompile Include="Components\Gui\TextureDebugPanel.cpp">
+      <Filter>Components\Gui</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

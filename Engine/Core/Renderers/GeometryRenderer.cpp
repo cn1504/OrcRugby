@@ -156,8 +156,8 @@ void GeometryRenderer::DrawMesh(const VertexBuffer& indices, const VertexBuffer&
 {
 	StaticMesh->Activate();
 
-	glm::mat4 MV = Camera->GetViewMatrix() * transform;
-	glm::mat4 MVP = Camera->GetProjectionMatrix() * MV;
+	glm::mat4 MV = Camera->GetView() * transform;
+	glm::mat4 MVP = Camera->GetProjection() * MV;
 	StaticMesh->SetUniform("ModelViewProjectionMatrix", MVP);
 	StaticMesh->SetUniform("ModelViewMatrix", MV);
 
@@ -192,9 +192,9 @@ void GeometryRenderer::DrawSea(const VertexBuffer& indices, const VertexBuffer& 
 {
 	Sea->Activate();
 	
-	glm::mat4 VP = Camera->GetProjectionMatrix() * Camera->GetViewMatrix();
+	glm::mat4 VP = Camera->GetViewProjection();
 	Sea->SetUniform("ViewProjectionMatrix", VP);
-	Sea->SetUniform("ViewMatrix", Camera->GetViewMatrix());
+	Sea->SetUniform("ViewMatrix", Camera->GetView());
 	Sea->SetUniform("ModelMatrix", transform);	
 	Sea->SetUniform("iGlobalTime", Core::Time->Elapsed);
 

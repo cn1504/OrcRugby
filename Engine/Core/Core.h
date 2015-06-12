@@ -107,7 +107,7 @@ namespace Core
 		class RenderBuffer;
 
 		class GuiRenderer;
-		class GeometryRenderer;
+		class MeshRenderer;
 		class LightRenderer;
 
 		class VertexBuffer;

@@ -18,7 +18,8 @@ const static float MOONSET_HEADING = 269.0f;	// Degrees from E from N
 
 DayNightCycle::DayNightCycle(float timeRatio)
 {
-	ShadowBuffer = std::make_unique<Core::Renderers::ShadowBuffer>(glm::ivec2(1024, 1024));
+	SunBuffer = std::make_unique<Core::Renderers::ShadowBuffer>(glm::ivec2(2048, 2048));
+	MoonBuffer = std::make_unique<Core::Renderers::ShadowBuffer>(glm::ivec2(2048, 2048));
 	Renderer = std::make_unique<Core::Renderers::ShadowMapRenderer>();
 
 	TimeRatio = timeRatio;
@@ -51,7 +52,7 @@ void DayNightCycle::Update()
 		float phi = glm::pi<float>() / 2.0f - (float)sunT * glm::pi<float>();
 		float theta = 0.0f; 
 
-		SunDirection = glm::normalize(glm::vec3(-glm::sin(phi)*glm::cos(theta), cos(phi), glm::sin(phi)*glm::sin(theta)));
+		SunDirection = glm::normalize(glm::vec3(-glm::sin(phi)*glm::cos(theta), glm::cos(phi), glm::sin(phi)*glm::sin(theta)));
 				
 		double ColorShiftRange = 0.1;
 		double colorT = ((sunT > 1.0 - ColorShiftRange) ? (1.0 - sunT) / ColorShiftRange : (sunT < ColorShiftRange) ? sunT / ColorShiftRange : 1.0);
@@ -70,7 +71,7 @@ void DayNightCycle::Update()
 		float phi = glm::pi<float>() / 2.0f - (float)moonT * glm::pi<float>();
 		float theta = 0.0f;
 
-		MoonDirection = glm::normalize(glm::vec3(-glm::sin(phi)*glm::cos(theta), cos(phi), glm::sin(phi)*glm::sin(theta)));
+		MoonDirection = glm::normalize(glm::vec3(-glm::sin(phi)*glm::cos(theta), glm::cos(phi), glm::sin(phi)*glm::sin(theta)));
 
 		float MoonColorTemp = 7000.0f;
 		MoonLightColor = calculateColorFromTemp(MoonColorTemp);
@@ -78,13 +79,8 @@ void DayNightCycle::Update()
 		double RiseAndSetRange = 0.05;
 		MoonLightColor.a *= (float)((moonT > 1.0 - RiseAndSetRange) ? (1.0 - moonT) / RiseAndSetRange : (moonT < RiseAndSetRange) ? moonT / RiseAndSetRange : 1.0);
 	}
-	//glm::vec3 MoonDirection;
-	//glm::vec4 MoonLightColor;
-	//glm::vec4 SkyColor;
 
-	//ShadowBuffer->SetAsTarget();
-	//ShadowBuffer->Clear();
-	//Renderer->DrawScene();
+	RenderSceneToShadowmap();
 
 	Entity::Update();
 }
@@ -93,11 +89,11 @@ void DayNightCycle::DrawLights(Core::Renderers::LightRenderer* renderer)
 {
 	if (CurrentTime > SUNRISE && CurrentTime < SUNSET)
 	{
-		renderer->DrawLight(*ShadowBuffer->Depth, SunDirection, SunLightColor, SunLightIntensity * SunLightColor.a);
+		renderer->DrawLight(*SunBuffer->DepthMap, SunDirection, SunLightColor, SunLightIntensity * SunLightColor.a, SunLightProjection, SunLightView, SunMaxDepth);
 	}	
 	if (CurrentTime < MOONSET || CurrentTime > MOONRISE)
 	{
-		renderer->DrawLight(*ShadowBuffer->Depth, MoonDirection, MoonLightColor, MoonLightIntensity * MoonLightColor.a);
+		renderer->DrawLight(*MoonBuffer->DepthMap, MoonDirection, MoonLightColor, MoonLightIntensity * MoonLightColor.a, MoonLightProjection, MoonLightView, MoonMaxDepth);
 	}
 
 	Entity::DrawLights(renderer);
@@ -128,4 +124,79 @@ glm::vec4 DayNightCycle::calculateColorFromTemp(float k)
 	}
 
 	return color;
+}
+
+void DayNightCycle::RenderSceneToShadowmap()
+{
+	if (CurrentTime > SUNRISE && CurrentTime < SUNSET)
+	{
+		// Compute the MVP matrix from the light's point of view
+		std::vector<glm::vec3> cc;
+		camera->GetWSFrustumCorners(cc);
+
+		auto gl = camera->GetGridLocation();
+		SunLightView = glm::lookAt(SunDirection * 50.0f + gl, gl, glm::vec3(0, 1, 0));
+		float minX = FLT_MAX;
+		float minY = FLT_MAX;
+		float minZ = FLT_MAX;
+		float maxX = -FLT_MAX;
+		float maxY = -FLT_MAX;
+		float maxZ = -FLT_MAX;
+		for (int i = 0; i < 8; i++)
+		{
+			auto point = SunLightView * glm::vec4(cc[i], 1.0);
+			cc[i] = glm::vec3(point);
+			minX = glm::min(point.x, minX);
+			minY = glm::min(point.y, minY);
+			minZ = glm::min(point.z, minZ);
+			maxX = glm::max(point.x, maxX);
+			maxY = glm::max(point.y, maxY);
+			maxZ = glm::max(point.z, maxZ);
+		}
+		
+		SunMaxDepth = glm::abs(minZ);
+		SunLightProjection = glm::ortho(minX, maxX, minY, maxY, 0.0f, -minZ);
+		Renderer->SetMatrices(SunLightProjection, SunLightView, SunMaxDepth);
+		 
+		// Render Scene to ShadowMap
+		SunBuffer->SetAsTarget();
+		SunBuffer->Clear();
+		Renderer->DrawScene();
+	}
+
+	if (CurrentTime < MOONSET || CurrentTime > MOONRISE)
+	{
+		// Compute the MVP matrix from the light's point of view
+		std::vector<glm::vec3> cc;
+		camera->GetWSFrustumCorners(cc);
+
+		auto gl = camera->GetGridLocation();
+		MoonLightView = glm::lookAt(MoonDirection * 50.0f + gl, gl, glm::vec3(0, 1, 0));
+		float minX = FLT_MAX;
+		float minY = FLT_MAX;
+		float minZ = FLT_MAX;
+		float maxX = -FLT_MAX;
+		float maxY = -FLT_MAX;
+		float maxZ = -FLT_MAX;
+		for (int i = 0; i < 8; i++)
+		{
+			auto point = MoonLightView * glm::vec4(cc[i], 1.0);
+			cc[i] = glm::vec3(point);
+			minX = glm::min(point.x, minX);
+			minY = glm::min(point.y, minY);
+			minZ = glm::min(point.z, minZ);
+			maxX = glm::max(point.x, maxX);
+			maxY = glm::max(point.y, maxY);
+			maxZ = glm::max(point.z, maxZ);
+		}
+
+		MoonMaxDepth = glm::abs(minZ);
+		MoonLightProjection = glm::ortho(minX, maxX, minY, maxY, 0.0f, -minZ);
+		Renderer->SetMatrices(MoonLightProjection, MoonLightView, MoonMaxDepth);
+
+		// Render Scene to ShadowMap
+		MoonBuffer->SetAsTarget();
+		MoonBuffer->Clear();
+		Renderer->DrawScene();
+	}
 }

@@ -6,6 +6,12 @@ uniform sampler2D BaseTexture;
 uniform sampler2D MSRTexture;
 
 uniform mat4      ProjectionInverse;
+uniform mat4      ViewInverse;
+
+uniform sampler2D ShadowTexture;
+uniform mat4      LightView;
+uniform mat4      LightProjection;
+uniform float     MaxDepth;
 
 uniform vec3      LightDirection;
 uniform vec4      LightColor;
@@ -15,6 +21,38 @@ layout(location = 0) in vec2 texCoord;
 
 layout(location = 0) out vec4 outDiffuse;
 layout(location = 1) out vec4 outSpecular;
+
+// Shadow Mapping Functions
+//-------------------------------------------------------------------------------------------
+float unpack(vec4 rgba_depth)
+{
+    const vec4 bit_shift = vec4(1.0/(256.0*256.0*256.0), 1.0/(256.0*256.0), 1.0/256.0, 1.0);
+    float depth = dot(rgba_depth, bit_shift);
+    return depth;
+}
+
+float ShadowMap(float LdotN, float invSqrRadius, vec3 fragPosition)
+{
+	vec4 vsPosition = LightView * ViewInverse * vec4(fragPosition, 1.0);
+	vec4 position_ls = LightProjection * vsPosition;
+	position_ls.xyz = position_ls.xyz / position_ls.w;
+	vec2 shadowCoord = position_ls.xy * 0.5 + 0.5;
+	vec4 sms = texture(ShadowTexture, shadowCoord);
+	float depth = unpack(sms);
+	float distRel = dot(vsPosition, vsPosition) * invSqrRadius;
+	
+	//float bias = 0.0;	
+	//float bias = 0.0000000001*tan(acos(LdotN)); // cosTheta is dot( n,l ), clamped between 0 and 1
+	//bias = 1.0 - clamp(bias, 0.0, 1.0);
+	float result = (distRel > depth) ? 0.0 : 1.0;
+	
+	// ESM
+	//const float c = 60.0; // Sharp shadows good for interior scenes
+	//const float c = 5.0; 	// Soft shadows, good for day time exterior scenes
+	//float result = clamp(exp(-c * ( distRel - depth )), 0.0, 1.0);
+	
+	return result;
+}
 
 #define M_PI 3.1415926535897932384626433832795
 
@@ -91,7 +129,7 @@ void main(void)
 		
 	vec3 viewDir    = normalize(- pos);
 	vec3 halfDir	= normalize(viewDir + incident);
-	float NdotV		= abs(dot(viewDir, normal)) + 1e-5f;	// avoids artifacts
+	float NdotV		= abs(dot(viewDir, normal));
 	float NdotH		= clamp(dot(normal, halfDir), 0.0, 1.0);
 	float LdotN		= clamp(dot(incident, normal), 0.0, 1.0);
 	float LdotH		= clamp(dot(halfDir, incident), 0.0, 1.0);
@@ -108,9 +146,12 @@ void main(void)
 	
 	// Diffuse BRDF
 	float Fd = Fd_DisneyDiffuse(NdotV, LdotN, LdotH, MSR.z) / M_PI;	
+		
+	// Shadow Mapping Result
+	float shadow = ShadowMap(LdotN, MaxDepth, pos);
 	
-	outDiffuse = vec4(LightColor.xyz * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd * LightIntensity, LightColor.w);
-	outSpecular = vec4(LightColor.xyz * Fr * LightIntensity, LightColor.w);
+	outDiffuse = vec4((0.25 + shadow * 0.75) * LightColor.xyz * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd * LightIntensity, LightColor.w);
+	outSpecular = vec4(shadow * LightColor.xyz * Fr * LightIntensity, LightColor.w);
 
 	// Distant Light Probe Approx for ambient light
 	//outSpecular.xyz += getSkyColor(reflect(viewDir, normal)) * 0.2;

@@ -9,6 +9,7 @@
 
 #include <Components/Gui/LogPanel.h>
 
+#include <Components/Gui/TextureDebugPanel.h>
 #include <Tests/GameLogSpammer.h>
 #include <Tests/CharacterSpawner.h>
 
@@ -19,10 +20,12 @@ InGameState::InGameState(GameStateController* GSC) : GameState(GSC)
 {
 	const float FOVY = 45.0f;
 	const float MIN_DRAWDISTANCE = 0.01f;
-	const float MAX_DRAWDISTANCE = 100.0f;
+	const float MAX_DRAWDISTANCE = 50.0f;
 
 	auto DayDuration = Game::Save->GetFloat("TimeRatio");
-	LoadedEntities.push_back(std::make_shared<Core::Components::DayNightCycle>(DayDuration));
+	auto DNC = std::make_shared<Core::Components::DayNightCycle>(DayDuration);
+	DNC->SetCamera(GSC->Window->GetCamera());
+	LoadedEntities.push_back(DNC);
 	Core::Scene->AddChild(LoadedEntities.back());
 
 	auto Grid = std::make_shared<Game::Components::Grid>();
@@ -48,6 +51,17 @@ InGameState::InGameState(GameStateController* GSC) : GameState(GSC)
 	Core::Scene->AddChild(cs);
 
 	LoadGUI();
+
+	
+	auto res = glm::vec2(GSC->Window->GetSize().x, GSC->Window->GetSize().y);
+	auto guiScaleOffset = res / GSC->GUI_SIZE; 
+	
+	auto debug = std::make_shared<Core::Components::Gui::TextureDebugPanel>();
+	debug->Scale(glm::vec2(3840, 2160) * guiScaleOffset);
+	//LoadedGuiComponents.push_back(debug);
+	//GSC->Window->AddGuiItemToLayer(1, LoadedGuiComponents.back());
+	debug->SetTexture(DNC->SunBuffer->DepthMap.get());
+	
 }
 InGameState::~InGameState()
 {

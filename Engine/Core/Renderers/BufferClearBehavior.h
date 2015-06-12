@@ -28,6 +28,13 @@ namespace Core
 			virtual void Clear();
 		};
 
+		class ClearDepthAndToWhite : public BufferClearBehavior
+		{
+		public:
+			virtual ~ClearDepthAndToWhite();
+			virtual void Clear();
+		};
+
 		class ClearDepth : public BufferClearBehavior
 		{
 		public:

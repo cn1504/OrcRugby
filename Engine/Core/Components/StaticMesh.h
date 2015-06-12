@@ -2,7 +2,7 @@
 #include <Core.h>
 #include "Entity.h"
 #include <Renderers/VertexBuffer.h>
-#include <Renderers/GeometryRenderer.h>
+#include <Renderers/MeshRenderer.h>
 
 namespace Core
 {
@@ -17,8 +17,8 @@ namespace Core
 		public:
 			StaticMesh(std::string name, std::string material);
 			virtual ~StaticMesh();
-			
-			virtual void Draw(Core::Renderers::GeometryRenderer* renderer);
+
+			virtual void Draw(Core::Renderers::MeshRenderer* renderer);
 		};
 	}
 }

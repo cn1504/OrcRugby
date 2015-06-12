@@ -53,9 +53,9 @@ void LightRenderer::DrawScene(const glm::vec2& bufferSize)
 	glDisable(GL_DEPTH_TEST);
 	glCullFace(GL_FRONT);
 
-	VP = Camera->GetProjectionMatrix() * Camera->GetViewMatrix();
-	PInverse = glm::inverse(Camera->GetProjectionMatrix());
-	VInverse = glm::inverse(Camera->GetViewMatrix());
+	VP = Camera->GetViewProjection();
+	PInverse = Camera->GetInverseProjection();
+	VInverse = Camera->GetInverseView();
 
 	Light->Activate();
 	Light->SetUniform("PixelSize", 1.0f / bufferSize);
@@ -69,6 +69,7 @@ void LightRenderer::DrawScene(const glm::vec2& bufferSize)
 
 	DirectionalLight->Activate();
 	DirectionalLight->SetUniform("ProjectionInverse", PInverse);
+	DirectionalLight->SetUniform("ViewInverse", VInverse);
 
 	Core::Scene->DrawLights(this);
 
@@ -199,7 +200,7 @@ void LightRenderer::DrawScene(const glm::vec2& bufferSize)
 void LightRenderer::DrawLight(const Core::Assets::Texture& shadowMap, const glm::mat4& transform, const Core::Assets::Light& light)
 {
 	auto MVP = VP * transform;
-	auto MV = Camera->GetViewMatrix() * transform;
+	auto MV = Camera->GetView() * transform;
 
 	LightWithShadow->Activate();
 	LightWithShadow->SetTexture("ShadowTexture", shadowMap, 4);
@@ -252,7 +253,7 @@ void LightRenderer::DrawLight(const Core::Assets::Texture& shadowMap, const glm:
 void LightRenderer::DrawLight(const glm::mat4& transform, const Core::Assets::Light& light)
 {
 	auto MVP = VP * transform;
-	auto MV = Camera->GetViewMatrix() * transform;
+	auto MV = Camera->GetView() * transform;
 
 	Light->Activate();
 	Light->SetUniform("ModelViewProjectionMatrix", MVP);
@@ -299,13 +300,18 @@ void LightRenderer::DrawLight(const glm::mat4& transform, const Core::Assets::Li
 
 
 
-void LightRenderer::DrawLight(const Core::Assets::Texture& shadowMap, const glm::vec3& direction, const glm::vec4& color, float intensity)
+void LightRenderer::DrawLight(const Core::Assets::Texture& shadowMap, const glm::vec3& direction, const glm::vec4& color, float intensity, const glm::mat4& lightProj, const glm::mat4& lightView, float maxDepth)
 {
 	DirectionalLight->Activate();
 
-	DirectionalLight->SetUniform("LightDirection", glm::vec3(Camera->GetViewMatrix() * glm::vec4(direction, 0.0f)));
+	DirectionalLight->SetUniform("LightDirection", glm::vec3(Camera->GetView() * glm::vec4(direction, 0.0f)));
 	DirectionalLight->SetUniform("LightColor", color);
 	DirectionalLight->SetUniform("LightIntensity", intensity);
+	
+	DirectionalLight->SetUniform("LightView", lightView);
+	DirectionalLight->SetUniform("LightProjection", lightProj);
+	DirectionalLight->SetTexture("ShadowTexture", shadowMap, 8);
+	DirectionalLight->SetUniform("MaxDepth", 1.0f / (maxDepth * maxDepth));
 
 	glDisable(GL_CULL_FACE);
 	SQuad->Render(CurrentBufferSize);

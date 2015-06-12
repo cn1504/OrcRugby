@@ -1,5 +1,6 @@
 #version 410
 
+uniform mat4 ProjectionMatrix;
 uniform mat4 ViewMatrix;
 uniform float iGlobalTime;           // shader playback time (in seconds)
 

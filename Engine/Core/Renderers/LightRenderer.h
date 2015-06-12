@@ -32,7 +32,7 @@ namespace Core
 			void DrawScene(const glm::vec2& bufferSize);
 			void DrawLight(const glm::mat4& transform, const Core::Assets::Light& light);
 			void DrawLight(const Core::Assets::Texture& shadowMap, const glm::mat4& transform, const Core::Assets::Light& light);
-			void DrawLight(const Core::Assets::Texture& shadowMap, const glm::vec3& direction, const glm::vec4& color, float intensity);
+			void DrawLight(const Core::Assets::Texture& shadowMap, const glm::vec3& direction, const glm::vec4& color, float intensity, const glm::mat4& lightProj, const glm::mat4& lightView, float maxDepth);
 		};
 	}
 }

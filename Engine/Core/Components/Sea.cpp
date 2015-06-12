@@ -12,7 +12,7 @@ Sea::~Sea()
 {
 }
 
-void Sea::Draw(Core::Renderers::GeometryRenderer* renderer)
+void Sea::Draw(Core::Renderers::MeshRenderer* renderer)
 {
 	auto indices = Core::AssetDB->GetVertexBuffer(Name + "_Indices");
 	auto vertices = Core::AssetDB->GetVertexBuffer(Name + "_Vertices");

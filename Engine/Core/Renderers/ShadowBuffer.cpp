@@ -18,7 +18,7 @@ ShadowBuffer& ShadowBuffer::operator=(ShadowBuffer && o)
 }
 
 ShadowBuffer::ShadowBuffer(const glm::ivec2& size)
-	: OffScreenBuffer(size, std::make_unique<ClearDepthAndToBlack>())
+	: OffScreenBuffer(size, std::make_unique<ClearDepthAndToWhite>())
 {
 	Depth = std::make_unique<Texture>();
 	DepthMap = std::make_unique<Texture>();

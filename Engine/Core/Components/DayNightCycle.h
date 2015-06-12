@@ -22,14 +22,26 @@ namespace Core
 			float SunLightIntensity;
 			float MoonLightIntensity;
 
-			std::unique_ptr<Core::Renderers::ShadowBuffer> ShadowBuffer;
+			std::shared_ptr<Camera> camera;
 			std::unique_ptr<Core::Renderers::ShadowMapRenderer> Renderer;
+			float SunMaxDepth;
+			glm::mat4 SunLightProjection;
+			glm::mat4 SunLightView;
+			float MoonMaxDepth;
+			glm::mat4 MoonLightProjection;
+			glm::mat4 MoonLightView;
+			void RenderSceneToShadowmap();
 
 			glm::vec4 calculateColorFromTemp(float k);
 
 		public:
+			std::unique_ptr<Core::Renderers::ShadowBuffer> SunBuffer;
+			std::unique_ptr<Core::Renderers::ShadowBuffer> MoonBuffer;
+
 			DayNightCycle(float timeRatio);
 			virtual ~DayNightCycle();
+
+			void SetCamera(std::shared_ptr<Camera> cam) { camera = cam; }
 
 			virtual void Update();
 			virtual void DrawLights(Core::Renderers::LightRenderer* renderer);

@@ -53,7 +53,7 @@ namespace Core
 				}
 			}
 
-			virtual void Draw(Core::Renderers::GeometryRenderer* renderer) {
+			virtual void Draw(Core::Renderers::MeshRenderer* renderer) {
 				for (size_t i = 0; i < Transform->GetChildCount(); i++)
 				{
 					auto child = std::static_pointer_cast<Entity>(Transform->GetChild(i));

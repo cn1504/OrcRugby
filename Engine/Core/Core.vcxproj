@@ -145,6 +145,7 @@
     <ClInclude Include="Components\Gui\Item.h" />
     <ClInclude Include="Components\Gui\Label.h" />
     <ClInclude Include="Components\Gui\Panel.h" />
+    <ClInclude Include="Components\Gui\TextureDebugPanel.h" />
     <ClInclude Include="Components\LightSource.h" />
     <ClInclude Include="Components\Sea.h" />
     <ClInclude Include="Components\StaticMesh.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="Components\Gui\Button.cpp" />
     <ClCompile Include="Components\Gui\Label.cpp" />
     <ClCompile Include="Components\Gui\Panel.cpp" />
+    <ClCompile Include="Components\Gui\TextureDebugPanel.cpp" />
     <ClCompile Include="Components\LightSource.cpp" />
     <ClCompile Include="Components\Sea.cpp" />
     <ClCompile Include="Components\StaticMesh.cpp" />

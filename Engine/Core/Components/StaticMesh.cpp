@@ -13,7 +13,7 @@ StaticMesh::~StaticMesh()
 {
 }
 
-void StaticMesh::Draw(Core::Renderers::GeometryRenderer* renderer)
+void StaticMesh::Draw(Core::Renderers::MeshRenderer* renderer)
 {
 	auto indices = Core::AssetDB->GetVertexBuffer(Name + "_Indices");
 	auto vertices = Core::AssetDB->GetVertexBuffer(Name + "_Vertices");
