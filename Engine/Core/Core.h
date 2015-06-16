@@ -88,6 +88,10 @@ namespace Core
 		class Component;
 		class Entity;
 
+		class Camera;
+		class AudioSource;
+		class LightSource;
+
 		namespace Gui
 		{
 			class Item;

@@ -18,6 +18,7 @@ std::shared_ptr<Game::Components::PrefsDB> Game::Prefs;
 std::shared_ptr<Game::Components::SaveDB> Game::Save;
 std::shared_ptr<Game::Components::Log> Game::Log;
 std::shared_ptr<Game::Components::Generator> Game::Generator;
+std::shared_ptr<Core::Components::AudioSource> Game::BGM;
 
 std::unordered_map<std::string, std::vector<std::shared_ptr<Game::Components::Characters::Character>>> Game::Factions;
 
@@ -38,15 +39,10 @@ int main(int argc, char* argv[])
 		Game::Generator = std::make_unique<Game::Components::Generator>(Core::Database);
 
 		// Load Settings and Preferences
-		if (Game::Prefs->GetInt("AudioEnabled"))
-			Core::Listener->EnableAudio();
-		else
-			Core::Listener->DisableAudio();
-
-		if (Game::Prefs->GetInt("MusicEnabled"))
-			Core::Listener->EnableMusic();
-		else
-			Core::Listener->DisableMusic();
+		if (Game::Prefs->GetInt("AudioEnabled") == 0)
+			Core::Listener->ToggleAudio();
+		if (Game::Prefs->GetInt("MusicEnabled") == 0)
+			Core::Listener->ToggleMusic();
 
 		Core::Listener->SetVolume(Game::Prefs->GetFloat("MainVolume"));
 		Core::Listener->SetMusicVolume(Game::Prefs->GetFloat("MusicVolume"));

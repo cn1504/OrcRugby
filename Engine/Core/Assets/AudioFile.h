@@ -20,9 +20,10 @@ namespace Core
 			DWORD dataSize;
 			DWORD sampleRate;
 			float duration;
-			Type type;
+			Type type; 
+			bool loop;
 
-			AudioFile(void* dataBuffer, size_t bufferSize, ALuint format, DWORD dataSize, DWORD sampleRate, float duration, Type type);
+			AudioFile(void* dataBuffer, size_t bufferSize, ALuint format, DWORD dataSize, DWORD sampleRate, float duration, Type type, bool loop);
 			~AudioFile();
 		};
 

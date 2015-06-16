@@ -61,7 +61,8 @@ InGameState::InGameState(GameStateController* GSC) : GameState(GSC)
 	//LoadedGuiComponents.push_back(debug);
 	//GSC->Window->AddGuiItemToLayer(1, LoadedGuiComponents.back());
 	debug->SetTexture(DNC->SunBuffer->DepthMap.get());
-	
+
+	Game::BGM->FadeToNewFile("Silence", 1.0f);
 }
 InGameState::~InGameState()
 {

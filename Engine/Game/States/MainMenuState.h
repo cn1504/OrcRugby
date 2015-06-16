@@ -13,7 +13,6 @@ namespace Game
 		private:
 			std::shared_ptr<Core::Input::Action> EscAction;
 			std::vector<std::shared_ptr<Core::Components::Gui::Item>> LoadedGuiComponents;
-			std::shared_ptr<Core::Components::AudioSource> BGM;
 			
 			void Load();
 			void Cleanup();

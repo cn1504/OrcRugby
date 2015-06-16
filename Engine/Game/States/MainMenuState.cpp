@@ -82,8 +82,7 @@ void MainMenuState::Load()
 	GSC->Window->AddGuiItemToLayer(2, BuildText);
 	LoadedGuiComponents.push_back(BuildText);
 
-	BGM = std::make_shared<Core::Components::AudioSource>("AcousticLoop1");
-	Core::Scene->AddChild(BGM);
+	Game::BGM->FadeToNewFile("AcousticLoop1", 1.0f);
 }
 void MainMenuState::Cleanup()
 {
@@ -92,8 +91,6 @@ void MainMenuState::Cleanup()
 		i->GetParent()->RemoveChild(i);
 	}
 	LoadedGuiComponents.clear();
-
-	BGM->GetParent()->RemoveChild(BGM);
 }
 void MainMenuState::Reload()
 {

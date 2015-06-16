@@ -76,6 +76,7 @@ namespace Core
 			glfwPollEvents();
 			Core::Input::Update();
 			Core::Scene->Update();
+			Core::Listener->Update();
 
 			for (auto it = Core::Window::Map.begin(); it != Core::Window::Map.end();)
 			{

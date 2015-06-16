@@ -1,5 +1,7 @@
 #include "MainWindow.h"
 #include <Input/Map.h>
+#include <Audio/Listener.h>
+
 #include <Components/Gui/Panel.h>
 #include <Components/Gui/Label.h>
 #include <Components/Gui/Anchored.h>
@@ -44,6 +46,8 @@ MainWindow::MainWindow()
 
 	if (Core::Window::Map.size() < 2)
 	{
+		Game::BGM = std::make_shared<Core::Components::AudioSource>("Silence");
+		Camera->AddChild(Game::BGM);
 	}
 
 	GSC = std::make_shared<Game::States::GameStateController>(this);
@@ -72,6 +76,11 @@ MainWindow::MainWindow()
 	CameraRotateRight = std::make_shared<CameraRotationAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 0.5f);
 	InputMap->AddWhileDownAction(Game::Prefs->GetString("CameraRotateRight"), std::weak_ptr<Core::Input::Action>(CameraRotateRight));
 
+	// Audio controls
+	ToggleAudio = std::make_shared<ToggleAudioAction>();
+	InputMap->AddReleaseAction("Ctrl + S", ToggleAudio);
+	ToggleMusic = std::make_shared<ToggleMusicAction>();
+	InputMap->AddReleaseAction("Ctrl + M", ToggleMusic);
 }
 MainWindow::~MainWindow() {}
 int MainWindow::Update()
@@ -220,4 +229,16 @@ void ClickDownAction::Perform()
 			i--;
 		}
 	}
+}
+
+
+void ToggleAudioAction::Perform()
+{
+	Core::Listener->ToggleAudio();
+	Game::Prefs->Set("AudioEnabled", Core::Listener->IsAudioEnabled());
+}
+void ToggleMusicAction::Perform()
+{
+	Core::Listener->ToggleMusic();
+	Game::Prefs->Set("MusicEnabled", Core::Listener->IsMusicEnabled());
 }

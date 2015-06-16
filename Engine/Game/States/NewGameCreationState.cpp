@@ -10,6 +10,8 @@ NewGameCreationState::NewGameCreationState(GameStateController* GSC) : GameState
 	auto res = glm::vec2(GSC->Window->GetSize().x, GSC->Window->GetSize().y);
 	auto guiScaleOffset = res / GSC->GUI_SIZE;
 
+	Game::BGM->FadeToNewFile("Silence", 1.0f);
+
 	Game::Save->NewGame();
 }
 NewGameCreationState::~NewGameCreationState()

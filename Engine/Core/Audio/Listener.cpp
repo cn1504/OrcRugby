@@ -1,5 +1,4 @@
 #include "Listener.h"
-#include <Audio/Track.h>
 
 using namespace Core::Audio;
 
@@ -41,12 +40,6 @@ void AL::Init()
 
 void AL::Close(void)
 {
-	for (auto t : tracklist)
-	{
-		delete t;
-	}
-	tracklist.clear();
-
 	ALCdevice *device;
 	ALCcontext *ctx;
 
@@ -92,44 +85,18 @@ void AL::Update()
 
 		lastPosition = newPosition;
 	}
-
-	for (auto t : tracklist)
+	else
 	{
-		t->Update();
-	}
-
-	for (int i = 0; i < tracklist.size(); i++)
-	{
-		if (tracklist[i]->HasFinished())
-		{
-			delete tracklist[i];
-			tracklist[i] = tracklist[tracklist.size() - 1];
-			tracklist.resize(tracklist.size() - 1);
-			i--;
-		}
-	}
+		alListenerf(AL_GAIN, 0.0f);
+	}	
 }
 
 
-void AL::PlayTrack(Track* track)
+void AL::ToggleAudio()
 {
-	tracklist.push_back(track);
+	AudioEnabled = !AudioEnabled;
 }
-
-
-void AL::EnableAudio()
+void AL::ToggleMusic()
 {
-	AudioEnabled = true;
-}
-void AL::DisableAudio()
-{
-	AudioEnabled = false;
-}
-void AL::EnableMusic()
-{
-	MusicEnabled = true;
-}
-void AL::DisableMusic()
-{
-	MusicEnabled = false;
+	MusicEnabled = !MusicEnabled;
 }

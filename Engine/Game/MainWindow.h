@@ -9,6 +9,7 @@
 #include <Components/CameraControls.h>
 #include <Components/SaveDB.h>
 #include <Components/Generator.h>
+#include <Components/AudioSource.h>
 
 namespace Game
 {
@@ -33,13 +34,14 @@ namespace Game
 		std::shared_ptr<CameraRotationAction> CameraRotateLeft;
 		std::shared_ptr<CameraRotationAction> CameraRotateRight;
 
+		std::shared_ptr<Core::Input::Action> ToggleMusic;
+		std::shared_ptr<Core::Input::Action> ToggleAudio;
+
 		std::shared_ptr<Game::States::GameStateController> GSC;
 		std::shared_ptr<Core::Input::Action> OnMouseLeftRelease;
 		std::shared_ptr<Core::Input::Action> OnMouseLeftDown;
 		std::vector<std::weak_ptr<Core::Components::Gui::Button>> Buttons;
 		bool UpdateButtons(std::shared_ptr<Core::Space::Transform2DIF> parent, const glm::vec2& mp, bool deactivate);
-				
-		std::unique_ptr<Game::Components::Generator> Generator;
 
 	public:
 		MainWindow();
@@ -82,6 +84,20 @@ namespace Game
 	public:
 		ClickDownAction(MainWindow* Window) : Window(Window) {}
 
+		virtual void Perform();
+	};
+
+
+	class ToggleAudioAction : public Core::Input::Action
+	{
+	public:
+		ToggleAudioAction() {}
+		virtual void Perform();
+	};
+	class ToggleMusicAction : public Core::Input::Action
+	{
+	public:
+		ToggleMusicAction() {}
 		virtual void Perform();
 	};
 	

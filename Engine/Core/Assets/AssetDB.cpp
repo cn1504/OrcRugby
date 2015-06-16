@@ -283,16 +283,22 @@ std::shared_ptr<Core::Assets::AudioFile> AssetDB::GetAudioFile(std::string key)
 	auto& ptr = AudioCache[key];
 	if (ptr == nullptr)
 	{
-		db->Sql("SELECT Type, Format, Size, SampleRate, Duration, Data FROM Audio WHERE Key='" + key + "' LIMIT 1");
+		db->Sql("SELECT Type, Format, Size, SampleRate, Duration, Loop, Data FROM Audio WHERE Key='" + key + "' LIMIT 1");
 		if (db->FetchRow())
 		{
-			auto type = db->GetColumnInt(0);
+			auto typestr = db->GetColumnString(0);
+			auto type = (typestr == "SFX") ? Core::Assets::AudioFile::Type::SOUND_EFFECT :
+				(typestr == "Music") ? Core::Assets::AudioFile::Type::MUSIC :
+				(typestr == "Ambient") ? Core::Assets::AudioFile::Type::AMBIENT :
+				// (typestr == "Voice") ? Core::Assets::AudioFile::Type::VOICE :
+				Core::Assets::AudioFile::Type::VOICE; 
 			auto format = db->GetColumnInt(1);
 			auto size = db->GetColumnInt(2);
 			auto samplerate = db->GetColumnInt(3);
 			auto duration = static_cast<float>(db->GetColumnDouble(4));
-			auto data = db->GetColumnBlob(5);
-			ptr = std::make_shared<Core::Assets::AudioFile>(data->GetData(), data->GetSize(), (ALuint)format, (DWORD)size, (DWORD)samplerate, duration, (Core::Assets::AudioFile::Type)type);
+			auto loop = db->GetColumnInt(5);
+			auto data = db->GetColumnBlob(6);
+			ptr = std::make_shared<Core::Assets::AudioFile>(data->GetData(), data->GetSize(), (ALuint)format, (DWORD)size, (DWORD)samplerate, duration, type, loop != 0);
 		}
 		else
 		{

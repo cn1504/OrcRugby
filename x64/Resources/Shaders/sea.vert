@@ -15,7 +15,7 @@ const float EPSILON	= 1e-3;
 
 // sea
 const int ITER_GEOMETRY = 3;
-const int ITER_FRAGMENT = 7;
+const int ITER_FRAGMENT = 5;
 const float SEA_HEIGHT = 0.15;
 const float SEA_CHOPPY = 2.0;
 const float SEA_SPEED = 0.8;

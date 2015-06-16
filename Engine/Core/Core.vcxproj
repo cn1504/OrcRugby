@@ -134,7 +134,6 @@
     <ClInclude Include="Assets\SQLiteDB.h" />
     <ClInclude Include="Assets\Texture.h" />
     <ClInclude Include="Audio\Listener.h" />
-    <ClInclude Include="Audio\Track.h" />
     <ClInclude Include="Components\AudioSource.h" />
     <ClInclude Include="Components\Camera.h" />
     <ClInclude Include="Components\DayNightCycle.h" />
@@ -202,7 +201,6 @@
     <ClCompile Include="Assets\SQLiteDB.cpp" />
     <ClCompile Include="Assets\Texture.cpp" />
     <ClCompile Include="Audio\Listener.cpp" />
-    <ClCompile Include="Audio\Track.cpp" />
     <ClCompile Include="Components\AudioSource.cpp" />
     <ClCompile Include="Components\Camera.cpp" />
     <ClCompile Include="Components\DayNightCycle.cpp" />
