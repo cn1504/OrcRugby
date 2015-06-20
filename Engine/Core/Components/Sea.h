@@ -12,6 +12,7 @@ namespace Core
 		{
 		private:
 			std::string Name;
+			Assets::Texture* FFT;
 
 		public:
 			Sea(std::string name);

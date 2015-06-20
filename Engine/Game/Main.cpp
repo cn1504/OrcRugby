@@ -50,6 +50,7 @@ int main(int argc, char* argv[])
 		Core::Listener->SetSFXVolume(Game::Prefs->GetFloat("SFXVolume"));
 		Core::Listener->SetVoiceVolume(Game::Prefs->GetFloat("VoiceVolume"));
 
+		Core::Time->MaxFPS = Game::Prefs->GetFloat("MaxFPS");
 		Core::Debug->Log("");
 
 		// Open the main window

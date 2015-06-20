@@ -19,6 +19,7 @@ namespace Core
 		float realtimeDelta;
 		float realtimeElapsed;
 		float fps;
+		float maxfps;
 		int drawCallsPerFrame;
 
 	public:
@@ -29,10 +30,11 @@ namespace Core
 		const float& RealtimeElapsed;
 		const float& FPS;
 		const int& DrawCallsPerFrame;
+		float& MaxFPS;
 
 
 		Timer() : Scale(scale), Delta(delta), Elapsed(elapsed), RealtimeDelta(realtimeDelta), 
-			RealtimeElapsed(realtimeElapsed), FPS(fps), DrawCallsPerFrame(drawCallsPerFrame)
+			RealtimeElapsed(realtimeElapsed), FPS(fps), MaxFPS(maxfps), DrawCallsPerFrame(drawCallsPerFrame)
 		{
 			scale = 1.0f;
 			delta = 0.0f;
@@ -40,6 +42,7 @@ namespace Core
 			realtimeDelta = 0.0f;
 			realtimeElapsed = 0.0f;
 			fps = 0.0f;
+			maxfps = 60.0f;
 
 			elapsedSinceLastSecond = 0.0f;
 			framesSinceLastSecond = 0;
@@ -68,7 +71,7 @@ namespace Core
 			drawCallsPerFrame = 0;
 
 			// Calculate end of frame
-			std::chrono::duration<float> frameDuration(1.0f / ((HasFocus) ? 60.0f : 60.0f));
+			std::chrono::duration<float> frameDuration(1.0f / MaxFPS);
 			frameEnd = frameEnd + std::chrono::duration_cast<std::chrono::high_resolution_clock::duration>(frameDuration);
 
 			// Calculate Frames per second

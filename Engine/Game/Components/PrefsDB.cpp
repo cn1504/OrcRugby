@@ -107,6 +107,7 @@ void PrefsDB::InitializeDB()
 	Set("MainWindow_PosY", ypos);
 	Set("MainWindow_Width", vm->width);
 	Set("MainWindow_Height", vm->height);
+	Set("MaxFPS", 60.0f);
 
 	// Control Bindings
 	Set("CameraUp", "W");

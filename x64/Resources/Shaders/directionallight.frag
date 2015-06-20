@@ -154,5 +154,5 @@ void main(void)
 	outSpecular = vec4(shadow * LightColor.xyz * Fr * LightIntensity, LightColor.w);
 
 	// Distant Light Probe Approx for ambient light
-	//outSpecular.xyz += getSkyColor(reflect(viewDir, normal)) * 0.2;
+	//outSpecular.xyz += LightColor.xyz * pow(1.0 - NdotV, 10.0);
 }
