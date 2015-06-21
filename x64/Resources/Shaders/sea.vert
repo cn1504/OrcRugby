@@ -22,7 +22,7 @@ struct Wave_Params
 };
 
 void GerstnerWave(vec2 pos, Wave_Params w, float t, 
-	out vec3 pos_sum, out vec3 norm_sum)
+	inout vec3 pos_sum, inout vec3 norm_sum)
 {
 	float d = w.k * (dot(w.Direction, pos) - w.Velocity * t);
 	float sin_d = sin(d);
