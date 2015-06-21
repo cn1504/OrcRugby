@@ -13,7 +13,7 @@ Label::Label(std::string font, const glm::vec4& color, std::string text)
 
 	Alignment = 2;
 
-	vb = nullptr;
+	vao = nullptr;
 }
 
 Label::Label(std::string font, const glm::vec4& color, int alignment, std::string text)
@@ -30,7 +30,7 @@ void Label::Draw(Core::Renderers::GuiRenderer* renderer)
 {
 	if (Text != "")
 	{
-		if (vb == nullptr)
+		if (vao == nullptr)
 			SetText(Text);
 
 		auto f = Core::AssetDB->GetFont(Font);
@@ -39,7 +39,7 @@ void Label::Draw(Core::Renderers::GuiRenderer* renderer)
 			auto t = Core::AssetDB->GetTexture(f->GetTexture());
 			if (t != nullptr)
 			{
-				renderer->DrawText(*vb, *t, Color, GetMatrix());
+				renderer->DrawText(*vao, *t, Color, GetMatrix());
 			}
 		}
 	}
@@ -52,7 +52,7 @@ void Label::SetText(std::string text)
 	if (Text == "")
 		return;
 	auto f = Core::AssetDB->GetFont(Font);
-		
+
 	size_t longestLength = 0;
 	auto lines = std::split(Text, '\n');
 	for (auto& line : lines)
@@ -67,19 +67,19 @@ void Label::SetText(std::string text)
 
 
 	std::vector<float> vertices;
-		
+
 	float y = size.y - f->GetCharHeight();
 
-	for (size_t line = 0; line < lines.size(); line++) 
-	{			
+	for (size_t line = 0; line < lines.size(); line++)
+	{
 		float linelength = lines[line].size() * f->GetCharWidth();
 		float x = (Alignment == 1) ? -size.x : (Alignment == 2) ? -linelength * 0.5f : size.x - linelength;
 
 		for (size_t i = 0; i < lines[line].size(); i++)
 		{
-				
+
 			// get ascii code as integer
-			int ascii = lines[line][i];				
+			int ascii = lines[line][i];
 
 			int atlas_col = (ascii - ' ') % f->GetCharsPerRow();
 			int atlas_row = (ascii - ' ') / f->GetCharsPerRow();
@@ -129,10 +129,10 @@ void Label::SetText(std::string text)
 
 		y = y - f->GetCharHeight();
 	}
-		
+
 	// Update gpu memory
-	if (vb != nullptr)
-		vb->Update(sizeof(float) * vertices.size(), &vertices[0]);
-	else
-		vb = std::make_unique<Core::Renderers::VertexBuffer>(sizeof(float) * vertices.size(), &vertices[0]);
+	if (vao == nullptr)
+		vao = std::make_unique<Core::Renderers::VertexArray>();
+
+	vao->SetBuffer(0, 4, GL_FLOAT, GL_FALSE, sizeof(float) * vertices.size(), &vertices[0]);
 }

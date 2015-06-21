@@ -8,8 +8,6 @@ ShadowMapRenderer::ShadowMapRenderer()
 	/*
 	Mesh = std::make_unique<Shader>("mesh.vert", "shadow.frag");
 	SkeletalMesh = std::make_unique<Shader>("skeletalmesh.vert", "shadow.frag");
-	Sphere = std::make_unique<Shader>("mesh.vert", "shadowsphere.frag");
-	Cylinder = std::make_unique<Shader>("mesh.vert", "shadowcylinder.frag");
 	PointCloud = std::make_unique<Shader>("pc.vert", "shadow.frag");
 	*/
 	
@@ -29,8 +27,7 @@ void ShadowMapRenderer::DrawScene()
 	glCullFace(GL_BACK);
 }
 
-void ShadowMapRenderer::DrawMesh(const VertexBuffer& indices, const VertexBuffer& vertices,
-	const VertexBuffer& uvs, const VertexBuffer& normals,
+void ShadowMapRenderer::DrawMesh(const VertexArray& vao,
 	const Core::Assets::Material& material, const glm::mat4& transform)
 {
 	StaticMesh->Activate();
@@ -42,31 +39,24 @@ void ShadowMapRenderer::DrawMesh(const VertexBuffer& indices, const VertexBuffer
 
 	StaticMesh->SetUniform("MaxDepth", MaxDepth);
 
-	StaticMesh->SetVec3Attribute("Vertex", vertices.GetID());
-	StaticMesh->SetVec3Attribute("Normal", normals.GetID());
-	StaticMesh->SetVec2Attribute("Uv", uvs.GetID());
-
-	StaticMesh->SetElementBuffer(indices.GetID());
-	Core::Debug->GLError("ERROR: Could not bind the static mesh buffers.");
+	vao.Bind();
+	Core::Debug->GLError("ERROR: Could not bind the static mesh vao.");
 
 	// Draw the triangles !
 	glDrawElements(
 		GL_TRIANGLES,               // mode
-		(GLsizei)(indices.GetSize() / sizeof(unsigned short)),                  // count
+		vao.GetSize(),              // count
 		GL_UNSIGNED_SHORT,          // type
 		(void*)0                    // element array buffer offset
 		);
 	Core::Debug->GLError("ERROR: Could not draw the static mesh elements to shadow map.");
 
-	StaticMesh->DisableAttribute("Vertex");
-	StaticMesh->DisableAttribute("Normal");
-	StaticMesh->DisableAttribute("Uv");
+	vao.Unbind();
 
 	Debug->GLError("ERROR: Failed to render static mesh to shadow map.");
 }
 
-void ShadowMapRenderer::DrawSea(const VertexBuffer& indices, const VertexBuffer& vertices,
-	const VertexBuffer& uvs, const VertexBuffer& normals,
+void ShadowMapRenderer::DrawSea(const VertexArray& vao,
 	const glm::mat4& transform)
 {
 	Sea->Activate();
@@ -80,23 +70,18 @@ void ShadowMapRenderer::DrawSea(const VertexBuffer& indices, const VertexBuffer&
 
 	Sea->SetUniform("MaxDepth", MaxDepth);
 
-	Sea->SetVec3Attribute("Vertex", vertices.GetID());
-
-	Sea->SetElementBuffer(indices.GetID());
+	vao.Bind();
 	Core::Debug->GLError("ERROR: Could not bind the sea mesh buffers.");
 
 	// Draw the triangles !
 	glDrawElements(
 		GL_TRIANGLES,               // mode
-		(GLsizei)(indices.GetSize() / sizeof(unsigned short)),                  // count
+		vao.GetSize(),              // count
 		GL_UNSIGNED_SHORT,          // type
 		(void*)0                    // element array buffer offset
 		);
+	vao.Unbind();
 	Core::Debug->GLError("ERROR: Could not draw the sea mesh elements to shadow map.");
-
-	Sea->DisableAttribute("Vertex");
-
-	Debug->GLError("ERROR: Failed to render sea mesh to shadow map.");
 }
 
 void ShadowMapRenderer::SetMatrices(const glm::mat4& projection, const glm::mat4& view, float maxDepth)

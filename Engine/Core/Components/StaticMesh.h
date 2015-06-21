@@ -1,7 +1,7 @@
 #pragma once
 #include <Core.h>
 #include "Entity.h"
-#include <Renderers/VertexBuffer.h>
+#include <Renderers/VertexArray.h>
 #include <Renderers/MeshRenderer.h>
 
 namespace Core

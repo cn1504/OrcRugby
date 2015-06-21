@@ -1,7 +1,7 @@
 #include "LightRenderer.h"
 #include <Assets/AssetDB.h>
 #include <Assets/Light.h>
-#include "VertexBuffer.h"
+#include "VertexArray.h"
 
 using namespace Core::Renderers;
 
@@ -223,30 +223,19 @@ void LightRenderer::DrawLight(const Core::Assets::Texture& shadowMap, const glm:
 	LightWithShadow->SetUniform("LightAngleScale", anglescale);
 	LightWithShadow->SetUniform("LightAngleOffset", -light.GetCosOuter() * anglescale);
 	
-	auto indices = Core::AssetDB->GetVertexBuffer("Cube_Indices");
-	auto vertices = Core::AssetDB->GetVertexBuffer("Cube_Vertices");
-	auto uvs = Core::AssetDB->GetVertexBuffer("Cube_Uvs");
-	auto normals = Core::AssetDB->GetVertexBuffer("Cube_Normals");
-	LightWithShadow->SetVec3Attribute("Vertex", vertices->GetID());
-	LightWithShadow->SetVec3Attribute("Normal", normals->GetID());
-	LightWithShadow->SetVec2Attribute("Uv", uvs->GetID());
-	LightWithShadow->SetElementBuffer(indices->GetID());
+	auto vao = Core::AssetDB->GetVertexArray("Cube"); 
+	vao->Bind();
 	Core::Debug->GLError("ERROR: Could not setup light render.");
 
 	// Draw the triangles !
 	glDrawElements(
 		GL_TRIANGLES,               // mode
-		(GLsizei)(indices->GetSize() / sizeof(unsigned short)),                  // count
+		vao->GetSize(),             // count
 		GL_UNSIGNED_SHORT,          // type
 		(void*)0                    // element array buffer offset
 		);
+	vao->Unbind();
 	Core::Debug->GLError("ERROR: Could not draw the light elements.");
-
-	LightWithShadow->DisableAttribute("Vertex");
-	LightWithShadow->DisableAttribute("Normal");
-	LightWithShadow->DisableAttribute("Uv");
-
-	Debug->GLError("ERROR: Failed to render light.");
 }
 
 
@@ -272,30 +261,19 @@ void LightRenderer::DrawLight(const glm::mat4& transform, const Core::Assets::Li
 	Light->SetUniform("LightAngleScale", anglescale);
 	Light->SetUniform("LightAngleOffset", -light.GetCosOuter() * anglescale);
 
-	auto indices = Core::AssetDB->GetVertexBuffer("Cube_Indices");
-	auto vertices = Core::AssetDB->GetVertexBuffer("Cube_Vertices");
-	auto uvs = Core::AssetDB->GetVertexBuffer("Cube_Uvs");
-	auto normals = Core::AssetDB->GetVertexBuffer("Cube_Normals");
-	Light->SetVec3Attribute("Vertex", vertices->GetID());
-	Light->SetVec3Attribute("Normal", normals->GetID());
-	Light->SetVec2Attribute("Uv", uvs->GetID());
-	Light->SetElementBuffer(indices->GetID());
+	auto vao = Core::AssetDB->GetVertexArray("Cube");
+	vao->Bind();
 	Core::Debug->GLError("ERROR: Could not setup light render.");
 
 	// Draw the triangles !
 	glDrawElements(
 		GL_TRIANGLES,               // mode
-		(GLsizei)(indices->GetSize() / sizeof(unsigned short)),                  // count
+		vao->GetSize(),             // count
 		GL_UNSIGNED_SHORT,          // type
 		(void*)0                    // element array buffer offset
 		);
+	vao->Unbind();
 	Core::Debug->GLError("ERROR: Could not draw the light elements.");
-
-	Light->DisableAttribute("Vertex");
-	Light->DisableAttribute("Normal");
-	Light->DisableAttribute("Uv");
-
-	Debug->GLError("ERROR: Failed to render light.");
 }
 
 

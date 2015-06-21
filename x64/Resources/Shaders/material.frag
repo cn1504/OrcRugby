@@ -1,4 +1,4 @@
-#version 410
+#version 430
 
 const int MAX_INPUTS = 8;
 const int MAX_COMMANDS = 16;

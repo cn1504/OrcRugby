@@ -1,4 +1,4 @@
-#version 410
+#version 430
 
 layout(points, invocations = 1) in;
 layout(points, max_vertices = 1) out;

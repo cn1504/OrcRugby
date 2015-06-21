@@ -1,9 +1,122 @@
-#include "Window.h"
+﻿#include "Window.h"
 #include <Input/Input.h>
 
 GLEWContext* glewGetContext()
 {
 	return Core::Window::CurrentContext->GetGLEWContext();
+}
+
+
+static std::string FormatDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, const char* msg) {
+	std::stringstream stringStream;
+	std::string sourceString;
+	std::string typeString;
+	std::string severityString;
+
+	// The AMD variant of this extension provides a less detailed classification of the error,
+	// which is why some arguments might be "Unknown".
+	switch (source) {
+	case GL_DEBUG_CATEGORY_API_ERROR_AMD:
+	case GL_DEBUG_SOURCE_API: {
+		sourceString = "API";
+		break;
+	}
+	case GL_DEBUG_CATEGORY_APPLICATION_AMD:
+	case GL_DEBUG_SOURCE_APPLICATION: {
+		sourceString = "Application";
+		break;
+	}
+	case GL_DEBUG_CATEGORY_WINDOW_SYSTEM_AMD:
+	case GL_DEBUG_SOURCE_WINDOW_SYSTEM: {
+		sourceString = "Window System";
+		break;
+	}
+	case GL_DEBUG_CATEGORY_SHADER_COMPILER_AMD:
+	case GL_DEBUG_SOURCE_SHADER_COMPILER: {
+		sourceString = "Shader Compiler";
+		break;
+	}
+	case GL_DEBUG_SOURCE_THIRD_PARTY: {
+		sourceString = "Third Party";
+		break;
+	}
+	case GL_DEBUG_CATEGORY_OTHER_AMD:
+	case GL_DEBUG_SOURCE_OTHER: {
+		sourceString = "Other";
+		break;
+	}
+	default: {
+		sourceString = "Unknown";
+		break;
+	}
+	}
+
+	switch (type) {
+	case GL_DEBUG_TYPE_ERROR: {
+		typeString = "Error";
+		break;
+	}
+	case GL_DEBUG_CATEGORY_DEPRECATION_AMD:
+	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: {
+		typeString = "Deprecated Behavior";
+		break;
+	}
+	case GL_DEBUG_CATEGORY_UNDEFINED_BEHAVIOR_AMD:
+	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: {
+		typeString = "Undefined Behavior";
+		break;
+	}
+	case GL_DEBUG_TYPE_PORTABILITY_ARB: {
+		typeString = "Portability";
+		break;
+	}
+	case GL_DEBUG_CATEGORY_PERFORMANCE_AMD:
+	case GL_DEBUG_TYPE_PERFORMANCE: {
+		typeString = "Performance";
+		break;
+	}
+	case GL_DEBUG_CATEGORY_OTHER_AMD:
+	case GL_DEBUG_TYPE_OTHER: {
+		typeString = "Other";
+		break;
+	}
+	default: {
+		typeString = "Unknown";
+		break;
+	}
+	}
+
+	switch (severity) {
+	case GL_DEBUG_SEVERITY_HIGH: {
+		severityString = "High";
+		break;
+	}
+	case GL_DEBUG_SEVERITY_MEDIUM: {
+		severityString = "Medium";
+		break;
+	}
+	case GL_DEBUG_SEVERITY_LOW: {
+		severityString = "Low";
+		break;
+	}
+	default: {
+		severityString = "Unknown";
+		break;
+	}
+	}
+
+	stringStream << "OpenGL Error: " << msg;
+	stringStream << " [Source = " << sourceString;
+	stringStream << ", Type = " << typeString;
+	stringStream << ", Severity = " << severityString;
+	stringStream << ", ID = " << id << "]";
+
+	return stringStream.str();
+}
+
+static void APIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const GLvoid* userParam) {
+	std::string error = FormatDebugOutput(source, type, id, severity, message);
+	Core::Debug->Log(error);
 }
 
 
@@ -108,8 +221,9 @@ namespace Core
 			// Create a windowed mode window and its OpenGL context
 			glfwWindowHint(GLFW_DECORATED, GL_FALSE);
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); 
+			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+			//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 			GLFWWindowPtr = glfwCreateWindow(
 				Size.x, Size.y,	Title.c_str(), NULL, (CurrentContext) ? CurrentContext->GetGLFWWindow() : NULL);
 			if (!GLFWWindowPtr)
@@ -124,7 +238,7 @@ namespace Core
 			glfwSetKeyCallback(GLFWWindowPtr, windowKeyEvent_callback);
 			glfwSetMouseButtonCallback(GLFWWindowPtr, windowMouseButtonEvent_callback);
 			glfwSetScrollCallback(GLFWWindowPtr, windowScrollEvent_callback);
-
+			
 			// Make the window's opengl context current
 			glfwMakeContextCurrent(GLFWWindowPtr);
 			glfwSwapInterval(1);
@@ -136,6 +250,14 @@ namespace Core
 				Debug->Error("Glew Failed to Initialize.");
 			}
 			glGetError();
+
+			// OpenGL Debugging
+			// SUPER VERBOSE DEBUGGING!
+			if (glDebugMessageControl != NULL) {
+				glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+				glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+				glDebugMessageCallback((GLDEBUGPROCARB)DebugCallback, NULL);
+			}
 
 			ScreenBuffer = std::make_unique<Core::Renderers::ScreenBuffer>(size);
 		}

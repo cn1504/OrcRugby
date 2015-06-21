@@ -13,7 +13,7 @@ namespace Core
 			std::shared_ptr<Database> db;
 			std::unordered_map<std::string, std::shared_ptr<Core::Assets::Texture>> TextureCache;
 			std::unordered_map<std::string, std::shared_ptr<Core::Assets::Font>> FontCache;
-			std::unordered_map<std::string, std::shared_ptr<Core::Renderers::VertexBuffer>> VBCache;
+			std::unordered_map<std::string, std::shared_ptr<Core::Renderers::VertexArray>> VACache;
 			std::unordered_map<std::string, std::shared_ptr<Core::Assets::Light>> LightCache;
 			std::unordered_map<std::string, std::shared_ptr<Core::Assets::AudioFile>> AudioCache;
 			std::unordered_map<std::string, std::shared_ptr<Core::Assets::Material>> MaterialCache;
@@ -25,7 +25,7 @@ namespace Core
 			virtual std::shared_ptr<Core::Assets::AudioFile> GetAudioFile(std::string key);
 			virtual std::shared_ptr<Core::Assets::Texture> GetTexture(std::string key);
 			virtual std::shared_ptr<Core::Assets::Font> GetFont(std::string key);
-			virtual std::shared_ptr<Core::Renderers::VertexBuffer> GetVertexBuffer(std::string key);
+			virtual std::shared_ptr<Core::Renderers::VertexArray> GetVertexArray(std::string key);
 			virtual std::shared_ptr<Core::Assets::Light> GetLight(std::string key);
 			virtual std::shared_ptr<Core::Assets::Material> GetMaterial(std::string key);
 

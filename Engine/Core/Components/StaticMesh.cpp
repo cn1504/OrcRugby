@@ -15,12 +15,9 @@ StaticMesh::~StaticMesh()
 
 void StaticMesh::Draw(Core::Renderers::MeshRenderer* renderer)
 {
-	auto indices = Core::AssetDB->GetVertexBuffer(Name + "_Indices");
-	auto vertices = Core::AssetDB->GetVertexBuffer(Name + "_Vertices");
-	auto uvs = Core::AssetDB->GetVertexBuffer(Name + "_Uvs");
-	auto normals = Core::AssetDB->GetVertexBuffer(Name + "_Normals");
+	auto vao = Core::AssetDB->GetVertexArray(Name);
 	auto material = Core::AssetDB->GetMaterial(Material);
-	renderer->DrawMesh(*indices, *vertices, *uvs, *normals, *material, GetMatrix());
+	renderer->DrawMesh(*vao, *material, GetMatrix());
 	
 	Entity::Draw(renderer);
 }

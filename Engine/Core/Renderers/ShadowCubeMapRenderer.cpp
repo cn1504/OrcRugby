@@ -4,10 +4,7 @@ using namespace Core::Renderers;
 
 ShadowCubeMapRenderer::ShadowCubeMapRenderer()
 {
-	Mesh = std::make_unique<Shader>("mesh.vert", "cubemap.geom", "shadow.frag");
 	SkeletalMesh = std::make_unique<Shader>("skeletalmesh.vert", "cubemap.geom", "shadow.frag");
-	Sphere = std::make_unique<Shader>("mesh.vert", "cubemap.geom", "shadowsphere.frag");
-	Cylinder = std::make_unique<Shader>("mesh.vert", "cubemap.geom", "shadowcylinder.frag");
 	PointCloud = std::make_unique<Shader>("pc.vert", "pccubemap.geom", "shadow.frag");
 }
 
@@ -149,14 +146,12 @@ void ShadowCubeMapRenderer::DrawScene()
 }
 
 
-void ShadowCubeMapRenderer::DrawMesh(const VertexBuffer& indices, const VertexBuffer& vertices,
-	const VertexBuffer& uvs, const VertexBuffer& normals,
+void ShadowCubeMapRenderer::DrawMesh(const VertexArray& vao,
 	const Core::Assets::Material& material, const glm::mat4& transform)
 {}
 
 
-void ShadowCubeMapRenderer::DrawSea(const VertexBuffer& indices, const VertexBuffer& vertices,
-	const VertexBuffer& uvs, const VertexBuffer& normals,
+void ShadowCubeMapRenderer::DrawSea(const VertexArray& vao,
 	const glm::mat4& transform)
 {
 }

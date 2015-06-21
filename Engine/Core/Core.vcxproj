@@ -180,7 +180,7 @@
     <ClInclude Include="Renderers\ShadowMapRenderer.h" />
     <ClInclude Include="Renderers\SimpleBuffer.h" />
     <ClInclude Include="Renderers\SimpleCubeMapBuffer.h" />
-    <ClInclude Include="Renderers\VertexBuffer.h" />
+    <ClInclude Include="Renderers\VertexArray.h" />
     <ClInclude Include="Space\Rotatable.h" />
     <ClInclude Include="Space\Scalable.h" />
     <ClInclude Include="Space\Transform.h" />
@@ -238,7 +238,7 @@
     <ClCompile Include="Renderers\ShadowMapRenderer.cpp" />
     <ClCompile Include="Renderers\SimpleBuffer.cpp" />
     <ClCompile Include="Renderers\SimpleCubeMapBuffer.cpp" />
-    <ClCompile Include="Renderers\VertexBuffer.cpp" />
+    <ClCompile Include="Renderers\VertexArray.cpp" />
     <ClCompile Include="Space\Rotatable.cpp" />
     <ClCompile Include="Space\Scalable.cpp" />
     <ClCompile Include="Space\Transform.cpp" />

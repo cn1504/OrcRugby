@@ -1,4 +1,4 @@
-#version 410
+#version 430
 
 uniform sampler2D sourceTexture;
 uniform vec2 frameSize;

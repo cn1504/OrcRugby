@@ -1,7 +1,7 @@
 #pragma once
 #include <Core.h>
 #include "Shader.h"
-#include "VertexBuffer.h"
+#include "VertexArray.h"
 
 namespace Core
 {
@@ -18,8 +18,8 @@ namespace Core
 			~GuiRenderer();
 
 			void Draw(Core::Components::Gui::Item* items);
-			void DrawImage(const VertexBuffer& geometry, const Core::Assets::Texture& texture, const glm::mat3& transform);
-			void DrawText(const VertexBuffer& geometry, const Core::Assets::Texture& texture, const glm::vec4& color, const glm::mat3& transform);
+			void DrawImage(const VertexArray& geometry, const Core::Assets::Texture& texture, const glm::mat3& transform);
+			void DrawText(const VertexArray& geometry, const Core::Assets::Texture& texture, const glm::vec4& color, const glm::mat3& transform);
 		};
 	}
 }

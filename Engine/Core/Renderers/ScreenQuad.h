@@ -1,6 +1,5 @@
 #pragma once
 #include <Core.h>
-#include "VertexBuffer.h"
 
 namespace Core
 {

@@ -20,7 +20,8 @@ Panel::Panel(std::string image)
 		1.0f, 1.0f, 1.0f, 0.0f
 	};
 
-	vb = std::make_unique<Core::Renderers::VertexBuffer>(sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data);
+	vao = std::make_unique<Core::Renderers::VertexArray>();
+	vao->SetBuffer(0, 4, GL_FLOAT, GL_FALSE, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data);
 }
 Panel::~Panel() {}
 
@@ -28,7 +29,7 @@ void Panel::Draw(Core::Renderers::GuiRenderer* renderer)
 {
 	if (Image != "")
 	{
-		renderer->DrawImage(*vb, *Core::AssetDB->GetTexture(Image), GetMatrix());
+		renderer->DrawImage(*vao, *Core::AssetDB->GetTexture(Image), GetMatrix());
 	}
 
 	Item::Draw(renderer);

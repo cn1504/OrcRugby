@@ -23,12 +23,13 @@ void Logger::Error(std::string error_message)
 	exit(EXIT_FAILURE);
 }
 
+
 void Logger::GLError(std::string error_message)
 {
 	const GLenum ErrorValue = glGetError();
 
 	if (ErrorValue != GL_NO_ERROR) {
-		Log("GL Error: \"" + std::to_string(ErrorValue) + "\": " + error_message);
+		Log("GL Error: \"" + std::to_string(ErrorValue) + "\": " + error_message);		
 		Close();
 		exit(EXIT_FAILURE);
 	}

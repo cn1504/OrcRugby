@@ -114,7 +114,7 @@ namespace Core
 		class MeshRenderer;
 		class LightRenderer;
 
-		class VertexBuffer;
+		class VertexArray;
 	}
 
 	namespace PhysicsEngine

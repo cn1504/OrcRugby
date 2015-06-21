@@ -10,10 +10,7 @@ namespace Core
 		{
 		private:
 			std::unique_ptr<Shader> LightGeometry;
-			std::unique_ptr<Shader> Mesh;
 			std::unique_ptr<Shader> SkeletalMesh;
-			std::unique_ptr<Shader> Sphere;
-			std::unique_ptr<Shader> Cylinder;
 			std::unique_ptr<Shader> PointCloud;
 
 		public:

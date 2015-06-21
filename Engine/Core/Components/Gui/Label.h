@@ -1,7 +1,7 @@
 #pragma once
 #include "Item.h"
 #include <Renderers/GuiRenderer.h>
-#include <Renderers/VertexBuffer.h>
+#include <Renderers/VertexArray.h>
 
 namespace Core
 {
@@ -17,7 +17,7 @@ namespace Core
 				std::string Text;
 				int Alignment;
 
-				std::unique_ptr<Core::Renderers::VertexBuffer> vb;
+				std::unique_ptr<Core::Renderers::VertexArray> vao;
 
 			public:
 				Label(std::string font, const glm::vec4& color, std::string text);

@@ -1,6 +1,7 @@
 #include "ScreenQuad.h"
 #include <Assets/Database.h>
 #include <Assets/AssetDB.h>
+#include "VertexArray.h"
 
 using namespace Core::Renderers;
 
@@ -33,24 +34,20 @@ ScreenQuad::~ScreenQuad()
 
 void ScreenQuad::Render(const glm::ivec2& windowSize)
 {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glViewport(0, 0, windowSize.x, windowSize.y);
 	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	Debug->GLError("ERROR: Failed to render screen quad. Viewport and PolyMode");
 
 	// Draw quad
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, Core::AssetDB->GetVertexBuffer("SQuad")->GetID());
-	glVertexAttribPointer(
-		0,                                // attribute
-		3,                                // size
-		GL_FLOAT,                         // type
-		GL_FALSE,                         // normalized?
-		0,                                // stride
-		(void*)0                          // array buffer offset
-		);
+	auto vao = Core::AssetDB->GetVertexArray("SQuad");
+	vao->Bind();
+
+	Debug->GLError("ERROR: Failed to render screen quad. AttribPointer");
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glDisableVertexAttribArray(0);
+	vao->Unbind();
+	Debug->GLError("ERROR: Failed to render screen quad. DrawArrays");
 
 	glEnable(GL_DEPTH_TEST);
-	Debug->GLError("ERROR: Failed to render screen quad.");
+	glEnable(GL_CULL_FACE);
 }

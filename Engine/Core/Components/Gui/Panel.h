@@ -1,7 +1,7 @@
 #pragma once
 #include "Item.h"
 #include <Renderers/GuiRenderer.h>
-#include <Renderers/VertexBuffer.h>
+#include <Renderers/VertexArray.h>
 
 namespace Core
 {
@@ -12,7 +12,7 @@ namespace Core
 			class Panel : public Item
 			{
 			protected:
-				std::unique_ptr<Core::Renderers::VertexBuffer> vb;
+				std::unique_ptr<Core::Renderers::VertexArray> vao;
 				std::string Image;
 
 			public:

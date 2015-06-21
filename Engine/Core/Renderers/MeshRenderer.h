@@ -11,12 +11,10 @@ namespace Core
 		public:
 			virtual ~MeshRenderer() {}
 						
-			virtual void DrawMesh(const VertexBuffer& indices, const VertexBuffer& vertices,
-				const VertexBuffer& uvs, const VertexBuffer& normals,
+			virtual void DrawMesh(const VertexArray& vao,
 				const Core::Assets::Material& material, const glm::mat4& transform) = 0;
-			
-			virtual void DrawSea(const VertexBuffer& indices, const VertexBuffer& vertices,
-				const VertexBuffer& uvs, const VertexBuffer& normals,
+
+			virtual void DrawSea(const VertexArray& vao,
 				const glm::mat4& transform) = 0;
 		};
 	}

@@ -1,4 +1,4 @@
-#version 410
+#version 430
 
 uniform sampler2D textureSample;
 uniform vec2 texelSize; 

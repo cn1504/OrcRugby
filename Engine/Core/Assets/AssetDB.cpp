@@ -5,7 +5,7 @@
 #include "Light.h"
 #include "AudioFile.h"
 #include "Material.h"
-#include <Renderers/VertexBuffer.h>
+#include <Renderers/VertexArray.h>
 
 #include <Space/TransformIF.h>
 #include <Components/StaticMesh.h>
@@ -24,7 +24,7 @@ void AssetDB::ClearAllCaches()
 {
 	TextureCache.clear();
 	FontCache.clear();
-	VBCache.clear();
+	VACache.clear();
 	LightCache.clear();
 	AudioCache.clear();
 	MaterialCache.clear();
@@ -69,20 +69,42 @@ std::shared_ptr<Core::Assets::Font> AssetDB::GetFont(std::string key)
 	}
 	return ptr;
 }
-std::shared_ptr<Core::Renderers::VertexBuffer> AssetDB::GetVertexBuffer(std::string key)
+std::shared_ptr<Core::Renderers::VertexArray> AssetDB::GetVertexArray(std::string key)
 {
-	auto& ptr = VBCache[key];
+	auto& ptr = VACache[key];
 	if (ptr == nullptr)
 	{
-		db->Sql("SELECT Data FROM VertexBuffers WHERE Key='" + key + "' LIMIT 1");
+		ptr = std::make_shared<Core::Renderers::VertexArray>();
+
+		db->Sql("SELECT Data FROM VertexBuffers WHERE Key='" + key + "_Indices' LIMIT 1");
 		if (db->FetchRow())
 		{
 			auto data = db->GetColumnBlob(0);
-			ptr = std::make_shared<Core::Renderers::VertexBuffer>(data->GetSize(), data->GetData());
+			ptr->SetElementBuffer(data->GetSize(), data->GetData());
 		}
-		else
+		db->FreeQuery();
+
+		db->Sql("SELECT Data FROM VertexBuffers WHERE Key='" + key + "_Vertices' LIMIT 1");
+		if (db->FetchRow())
 		{
-			Debug->Error("Database miss: GetVertexBuffer(" + key + ")");
+			auto data = db->GetColumnBlob(0);
+			ptr->SetBuffer(0, 3, GL_FLOAT, GL_FALSE, data->GetSize(), data->GetData());
+		}
+		db->FreeQuery();
+
+		db->Sql("SELECT Data FROM VertexBuffers WHERE Key='" + key + "_Normals' LIMIT 1");
+		if (db->FetchRow())
+		{
+			auto data = db->GetColumnBlob(0);
+			ptr->SetBuffer(1, 3, GL_FLOAT, GL_TRUE, data->GetSize(), data->GetData());
+		}
+		db->FreeQuery();
+
+		db->Sql("SELECT Data FROM VertexBuffers WHERE Key='" + key + "_Uvs' LIMIT 1");
+		if (db->FetchRow())
+		{
+			auto data = db->GetColumnBlob(0);
+			ptr->SetBuffer(2, 2, GL_FLOAT, GL_FALSE, data->GetSize(), data->GetData());
 		}
 		db->FreeQuery();
 	}

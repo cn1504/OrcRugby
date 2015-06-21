@@ -173,9 +173,6 @@
     <ClInclude Include="Assets\SQLiteDB.h">
       <Filter>Assets</Filter>
     </ClInclude>
-    <ClInclude Include="Renderers\VertexBuffer.h">
-      <Filter>Renderers</Filter>
-    </ClInclude>
     <ClInclude Include="Components\Gui\Label.h">
       <Filter>Components\Gui</Filter>
     </ClInclude>
@@ -238,6 +235,9 @@
     </ClInclude>
     <ClInclude Include="Components\Gui\TextureDebugPanel.h">
       <Filter>Components\Gui</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderers\VertexArray.h">
+      <Filter>Renderers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -353,9 +353,6 @@
     <ClCompile Include="Assets\AssetDB.cpp">
       <Filter>Assets</Filter>
     </ClCompile>
-    <ClCompile Include="Renderers\VertexBuffer.cpp">
-      <Filter>Renderers</Filter>
-    </ClCompile>
     <ClCompile Include="Components\Gui\Label.cpp">
       <Filter>Components\Gui</Filter>
     </ClCompile>
@@ -400,6 +397,9 @@
     </ClCompile>
     <ClCompile Include="Components\Gui\TextureDebugPanel.cpp">
       <Filter>Components\Gui</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderers\VertexArray.cpp">
+      <Filter>Renderers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -19,7 +19,8 @@ TextureDebugPanel::TextureDebugPanel()
 		1.0f, 1.0f, 1.0f, 0.0f
 	};
 
-	vb = std::make_unique<Core::Renderers::VertexBuffer>(sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data);
+	vao = std::make_unique<Core::Renderers::VertexArray>();
+	vao->SetBuffer(0, 4, GL_FLOAT, GL_FALSE, sizeof(g_quad_vertex_buffer_data), g_quad_vertex_buffer_data);
 }
 TextureDebugPanel::~TextureDebugPanel() {}
 
@@ -27,7 +28,7 @@ void TextureDebugPanel::Draw(Core::Renderers::GuiRenderer* renderer)
 {
 	if (Target != nullptr)
 	{
-		renderer->DrawImage(*vb, *Target, GetMatrix());
+		renderer->DrawImage(*vao, *Target, GetMatrix());
 	}
 
 	Item::Draw(renderer);

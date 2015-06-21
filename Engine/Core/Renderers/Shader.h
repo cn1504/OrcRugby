@@ -46,20 +46,6 @@ namespace Core
 			void SetUniform(std::string name, const glm::ivec4& value);
 			void SetUniform(std::string name, const glm::mat3& value);
 			void SetUniform(std::string name, const glm::mat4& value);
-
-			void SetVec2Attribute(std::string name, GLuint buffer);
-			void SetVec3Attribute(std::string name, GLuint buffer);
-			void SetVec4Attribute(std::string name, GLuint buffer);
-			void SetIVec2Attribute(std::string name, GLuint buffer);
-			void SetIVec3Attribute(std::string name, GLuint buffer);
-			void SetIVec4Attribute(std::string name, GLuint buffer);
-			void SetDVec2Attribute(std::string name, GLuint buffer);
-			void SetDVec3Attribute(std::string name, GLuint buffer);
-			void SetDVec4Attribute(std::string name, GLuint buffer);
-
-			void SetElementBuffer(GLuint buffer);
-
-			void DisableAttribute(std::string name);
 		};
 
 	}

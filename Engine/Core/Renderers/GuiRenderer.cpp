@@ -13,8 +13,8 @@ GuiRenderer::~GuiRenderer() {}
 
 void GuiRenderer::Draw(Core::Components::Gui::Item* items)
 {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -23,11 +23,12 @@ void GuiRenderer::Draw(Core::Components::Gui::Item* items)
 	
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 	Debug->GLError("ERROR: failed to render ui.");
 }
 
 
-void GuiRenderer::DrawImage(const VertexBuffer& geometry, const Core::Assets::Texture& texture, const glm::mat3& transform)
+void GuiRenderer::DrawImage(const VertexArray& geometry, const Core::Assets::Texture& texture, const glm::mat3& transform)
 {
 	GuiTexture->Activate();
 
@@ -35,14 +36,14 @@ void GuiRenderer::DrawImage(const VertexBuffer& geometry, const Core::Assets::Te
 
 	// Draw quad
 	GuiTexture->SetUniform("Transform", transform);
-	GuiTexture->SetVec4Attribute("coord", geometry.GetID());
-	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)geometry.GetSize() / sizeof(glm::vec4));
-	GuiTexture->DisableAttribute("coord");
+	geometry.Bind();
+	glDrawArrays(GL_TRIANGLES, 0, geometry.GetSize());
+	geometry.Unbind();
 
 	Debug->GLError("ERROR: Failed to render gui Panel.");
 }
 
-void GuiRenderer::DrawText(const VertexBuffer& geometry, const Core::Assets::Texture& texture, const glm::vec4& color, const glm::mat3& transform)
+void GuiRenderer::DrawText(const VertexArray& geometry, const Core::Assets::Texture& texture, const glm::vec4& color, const glm::mat3& transform)
 {
 	Font->Activate();
 	
@@ -51,9 +52,10 @@ void GuiRenderer::DrawText(const VertexBuffer& geometry, const Core::Assets::Tex
 
 	// Draw quad
 	Font->SetUniform("Transform", transform);
-	Font->SetVec4Attribute("coord", geometry.GetID());
-	glDrawArrays(GL_TRIANGLES, 0, (GLsizei)geometry.GetSize() / sizeof(glm::vec4));
-	Font->DisableAttribute("coord");
+
+	geometry.Bind();
+	glDrawArrays(GL_TRIANGLES, 0, geometry.GetSize());
+	geometry.Unbind();
 
 	Debug->GLError("ERROR: Failed to render label.");
 }
