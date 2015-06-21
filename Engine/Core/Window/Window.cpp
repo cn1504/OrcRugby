@@ -244,6 +244,7 @@ namespace Core
 			glfwSwapInterval(1);
 
 			// Initialize Glew
+			glewExperimental = GL_TRUE;
 			GLEWContextPtr = new GLEWContext();
 			BeginUpdate();
 			if (GLEW_OK != glewInit()) {
