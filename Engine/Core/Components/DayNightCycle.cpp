@@ -89,11 +89,11 @@ void DayNightCycle::DrawLights(Core::Renderers::LightRenderer* renderer)
 {
 	if (CurrentTime > SUNRISE && CurrentTime < SUNSET)
 	{
-		renderer->DrawLight(*SunBuffer->DepthMap, SunDirection, SunLightColor, SunLightIntensity * SunLightColor.a, SunLightProjection, SunLightView, SunMaxDepth);
+		renderer->DrawLight(*SunBuffer->Depth, SunDirection, SunLightColor, SunLightIntensity * SunLightColor.a, SunLightProjection, SunLightView, SunMaxDepth);
 	}	
 	if (CurrentTime < MOONSET || CurrentTime > MOONRISE)
 	{
-		renderer->DrawLight(*MoonBuffer->DepthMap, MoonDirection, MoonLightColor, MoonLightIntensity * MoonLightColor.a, MoonLightProjection, MoonLightView, MoonMaxDepth);
+		renderer->DrawLight(*MoonBuffer->Depth, MoonDirection, MoonLightColor, MoonLightIntensity * MoonLightColor.a, MoonLightProjection, MoonLightView, MoonMaxDepth);
 	}
 
 	Entity::DrawLights(renderer);

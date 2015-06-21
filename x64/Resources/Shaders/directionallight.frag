@@ -19,32 +19,23 @@ uniform float     LightIntensity;
 
 layout(location = 0) in vec2 texCoord;
 
-layout(location = 0) out vec4 outDiffuse;
-layout(location = 1) out vec4 outSpecular;
+layout(location = 0) out vec4 outLuminance;
 
 // Shadow Mapping Functions
 //-------------------------------------------------------------------------------------------
-float unpack(vec4 rgba_depth)
-{
-    const vec4 bit_shift = vec4(1.0/(256.0*256.0*256.0), 1.0/(256.0*256.0), 1.0/256.0, 1.0);
-    float depth = dot(rgba_depth, bit_shift);
-    return depth;
-}
-
 float ShadowMap(float LdotN, float invSqrRadius, vec3 fragPosition)
 {
 	vec4 vsPosition = LightView * ViewInverse * vec4(fragPosition, 1.0);
-	vec4 position_ls = LightProjection * vsPosition;
-	position_ls.xyz = position_ls.xyz / position_ls.w;
-	vec2 shadowCoord = position_ls.xy * 0.5 + 0.5;
-	vec4 sms = texture(ShadowTexture, shadowCoord);
-	float depth = unpack(sms);
-	float distRel = dot(vsPosition, vsPosition) * invSqrRadius;
+	vec4 shadowCoord = LightProjection * vsPosition;
+	shadowCoord.xyz = shadowCoord.xyz / shadowCoord.w;
+	shadowCoord.xyz = shadowCoord.xyz * 0.5 + 0.5;
+	float depthmap = texture(ShadowTexture, shadowCoord.xy).r;
+	float result = (depthmap < shadowCoord.z) ? 0.0 : 1.0;
 	
 	//float bias = 0.0;	
 	//float bias = 0.0000000001*tan(acos(LdotN)); // cosTheta is dot( n,l ), clamped between 0 and 1
 	//bias = 1.0 - clamp(bias, 0.0, 1.0);
-	float result = (distRel > depth) ? 0.0 : 1.0;
+	//float result = (distRel > depth) ? 0.0 : 1.0;
 	
 	// ESM
 	//const float c = 60.0; // Sharp shadows good for interior scenes
@@ -93,10 +84,6 @@ float Fd_DisneyDiffuse(float NdotV, float NdotL, float LdotH, float linearRoughn
 
 // Lighting Functions
 //-------------------------------------------------------------------------------------------
-vec3 DecodeNormal (vec4 enc)
-{
-	return enc.xyz * 2 - 1;
-}
 
 vec3 getSkyColor(vec3 e) {
     e.y = max(e.y,0.0);
@@ -112,7 +99,7 @@ void main(void)
 	// Extract buffered pixel position and normal from textures
 	vec3 pos 		= vec3(texCoord, 0.0);
 	pos.z           = texture(DepthTexture, pos.xy).r;
-	vec3 normal     = DecodeNormal(texture(NormalTexture, pos.xy));
+	vec3 normal     = texture(NormalTexture, pos.xy).rgb;
 	vec4 BaseColor	= texture(BaseTexture, pos.xy);	
 	vec4 MSR  		= texture(MSRTexture, pos.xy);	
 	vec4 clip       = ProjectionInverse * vec4(pos * 2.0 - 1.0, 1.0);
@@ -150,9 +137,10 @@ void main(void)
 	// Shadow Mapping Result
 	float shadow = ShadowMap(LdotN, MaxDepth, pos);
 	
-	outDiffuse = vec4((0.25 + shadow * 0.75) * LightColor.xyz * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd * LightIntensity, LightColor.w);
-	outSpecular = vec4(shadow * LightColor.xyz * Fr * LightIntensity, LightColor.w);
-
+	vec3 outDiffuse = (0.25 + shadow * 0.75) * LightColor.xyz * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd * LightIntensity;
+	vec3 outSpecular = shadow * LightColor.xyz * Fr * LightIntensity;
+	outLuminance = vec4(outDiffuse + outSpecular, LightColor.w);
+	
 	// Distant Light Probe Approx for ambient light
 	//outSpecular.xyz += LightColor.xyz * pow(1.0 - NdotV, 10.0);
 }

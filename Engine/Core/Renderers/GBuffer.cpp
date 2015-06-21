@@ -46,7 +46,7 @@ void GBuffer::Build()
 		return;
 
 	Depth->CreateTexture(true, Size.x, Size.y);
-	Normal->CreateTexture(false, Size.x, Size.y);
+	Normal->CreateFPTexture(Size.x, Size.y);
 	BaseColor->CreateTexture(false, Size.x, Size.y);
 	MSR->CreateTexture(false, Size.x, Size.y);
 

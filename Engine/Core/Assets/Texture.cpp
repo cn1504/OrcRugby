@@ -52,12 +52,12 @@ void Texture::CreateTexture(bool depth, int width, int height)
 	glTexImage2D(
 		GL_TEXTURE_2D,
 		0,
-		depth ? GL_DEPTH_COMPONENT32 : GL_RGBA32F,
+		depth ? GL_DEPTH_COMPONENT32 : GL_RGBA8,
 		width,
 		height,
 		0,
 		depth ? GL_DEPTH_COMPONENT : GL_RGBA,
-		GL_UNSIGNED_BYTE,
+		depth ? GL_FLOAT : GL_UNSIGNED_BYTE, 
 		NULL
 		);
 
@@ -140,6 +140,65 @@ void Texture::CreateCubeMap(bool depth, int width, int height)
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
 	Debug->GLError("Error creating CubeMap texture.");
+}
+
+
+void Texture::CreateMonoFPTexture(int width, int height)
+{
+	// Clear old texture if it exists
+	glDeleteTextures(1, &Id);
+
+	// Build new texture
+	glGenTextures(1, &Id);
+	glBindTexture(GL_TEXTURE_2D, Id);
+
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	glTexImage2D(
+		GL_TEXTURE_2D,
+		0,
+		GL_R32F,
+		width,
+		height,
+		0,
+		GL_RED,
+		GL_FLOAT,
+		NULL
+		);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Texture::CreateFPTexture(int width, int height)
+{
+	// Clear old texture if it exists
+	glDeleteTextures(1, &Id);
+
+	// Build new texture
+	glGenTextures(1, &Id);
+	glBindTexture(GL_TEXTURE_2D, Id);
+
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glTexImage2D(
+		GL_TEXTURE_2D,
+		0,
+		GL_RGBA32F,
+		width,
+		height,
+		0,
+		GL_RGBA,
+		GL_FLOAT,
+		NULL
+		);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 /*

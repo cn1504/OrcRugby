@@ -102,8 +102,6 @@ void DefaultWindow::Scale(const glm::ivec2& delta)
 
 int DefaultWindow::Update()
 {
-	BeginUpdate();
-
 	Top->Update();
 
 	GeometryBuffer->SetAsTarget();
@@ -120,7 +118,7 @@ int DefaultWindow::Update()
 	ScreenBuffer->SetAsTarget();
 	ScreenBuffer->Clear();
 
-	PostProcessingRenderer->SetTextures(*LightBuffer->Diffuse, *LightBuffer->Specular);
+	PostProcessingRenderer->SetTextures(*LightBuffer->Luminance);
 	PostProcessingRenderer->Draw(Size);
 
 	if (Top != nullptr)

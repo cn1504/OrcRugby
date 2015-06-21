@@ -5,14 +5,12 @@ using namespace Core::Assets;
 LightBuffer::LightBuffer(LightBuffer && o)
 	: OffScreenBuffer(std::move(o))
 {
-	Diffuse = std::move(o.Diffuse);
-	Specular = std::move(o.Specular);
+	Luminance = std::move(o.Luminance);
 }
 
 LightBuffer& LightBuffer::operator=(LightBuffer && o)
 {
-	Diffuse = std::move(o.Diffuse);
-	Specular = std::move(o.Specular);
+	Luminance = std::move(o.Luminance);
 	OffScreenBuffer::operator=(std::move(o));
 	return *this;
 }
@@ -20,8 +18,7 @@ LightBuffer& LightBuffer::operator=(LightBuffer && o)
 LightBuffer::LightBuffer(const glm::ivec2& size)
 	: OffScreenBuffer(size, std::make_unique<ClearToBlack>())
 {
-	Diffuse = std::make_unique<Texture>();
-	Specular = std::make_unique<Texture>();
+	Luminance = std::make_unique<Texture>();
 	Build();
 }
 
@@ -38,17 +35,14 @@ void LightBuffer::Build()
 	if (Size.x == 0 || Size.y == 0)
 		return;
 
-	Diffuse->CreateTexture(false, Size.x, Size.y);
-	Specular->CreateTexture(false, Size.x, Size.y);
+	Luminance->CreateFPTexture(Size.x, Size.y);
 
 	GLenum buffers[2];
 	buffers[0] = GL_COLOR_ATTACHMENT0;
-	buffers[1] = GL_COLOR_ATTACHMENT1;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, Diffuse->GetID(), 0);
-	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, Specular->GetID(), 0);
-	glDrawBuffers(2, buffers);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, Luminance->GetID(), 0);
+	glDrawBuffers(1, buffers);
 
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{

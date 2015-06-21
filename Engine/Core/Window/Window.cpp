@@ -289,8 +289,6 @@ namespace Core
 
 		int Window::Update()
 		{
-			BeginUpdate();
-
 			if (glfwWindowShouldClose(GLFWWindowPtr))
 			{
 				return 1;

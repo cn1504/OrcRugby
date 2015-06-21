@@ -22,7 +22,7 @@ namespace Core
 			PostProcessingRenderer();
 			~PostProcessingRenderer();
 
-			void SetTextures(const Core::Assets::Texture& diffuse, const Core::Assets::Texture& specular);
+			void SetTextures(const Core::Assets::Texture& luminance);
 			void Draw(const glm::ivec2& bufferSize);
 		};
 	}

@@ -14,7 +14,6 @@ namespace Core
 
 		public:
 			std::unique_ptr<Core::Assets::Texture> Depth;
-			std::unique_ptr<Core::Assets::Texture> DepthMap;
 
 			ShadowBuffer() = delete;
 			ShadowBuffer(const ShadowBuffer&) = delete;

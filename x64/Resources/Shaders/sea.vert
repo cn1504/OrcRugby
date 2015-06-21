@@ -35,8 +35,8 @@ void GerstnerWave(vec2 pos, Wave_Params w, float t,
 
 // Sea Constants
 const vec2 MEDIAN_DIRECTION = vec2(-0.707107, 0.707107);		// Wind towards shoreline of starting town off the sea
-const float MEDIAN_WAVELENGTH = 4.75117 * 4.0;					// In meters, calculated from half the velocity of a 7 knots "gentle breeze" average wind speed
-const float MAXIMUM_AMPLITUDE = 1.0 / 7.0 * MEDIAN_WAVELENGTH;	// In meters, calculated maximum amplitude before waves begin to break
+const float MAXIMUM_VELOCITY = 2.5;								// In meters per second (normally half wind velocity)
+const float MAXIMUM_AMPLITUDE = 0.5;							// In meters
 const float SEA_DEPTH = 4.0;									// In meters
 
 void Map(inout vec3 pos, out vec3 normal) 
@@ -52,56 +52,56 @@ void Map(inout vec3 pos, out vec3 normal)
 	float sintheta = 0.0;
 	w[0].Direction = vec2(D.x * costheta - D.y * sintheta, D.x * sintheta + D.y * costheta);
 	w[0].Amplitude = MAXIMUM_AMPLITUDE;
-	w[0].k = 2.0 * M_PI / MEDIAN_WAVELENGTH;
+	w[0].k = MAXIMUM_VELOCITY * MAXIMUM_VELOCITY / 9.8;
 	w[0].Velocity = sqrt(9.8 * w[0].k); 	
 	
 	costheta = 0.9;
 	sintheta = 0.43589;
 	w[1].Direction = vec2(D.x * costheta - D.y * sintheta, D.x * sintheta + D.y * costheta);
 	w[1].Amplitude = MAXIMUM_AMPLITUDE * 0.7;
-	w[1].k = 2.0 * M_PI / (MEDIAN_WAVELENGTH * 0.7);
+	w[1].k = MAXIMUM_VELOCITY * MAXIMUM_VELOCITY / 9.8 / 0.7;
 	w[1].Velocity = sqrt(9.8 * w[1].k); 
 
 	costheta = 0.9;
 	sintheta = -0.43589;
 	w[2].Direction = vec2(D.x * costheta - D.y * sintheta, D.x * sintheta + D.y * costheta);
 	w[2].Amplitude = MAXIMUM_AMPLITUDE * 0.72;
-	w[2].k = 2.0 * M_PI / (MEDIAN_WAVELENGTH * 0.72);
+	w[2].k = MAXIMUM_VELOCITY * MAXIMUM_VELOCITY / 9.8 / 0.72;
 	w[2].Velocity = sqrt(9.8 * w[2].k); 	
 
 	costheta = 0.95;
 	sintheta = -0.31225;
 	w[3].Direction = vec2(D.x * costheta - D.y * sintheta, D.x * sintheta + D.y * costheta);
 	w[3].Amplitude = MAXIMUM_AMPLITUDE * 0.93;
-	w[3].k = 2.0 * M_PI / (MEDIAN_WAVELENGTH * 0.93);
+	w[3].k = MAXIMUM_VELOCITY * MAXIMUM_VELOCITY / 9.8 / 0.93;
 	w[3].Velocity = sqrt(9.8 * w[3].k); 		
 	
 	costheta = 0.95;
 	sintheta = 0.31225;
 	w[4].Direction = vec2(D.x * costheta - D.y * sintheta, D.x * sintheta + D.y * costheta);
 	w[4].Amplitude = MAXIMUM_AMPLITUDE * 0.91;
-	w[4].k = 2.0 * M_PI / (MEDIAN_WAVELENGTH * 0.91);
+	w[4].k = MAXIMUM_VELOCITY * MAXIMUM_VELOCITY / 9.8 / 0.91;
 	w[4].Velocity = sqrt(9.8 * w[4].k); 	
 	
 	costheta = 0.9925;
 	sintheta = -0.122245;
 	w[5].Direction = vec2(D.x * costheta - D.y * sintheta, D.x * sintheta + D.y * costheta);
 	w[5].Amplitude = MAXIMUM_AMPLITUDE * 0.87;
-	w[5].k = 2.0 * M_PI / (MEDIAN_WAVELENGTH * 0.87);
+	w[5].k = MAXIMUM_VELOCITY * MAXIMUM_VELOCITY / 9.8 / 0.87;
 	w[5].Velocity = sqrt(9.8 * w[5].k); 
 	
 	costheta = 0.8;
 	sintheta = -0.6;
 	w[6].Direction = vec2(D.x * costheta - D.y * sintheta, D.x * sintheta + D.y * costheta);
 	w[6].Amplitude = MAXIMUM_AMPLITUDE * 0.5;
-	w[6].k = 2.0 * M_PI / (MEDIAN_WAVELENGTH * 0.5);
+	w[6].k = MAXIMUM_VELOCITY * MAXIMUM_VELOCITY / 9.8 / 0.5;
 	w[6].Velocity = sqrt(9.8 * w[6].k); 
 	
-	costheta = 0.8;
-	sintheta = 0.6;
+	costheta = -0.9925;
+	sintheta = 0.122245;
 	w[7].Direction = vec2(D.x * costheta - D.y * sintheta, D.x * sintheta + D.y * costheta);
 	w[7].Amplitude = MAXIMUM_AMPLITUDE * 0.53;
-	w[7].k = 2.0 * M_PI / (MEDIAN_WAVELENGTH * 0.53);
+	w[7].k = MAXIMUM_VELOCITY * MAXIMUM_VELOCITY / 9.8 / 0.53;
 	w[7].Velocity = sqrt(9.8 * w[7].k); 
 	
 	for (int i = 0; i < WAVE_COUNT; i++)

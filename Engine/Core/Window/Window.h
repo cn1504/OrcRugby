@@ -30,9 +30,7 @@ namespace Core
 
 			std::unique_ptr<State> CurrentState;
 			std::unique_ptr<Core::Renderers::ScreenBuffer> ScreenBuffer;
-
-			void BeginUpdate();
-
+			
 		public:
 			std::unique_ptr<Core::Input::Map> InputMap;
 
@@ -54,6 +52,7 @@ namespace Core
 			virtual void Translate(const glm::ivec2& delta);
 			virtual void Scale(const glm::ivec2& delta);
 
+			virtual void BeginUpdate();
 			virtual int Update();
 
 			void SetState(std::unique_ptr<State> state);

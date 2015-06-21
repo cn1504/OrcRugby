@@ -9,7 +9,7 @@ uniform vec2      PixelSize;
 uniform mat4      ProjectionInverse;
 uniform mat4      ViewInverse;
 
-uniform samplerCube ShadowTexture;
+uniform sampler2D ShadowTexture;
 uniform mat4      LightViewMatrix;
 uniform mat4      LightProjectionMatrix;
 uniform vec3      LightPosition;
@@ -24,8 +24,7 @@ uniform float     LightAngleOffset;
 layout(location = 0) in vec3 viewVertex;
 layout(location = 1) in vec3 viewNormal;
 
-layout(location = 0) out vec4 outDiffuse;
-layout(location = 1) out vec4 outSpecular;
+layout(location = 0) out vec4 outLuminance;
 
 #define M_PI 3.1415926535897932384626433832795
 
@@ -38,34 +37,23 @@ float unpack(vec3 color)
 }
 
 float ShadowMap(float sqrDist, float invSqrRadius, vec3 fragPosition)
-{
-	float distRel = sqrDist * invSqrRadius;
+{	
+    vec4 vsPosition = LightViewMatrix * ViewInverse * vec4(fragPosition, 1.0);
+	vec4 position_ls = LightProjectionMatrix * vsPosition;
+	position_ls.xyz = position_ls.xyz / position_ls.w;
+	vec2 shadowCoord = position_ls.xy * 0.5 + 0.5;
+	float depthmap = texture(ShadowTexture, shadowCoord).r;
+	float result = (depthmap < position_ls.z) ? 0.0 : 1.0;
 	
-    //float bias = 0.005*tan(acos(lambert)); // cosTheta is dot( n,l ), clamped between 0 and 1
-	//bias = 1.0 - clamp(bias, 0.0, 0.01);
-	
-	vec4 position_ls = LightViewMatrix * ViewInverse * vec4(fragPosition, 1.0); 
-	vec4 sms = texture(ShadowTexture, position_ls.xyz);
-	float depth = unpack(sms.xyz);
-	//float bias = 0.96;
-	//float result = (distRel * bias > depth) ? 0.0 : 1.0;
-	
-	//vec4 abs_position = abs(position_ls);
-	//float fs_z = -max(abs_position.x, max(abs_position.y, abs_position.z));
-	//vec4 lclip = LightProjectionMatrix * vec4(0.0, 0.0, fs_z, 1.0);
-	//float depth = (lclip.z / lclip.w) * 0.5 + 0.5;
-	//float result = texture(ShadowTexture, vec4(position_ls.xyz, depth * 0.99999));
-		
-	//float fShadow = texture(ShadowTexture, -posW).r;
-	//fShadow = (length(lightDir / LightRadius) > depth) ? 0.3 : 1.0;
-	
-	//float vShadowSample = texture(ShadowTexture, -incident).r;
-	//float fShadow = (dot(lightDir, lightDir) - fDepthBias - vShadowSample / LightRadius < 0.0f) ? 1.0f : 0.3f;
+	//float bias = 0.0;	
+	//float bias = 0.0000000001*tan(acos(LdotN)); // cosTheta is dot( n,l ), clamped between 0 and 1
+	//bias = 1.0 - clamp(bias, 0.0, 1.0);
+	//float result = (distRel > depth) ? 0.0 : 1.0;
 	
 	// ESM
-	const float c = 120.0; // Sharp shadows good for interior scenes
+	//const float c = 60.0; // Sharp shadows good for interior scenes
 	//const float c = 5.0; 	// Soft shadows, good for day time exterior scenes
-	float result = clamp(exp(-c * ( distRel - depth )), 0.0, 1.0);
+	//float result = clamp(exp(-c * ( distRel - depth )), 0.0, 1.0);
 	
 	return result;
 }
@@ -140,7 +128,8 @@ void main(void)
 	vec3 pos 		= vec3((gl_FragCoord.x * PixelSize.x), 
 						   (gl_FragCoord.y * PixelSize.y), 0.0);
 	pos.z           = texture(DepthTexture, pos.xy).r;
-	vec3 normal     = DecodeNormal(texture(NormalTexture, pos.xy));
+	//vec3 normal     = DecodeNormal(texture(NormalTexture, pos.xy));
+	vec3 normal     = texture(NormalTexture, pos.xy).rgb;
 	vec4 BaseColor	= texture(BaseTexture, pos.xy);	
 	vec4 MSR  		= texture(MSRTexture, pos.xy);	
 	vec4 clip       = ProjectionInverse * vec4(pos * 2.0 - 1.0, 1.0);
@@ -182,8 +171,8 @@ void main(void)
 	
 	// Shadow Mapping Result
 	float shadow = ShadowMap(sqrDist, LightInvSqrRadius, pos);
-
-	
-	outDiffuse = vec4(shadow * LightColor.xyz * atten * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd, 1.0);
-	outSpecular = vec4(shadow * LightColor.xyz * atten * Fr, 1.0);
+		
+	vec3 outDiffuse = shadow * LightColor.xyz * atten * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd;
+	vec3 outSpecular = shadow * LightColor.xyz * atten * Fr;
+	outLuminance = vec4(outDiffuse + outSpecular, 1.0);
 }

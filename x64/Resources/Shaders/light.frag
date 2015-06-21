@@ -21,8 +21,7 @@ uniform float     LightAngleOffset;
 layout(location = 0) in vec3 viewVertex;
 layout(location = 1) in vec3 viewNormal;
 
-layout(location = 0) out vec4 outDiffuse;
-layout(location = 1) out vec4 outSpecular;
+layout(location = 0) out vec4 outLuminance;
 
 #define M_PI 3.1415926535897932384626433832795
 
@@ -96,7 +95,8 @@ void main(void)
 	vec3 pos 		= vec3((gl_FragCoord.x * PixelSize.x), 
 						   (gl_FragCoord.y * PixelSize.y), 0.0);
 	pos.z           = texture(DepthTexture, pos.xy).r;
-	vec3 normal     = DecodeNormal(texture(NormalTexture, pos.xy));
+	//vec3 normal     = DecodeNormal(texture(NormalTexture, pos.xy));
+	vec3 normal     = texture(NormalTexture, pos.xy).rgb;
 	vec4 BaseColor	= texture(BaseTexture, pos.xy);	
 	vec4 MSR  		= texture(MSRTexture, pos.xy);	
 	vec4 clip       = ProjectionInverse * vec4(pos * 2.0 - 1.0, 1.0);
@@ -136,6 +136,7 @@ void main(void)
 	// Diffuse BRDF
 	float Fd = Fd_DisneyDiffuse(NdotV, LdotN, LdotH, MSR.z) / M_PI;	
 	
-	outDiffuse = vec4(LightColor.xyz * atten * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd, 1.0);
-	outSpecular = vec4(LightColor.xyz * atten * Fr, 1.0);
+	vec3 outDiffuse = LightColor.xyz * atten * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd;
+	vec3 outSpecular = LightColor.xyz * atten * Fr;
+	outLuminance = vec4(outDiffuse + outSpecular, 1.0);
 }

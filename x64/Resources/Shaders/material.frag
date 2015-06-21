@@ -39,11 +39,6 @@ layout(location = 0) out vec4 outNormal;
 layout(location = 1) out vec4 outBase;
 layout(location = 2) out vec4 outMSR;
 
-vec4 EncodeNormal (vec3 n)
-{
-    return vec4(n.xyz * 0.5 + 0.5, 1.0);
-}
-
 #define M_PI 3.1415926535897932384626433832795
 
 //
@@ -373,7 +368,7 @@ void main(void)
 	}
 	
 	// Store output
-	outNormal 	= EncodeNormal(normalize(viewNormal));
+	outNormal   = vec4(normalize(viewNormal), 1.0);
 	outBase 	= values[0].Base;
 	outMSR 		= values[0].MSR;
 }

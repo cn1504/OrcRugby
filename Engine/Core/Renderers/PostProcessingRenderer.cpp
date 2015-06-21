@@ -14,11 +14,10 @@ PostProcessingRenderer::PostProcessingRenderer()
 
 PostProcessingRenderer::~PostProcessingRenderer() {}
 
-void PostProcessingRenderer::SetTextures(const Core::Assets::Texture& diffuse, const Core::Assets::Texture& specular)
+void PostProcessingRenderer::SetTextures(const Core::Assets::Texture& luminance)
 {
 	CombineBuffers->Activate();
-	CombineBuffers->SetTexture("DiffuseLightTexture", diffuse, 0);
-	CombineBuffers->SetTexture("SpecularLightTexture", specular, 1);
+	CombineBuffers->SetTexture("LightTexture", luminance, 0);
 }
 
 void PostProcessingRenderer::Draw(const glm::ivec2& bufferSize)

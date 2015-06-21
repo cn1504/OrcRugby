@@ -59,21 +59,21 @@ MainWindow::MainWindow()
 	InputMap->AddReleaseAction("Mouse Left", OnMouseLeftRelease);
 
 	// Register camera controls
-	CameraUp = std::make_shared<CameraUpAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 2.0f, true);
+	CameraUp = std::make_shared<CameraUpAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 10.0f, true);
 	InputMap->AddWhileDownAction(Game::Prefs->GetString("CameraUp"), std::weak_ptr<Core::Input::Action>(CameraUp));
-	CameraDown = std::make_shared<CameraDownAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 2.0f, true);
+	CameraDown = std::make_shared<CameraDownAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 10.0f, true);
 	InputMap->AddWhileDownAction(Game::Prefs->GetString("CameraDown"), std::weak_ptr<Core::Input::Action>(CameraDown));
-	CameraLeft = std::make_shared<CameraLeftAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 2.0f, true);
+	CameraLeft = std::make_shared<CameraLeftAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 10.0f, true);
 	InputMap->AddWhileDownAction(Game::Prefs->GetString("CameraLeft"), std::weak_ptr<Core::Input::Action>(CameraLeft));
-	CameraRight = std::make_shared<CameraRightAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 2.0f, true);
+	CameraRight = std::make_shared<CameraRightAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 10.0f, true);
 	InputMap->AddWhileDownAction(Game::Prefs->GetString("CameraRight"), std::weak_ptr<Core::Input::Action>(CameraRight));
 	CameraOut = std::make_shared<CameraZoomInAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 60.0f, true);
 	InputMap->AddReleaseAction(Game::Prefs->GetString("CameraOut"), std::weak_ptr<Core::Input::Action>(CameraOut));
 	CameraIn = std::make_shared<CameraZoomOutAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 60.0f, true);
 	InputMap->AddReleaseAction(Game::Prefs->GetString("CameraIn"), std::weak_ptr<Core::Input::Action>(CameraIn));
-	CameraRotateLeft = std::make_shared<CameraRotationAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), -0.5f);
+	CameraRotateLeft = std::make_shared<CameraRotationAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), -2.0f);
 	InputMap->AddWhileDownAction(Game::Prefs->GetString("CameraRotateLeft"), std::weak_ptr<Core::Input::Action>(CameraRotateLeft));
-	CameraRotateRight = std::make_shared<CameraRotationAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 0.5f);
+	CameraRotateRight = std::make_shared<CameraRotationAction>(std::weak_ptr<Core::Space::TransformIF>(Camera), 2.0f);
 	InputMap->AddWhileDownAction(Game::Prefs->GetString("CameraRotateRight"), std::weak_ptr<Core::Input::Action>(CameraRotateRight));
 
 	// Audio controls
@@ -85,8 +85,6 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow() {}
 int MainWindow::Update()
 {
-	BeginUpdate();
-
 	FPSLabel->SetText("FPS: " + std::to_string((int)Core::Time->FPS));
 	
 	// Update Button States

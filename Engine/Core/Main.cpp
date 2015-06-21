@@ -80,6 +80,7 @@ namespace Core
 
 			for (auto it = Core::Window::Map.begin(); it != Core::Window::Map.end();)
 			{
+				it->second->BeginUpdate();
 				if ((*it).second->Update())
 				{
 					delete (*it).second;

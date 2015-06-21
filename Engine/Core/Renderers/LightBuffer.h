@@ -13,8 +13,7 @@ namespace Core
 			void Build();
 
 		public:
-			std::unique_ptr<Core::Assets::Texture> Diffuse;
-			std::unique_ptr<Core::Assets::Texture> Specular;
+			std::unique_ptr<Core::Assets::Texture> Luminance;
 
 			LightBuffer() = delete;
 			LightBuffer(const LightBuffer&) = delete;
