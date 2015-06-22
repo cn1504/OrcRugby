@@ -11,5 +11,5 @@ void main(void)
 	vec3 light   = texture(LightTexture, texCoord).xyz;
 	
 	outColor.xyz   = light;
-	outColor.a     = 1.0;	
+	outColor.a     = dot(outColor.xyz, vec3(0.299, 0.587, 0.114)); // compute luma;	
 }

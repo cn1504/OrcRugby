@@ -10,6 +10,8 @@ PostProcessingRenderer::PostProcessingRenderer()
 	FXAA = std::make_unique<Shader>("fspassthrough.vert", "fxaa.frag");
 
 	SQuad = std::make_unique<ScreenQuad>();
+
+	FXAAEnabled = true;
 }
 
 PostProcessingRenderer::~PostProcessingRenderer() {}
@@ -20,11 +22,34 @@ void PostProcessingRenderer::SetTextures(const Core::Assets::Texture& luminance)
 	CombineBuffers->SetTexture("LightTexture", luminance, 0);
 }
 
-void PostProcessingRenderer::Draw(const glm::ivec2& bufferSize)
-{	
+void PostProcessingRenderer::Draw(RenderBuffer& screenbuffer, const glm::ivec2& bufferSize)
+{
+	if (AABuffer == nullptr)
+		AABuffer = std::make_unique<Core::Renderers::SimpleBuffer>(bufferSize);
+
+	AABuffer->SetAsTarget();
+	AABuffer->Clear();
+
+	glDisable(GL_BLEND);
 	CombineBuffers->Activate();
 	SQuad->Render(bufferSize);
 
+	screenbuffer.SetAsTarget();
+	screenbuffer.Clear();
+
+	if (FXAAEnabled)
+	{
+		FXAA->Activate();
+		FXAA->SetTexture("tex", *AABuffer->Value, 0);
+		FXAA->SetUniform("frameSize", glm::vec2(bufferSize));
+	}
+	else
+	{
+		NoAA->Activate();
+	}
+	SQuad->Render(bufferSize);
+
+	
 	/* Render Bloom
 
 	GlowMapHorizontalRB->MakeCurrent();
@@ -130,4 +155,9 @@ void PostProcessingRenderer::Draw(const glm::ivec2& bufferSize)
 	glUseProgram(0);
 
 	*/
+}
+
+void PostProcessingRenderer::ToggleFXAA()
+{
+	FXAAEnabled = !FXAAEnabled;
 }

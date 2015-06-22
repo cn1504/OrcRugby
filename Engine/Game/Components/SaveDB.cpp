@@ -27,6 +27,7 @@ SaveDB::SaveDB(std::shared_ptr<Core::Assets::Database> db)
 		db->SqlStatement("CREATE TABLE CharacterItems([Character] INTEGER REFERENCES Characters (Id) ON UPDATE CASCADE, [Slot] INTEGER, [Item] TEXT, [Level] INTEGER, PRIMARY KEY(Character, Slot))");
 
 		// Initialize default values
+		Set("Version", GAME_VERSION);
 		Set("NewSave", false);
 		Set("GameInProgress", false);
 		Set("TimeRatio", 1.0 / (300.0 / 86400.0));

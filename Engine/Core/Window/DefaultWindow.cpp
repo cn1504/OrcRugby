@@ -115,11 +115,8 @@ int DefaultWindow::Update()
 	LightRenderer->SetGeometryTextures(*GeometryBuffer->Depth, *GeometryBuffer->Normal, *GeometryBuffer->BaseColor, *GeometryBuffer->MSR);
 	LightRenderer->DrawScene(glm::vec2(Size.x, Size.y));
 	
-	ScreenBuffer->SetAsTarget();
-	ScreenBuffer->Clear();
-
 	PostProcessingRenderer->SetTextures(*LightBuffer->Luminance);
-	PostProcessingRenderer->Draw(Size);
+	PostProcessingRenderer->Draw(*ScreenBuffer, Size);
 
 	if (Top != nullptr)
 		GuiRenderer->Draw(Top.get());

@@ -81,6 +81,10 @@ MainWindow::MainWindow()
 	InputMap->AddReleaseAction("Ctrl + S", ToggleAudio);
 	ToggleMusic = std::make_shared<ToggleMusicAction>();
 	InputMap->AddReleaseAction("Ctrl + M", ToggleMusic);
+
+	// Video Settings
+	if (Game::Prefs->GetInt("FXAA") != 1)
+		PostProcessingRenderer->ToggleFXAA();
 }
 MainWindow::~MainWindow() {}
 int MainWindow::Update()

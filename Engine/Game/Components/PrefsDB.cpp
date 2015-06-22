@@ -109,6 +109,18 @@ void PrefsDB::InitializeDB()
 	Set("MainWindow_Height", vm->height);
 	Set("MaxFPS", 60.0f);
 
+	// Video Settings
+	Set("FXAA", 1);
+
+	// Sound Settings
+	Set("AudioEnabled", true);
+	Set("MusicEnabled", true);
+	Set("MainVolume", 1.0);
+	Set("MusicVolume", 1.0);
+	Set("AmbientVolume", 1.0);
+	Set("SFXVolume", 1.0);
+	Set("VoiceVolume", 1.0);
+
 	// Control Bindings
 	Set("CameraUp", "W");
 	Set("CameraDown", "S");
@@ -119,13 +131,4 @@ void PrefsDB::InitializeDB()
 	Set("CameraOut", "Scroll Down");
 	Set("CameraRotateLeft", "Q");
 	Set("CameraRotateRight", "E");
-
-	// Sound Settings
-	Set("AudioEnabled", true);
-	Set("MusicEnabled", true);
-	Set("MainVolume", 1.0);
-	Set("MusicVolume", 1.0);
-	Set("AmbientVolume", 1.0);
-	Set("SFXVolume", 1.0);
-	Set("VoiceVolume", 1.0);
 }
