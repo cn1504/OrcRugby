@@ -117,10 +117,31 @@ float getAngleAtt(vec3 normalizedLightVector, vec3 lightDirection, float lightAn
 	return attenuation;
 }
 
-vec3 DecodeNormal (vec4 enc)
+//-------------------------------------------------------------------------------------------
+// Exposure
+//-------------------------------------------------------------------------------------------
+const float Aperture = 16.0;			// N in f-stops.
+const float ShutterTime = 1.0 / 125.0;	// How long aperture is open.
+const float ISO = 100.0; 				// S in ISO
+float computeEV100(float aperture, float shutterTime, float ISO)
 {
-	return enc.xyz * 2-1;
+	return log2(aperture * aperture / shutterTime * 100 / ISO);
 }
+float computeEV100FromAvgLuminance(float avgLuminance)
+{
+	return log2(avgLuminance * 100.0 / 12.5);
+}
+float convertEV100ToExposer(float EV100)
+{
+	float maxLuminance = 1.2 * pow(2.0, EV100);
+	return 1.0 / maxLuminance;
+}
+float computeExposure()
+{
+	return convertEV100ToExposer(computeEV100(Aperture, ShutterTime, ISO));
+}
+
+
 
 void main(void)
 {
@@ -174,5 +195,5 @@ void main(void)
 		
 	vec3 outDiffuse = shadow * LightColor.xyz * atten * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd;
 	vec3 outSpecular = shadow * LightColor.xyz * atten * Fr;
-	outLuminance = vec4(outDiffuse + outSpecular, 1.0);
+	outLuminance = vec4((outDiffuse + outSpecular) * computeExposure(), 1.0);
 }

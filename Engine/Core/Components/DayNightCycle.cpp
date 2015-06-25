@@ -28,8 +28,22 @@ DayNightCycle::DayNightCycle(float timeRatio)
 	SunLightColor = glm::vec4(1, 1, 1, 1);
 	MoonLightColor = glm::vec4(1, 1, 1, 1);
 
-	SunLightIntensity = 3.0f;
-	MoonLightIntensity = 1.25f;
+	SunLightIntensity = 110000.0f;	
+	MoonLightIntensity = 0.25f;
+	
+	// In Lux or Lumins per meter squared
+	// Common Lux values:
+	// Bright Sunlight: 110000.0f;
+	// Sunlight, Overcast: 1000.0f to 2000.0f;
+	// Shade illuminated by sky midday: 20000.0f;
+	// Darkest of storm clouds: 200.0f;
+	// Sunrise/Sunset, Clear Day: 400.0f;
+	// Sunrise/Sunset, Fully overcast: 40.0f;
+
+	// Fullmoon, clear night: 0.25f;
+	// Quartermoon, clear night: 0.01f;
+	// Starlight, clear night: 0.002f;
+	// Starlight, overcast moonless: 0.0001f;
 }
 
 DayNightCycle::~DayNightCycle() {}
@@ -60,7 +74,7 @@ void DayNightCycle::Update()
 		float SunColorTemp = 1000.0f + (float)(colorT * colorT) * 4780.0f;
 		SunLightColor = calculateColorFromTemp(SunColorTemp);
 
-		double RiseAndSetRange = 0.05;
+		double RiseAndSetRange = 0.02;
 		SunLightColor.a *= (float)((sunT > 1.0 - RiseAndSetRange) ? (1.0 - sunT) / RiseAndSetRange : (sunT < RiseAndSetRange) ? sunT / RiseAndSetRange : 1.0);
 	}
 
@@ -93,7 +107,7 @@ void DayNightCycle::DrawLights(Core::Renderers::LightRenderer* renderer)
 	}	
 	if (CurrentTime < MOONSET || CurrentTime > MOONRISE)
 	{
-		renderer->DrawLight(*MoonBuffer->Depth, MoonDirection, MoonLightColor, MoonLightIntensity * MoonLightColor.a, MoonLightProjection, MoonLightView, MoonMaxDepth);
+		//renderer->DrawLight(*MoonBuffer->Depth, MoonDirection, MoonLightColor, MoonLightIntensity * MoonLightColor.a, MoonLightProjection, MoonLightView, MoonMaxDepth);
 	}
 
 	Entity::DrawLights(renderer);
@@ -164,6 +178,7 @@ void DayNightCycle::RenderSceneToShadowmap()
 		Renderer->DrawScene();
 	}
 
+	/*
 	if (CurrentTime < MOONSET || CurrentTime > MOONRISE)
 	{
 		// Compute the MVP matrix from the light's point of view
@@ -198,5 +213,5 @@ void DayNightCycle::RenderSceneToShadowmap()
 		MoonBuffer->SetAsTarget();
 		MoonBuffer->Clear();
 		Renderer->DrawScene();
-	}
+	}*/
 }

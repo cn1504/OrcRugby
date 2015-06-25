@@ -16,6 +16,7 @@ uniform float     MaxDepth;
 uniform vec3      LightDirection;
 uniform vec4      LightColor;
 uniform float     LightIntensity;
+const   float     AngularRadius = 0.0087266462599717;	// Sun and moon angular radius is radians
 
 layout(location = 0) in vec2 texCoord;
 
@@ -94,6 +95,32 @@ vec3 getSkyColor(vec3 e) {
     return ret;
 }
 
+//-------------------------------------------------------------------------------------------
+// Exposure
+//-------------------------------------------------------------------------------------------
+const float Aperture = 16.0;			// N in f-stops.
+const float ShutterTime = 1.0 / 125.0;	// How long aperture is open.
+const float ISO = 100.0; 				// S in ISO
+float computeEV100(float aperture, float shutterTime, float ISO)
+{
+	return log2(aperture * aperture / shutterTime * 100 / ISO);
+}
+float computeEV100FromAvgLuminance(float avgLuminance)
+{
+	return log2(avgLuminance * 100.0 / 12.5);
+}
+float convertEV100ToExposer(float EV100)
+{
+	float maxLuminance = 1.2 * pow(2.0, EV100);
+	return 1.0 / maxLuminance;
+}
+float computeExposure()
+{
+	return convertEV100ToExposer(computeEV100(Aperture, ShutterTime, ISO));
+}
+
+
+
 void main(void)
 {	
 	// Extract buffered pixel position and normal from textures
@@ -124,22 +151,36 @@ void main(void)
 	float roughness = MSR.z * MSR.z * MSR.z * MSR.z;
 	float reflectance = 0.16 * MSR.y * MSR.y;
 	vec3 f0 = mix(vec3(reflectance), BaseColor.xyz, MSR.x);
+		
+	// Diffuse BRDF
+	float Fd = Fd_DisneyDiffuse(NdotV, LdotN, LdotH, MSR.z) / M_PI;	
+	
+	
+	// Specular disk light for sun / moon
+	float r = sin(AngularRadius);
+	float d = cos(AngularRadius);
+	
+	// Closest point approximation
+	vec3 R = reflect(incident, normal);
+	float DdotR = dot(lightDir, R);
+	vec3 S = R - DdotR * lightDir;
+	vec3 L = DdotR < d ? normalize(d * lightDir + normalize(S) * r) : R;
+	
+	LdotN		= clamp(dot(incident, normal), 0.0, 1.0);
+	LdotH		= clamp(dot(halfDir, incident), 0.0, 1.0);
 	
 	// Specular BRDF
 	vec3  F   = F_Schlick(f0, 0.0, LdotH);
 	float Vis = V_SmithGGXCorrelated(NdotV, LdotN, MSR.z);
 	float D   = D_GGX(NdotH, roughness);
 	vec3  Fr  = D * F * Vis / M_PI;
-	
-	// Diffuse BRDF
-	float Fd = Fd_DisneyDiffuse(NdotV, LdotN, LdotH, MSR.z) / M_PI;	
-		
+			
 	// Shadow Mapping Result
 	float shadow = ShadowMap(LdotN, MaxDepth, pos);
 	
-	vec3 outDiffuse = (0.25 + shadow * 0.75) * LightColor.xyz * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd * LightIntensity;
-	vec3 outSpecular = shadow * LightColor.xyz * Fr * LightIntensity;
-	outLuminance = vec4(outDiffuse + outSpecular, LightColor.w);
+	vec3 outDiffuse = (0.2 + shadow * 0.8) * LightColor.xyz * LightIntensity * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd;
+	vec3 outSpecular = shadow * LightColor.xyz * LightIntensity * Fr;
+	outLuminance = vec4((outDiffuse + outSpecular) * computeExposure() * LdotN, LightColor.w);
 	
 	// Distant Light Probe Approx for ambient light
 	//outSpecular.xyz += LightColor.xyz * pow(1.0 - NdotV, 10.0);

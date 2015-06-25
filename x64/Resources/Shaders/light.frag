@@ -66,7 +66,7 @@ float smoothDistanceAtt(float squaredDistance, float invSqrAttRadius)
 {
 	float factor = squaredDistance * invSqrAttRadius;
 	float smoothFactor = clamp(1.0 - factor * factor, 0.0, 1.0);
-	return smoothFactor;
+	return smoothFactor * smoothFactor;
 }
 
 float getDistanceAtt(float sqrDist, float invSqrAttRadius)
@@ -84,10 +84,30 @@ float getAngleAtt(vec3 normalizedLightVector, vec3 lightDirection, float lightAn
 	return attenuation;
 }
 
-vec3 DecodeNormal (vec4 enc)
+//-------------------------------------------------------------------------------------------
+// Exposure
+//-------------------------------------------------------------------------------------------
+const float Aperture = 1.4;				// N in f-stops.
+const float ShutterTime = 1.0 / 120.0;	// How long aperture is open.
+const float ISO = 1600.0; 				// S in ISO
+float computeEV100(float aperture, float shutterTime, float ISO)
 {
-	return enc.xyz * 2.0 - 1.0;
+	return log2(aperture * aperture / shutterTime * 100 / ISO);
 }
+float computeEV100FromAvgLuminance(float avgLuminance)
+{
+	return log2(avgLuminance * 100.0 / 12.5);
+}
+float convertEV100ToExposer(float EV100)
+{
+	float maxLuminance = 1.2 * pow(2.0, EV100);
+	return 1.0 / maxLuminance;
+}
+float computeExposure()
+{
+	return convertEV100ToExposer(computeEV100(Aperture, ShutterTime, ISO));
+}
+
 
 void main(void)
 {	
@@ -105,22 +125,24 @@ void main(void)
 	// Calculate light amount
 	vec3 lightDir   = LightPosition - pos;
 	vec3 incident   = normalize(lightDir);
+	float LdotN		= clamp(dot(incident, normal), 0.0, 1.0);
+	if(LdotN == 0.0)
+	{
+		discard;
+	}
 	
 	float sqrDist = dot(lightDir, lightDir);
 	float atten = getDistanceAtt(sqrDist, LightInvSqrRadius);
-	atten *= getAngleAtt(incident, LightDirection, LightAngleScale, LightAngleOffset);
-	
-	if(atten <= 0.0 || dot(incident, normal) < 0.0) 
+	atten *= getAngleAtt(incident, LightDirection, LightAngleScale, LightAngleOffset);	
+	if(atten <= 0.0) 
 	{	
 		discard;
 	}
-	atten *= LightIntensity;
 		
 	vec3 viewDir    = normalize(- pos);
 	vec3 halfDir	= normalize(viewDir + incident);
 	float NdotV		= abs(dot(viewDir, normal));// + 1e-5f;	// avoids artifacts
 	float NdotH		= clamp(dot(normal, halfDir), 0.0, 1.0);
-	float LdotN		= clamp(dot(incident, normal), 0.0, 1.0);
 	float LdotH		= clamp(dot(halfDir, incident), 0.0, 1.0);
 	
 	float roughness = MSR.z * MSR.z * MSR.z * MSR.z;
@@ -136,7 +158,7 @@ void main(void)
 	// Diffuse BRDF
 	float Fd = Fd_DisneyDiffuse(NdotV, LdotN, LdotH, MSR.z) / M_PI;	
 	
-	vec3 outDiffuse = LightColor.xyz * atten * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd;
-	vec3 outSpecular = LightColor.xyz * atten * Fr;
-	outLuminance = vec4(outDiffuse + outSpecular, 1.0);
+	vec3 outDiffuse = LightColor.xyz * mix(BaseColor.xyz, vec3(0.0), MSR.x) * Fd;
+	vec3 outSpecular = LightColor.xyz * Fr;
+	outLuminance = vec4((outDiffuse + outSpecular) * (computeExposure() * atten * LightIntensity / (4.0 * M_PI) * LdotN), 1.0);
 }

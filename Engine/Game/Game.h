@@ -3,7 +3,7 @@
 #include <Core.h>
 #pragma comment(lib, "Core.lib")
 
-#define GAME_VERSION "0.1.31"
+#define GAME_VERSION "0.1.32"
 
 namespace Game
 {
